@@ -6,4 +6,8 @@
     <RootNamespace>Setnicka.PacMan</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\Filip\Desktop\PacMan\PacMan\PacMan.xml</DocumentationFile>
+  </PropertyGroup>
+
 </Project>

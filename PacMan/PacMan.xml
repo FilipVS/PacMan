@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PacMan</name>
+    </assembly>
+    <members>
+        <member name="T:Setnicka.PacMan.Colors">
+            <summary>
+            Static class containing all color settings
+            </summary>
+        </member>
+        <member name="T:Setnicka.PacMan.InputManager">
+            <summary>
+            Triggers and event when certain keys are pressed
+            </summary>
+        </member>
+        <member name="M:Setnicka.PacMan.InputManager.#ctor(System.Collections.Generic.List{System.ConsoleKey})">
+            <param name="keysOfInterest">Keys that the input manager should react to</param>
+        </member>
+        <member name="E:Setnicka.PacMan.InputManager.KeyPressed">
+            <summary>
+            Event that is triggered when a key of interest is pressed
+            </summary>
+        </member>
+        <member name="M:Setnicka.PacMan.InputManager.KeyOfInterest(System.ConsoleKey)">
+            <summary>
+            Chekcs whether the key is of interest (only some keys are further proccessed)
+            </summary>
+        </member>
+        <member name="T:Setnicka.PacMan.KeyEventArgs">
+            <summary>
+            Event args that contain CosoleKey information
+            </summary>
+        </member>
+        <member name="T:Setnicka.PacMan.Vector2D">
+            <summary>
+            Auxiliary class for dealing with position of GameObjects (their X and Y coordinates)
+            Basic operatios are also defined on Vector2Ds (addition, subtraction)
+            </summary>
+        </member>
+        <member name="M:Setnicka.PacMan.Vector2D.#ctor">
+            <summary>
+            Creates new Vector2D with its coordinates set to [0, 0]
+            </summary>
+        </member>
+        <member name="M:Setnicka.PacMan.Vector2D.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates new Vector2D with the specified parametres as coordinates
+            </summary>
+            <param name="x">X coordinate value</param>
+            <param name="y">Y coordinate value</param>
+        </member>
+        <member name="T:Setnicka.PacMan.Game">
+            <summary>
+            Class that runs each individual game (playthrough of each level is an individual game)
+            </summary>
+        </member>
+        <member name="T:Setnicka.PacMan.Empty">
+            <summary>
+            Type of GameObject that player and ghosts can move across (it can as well store collectible objetcs - coins and boosts)
+            Each Empty GameObject can store only one collectible object (a coin or a boost)
+            </summary>
+        </member>
+        <member name="M:Setnicka.PacMan.Empty.#ctor(Setnicka.PacMan.GameObject[],Setnicka.PacMan.Vector2D)">
+            <param name="level">The level that the GameObject is associated with</param>
+            <param name="position">Positiong of the GameObject in the level</param>
+        </member>
+        <member name="T:Setnicka.PacMan.GameObject">
+            <summary>
+            Base class for all uncollectable objects in the game (walls, ghosts, player...)
+            </summary>
+        </member>
+        <member name="M:Setnicka.PacMan.GameObject.#ctor(Setnicka.PacMan.GameObject[],Setnicka.PacMan.Vector2D,System.Char)">
+            <param name="level">The level that the GameObject is associated with</param>
+            <param name="startingPosition">The starting position of the GameObject in the level</param>
+            <param name="appearance">Char that is drawn out in the console to represent the GameObject</param>
+        </member>
+        <member name="F:Setnicka.PacMan.GameObject.position">
+            <summary>
+            Represents the GameObjetc's position in the level
+            </summary>
+        </member>
+        <member name="F:Setnicka.PacMan.GameObject.appearance">
+            <summary>
+            Char that is drawn out in the console to represent the GameObject
+            </summary>
+        </member>
+        <member name="F:Setnicka.PacMan.GameObject.level">
+            <summary>
+            The level that the GameObject is associated with
+            </summary>
+        </member>
+        <member name="M:Setnicka.PacMan.GameObject.Draw">
+            <summary>
+            Each GameObject will draw itself
+            </summary>
+        </member>
+        <member name="T:Setnicka.PacMan.Ghost">
+            <summary>
+            Base class for all ghosts
+            Contains maze-solving logic (it is the same for all ghosts)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Setnicka.PacMan.Ghost.#ctor(Setnicka.PacMan.GameObject[],Setnicka.PacMan.Vector2D)" -->
+        <member name="M:Setnicka.PacMan.Ghost.DetermineHeading">
+            <summary>
+            Determine which way the Ghost wants to go on the next update
+            </summary>
+        </member>
+        <member name="T:Setnicka.PacMan.MovableObject">
+            <summary>
+            Base class for all movable objects in the game (ghosts, player)
+            </summary>
+        </member>
+        <member name="M:Setnicka.PacMan.MovableObject.#ctor(Setnicka.PacMan.GameObject[],Setnicka.PacMan.Vector2D,System.Char)">
+            <param name="level">The level that the GameObject is associated with</param>
+            <param name="startingPosition">The starting position of the GameObject in the level</param>
+            <param name="appearance">Char that is drawn out in the console to represent the GameObject</param>
+        </member>
+        <member name="F:Setnicka.PacMan.MovableObject.heading">
+            <summary>
+            Determines which way the objects intends to go on the next update
+            </summary>
+        </member>
+        <member name="T:Setnicka.PacMan.Direction">
+            <summary>
+            MovableObjects use this enum to specify which way the intend to move
+            </summary>
+        </member>
+        <member name="M:Setnicka.PacMan.Player.#ctor(Setnicka.PacMan.GameObject[],Setnicka.PacMan.Vector2D)">
+            <param name="level">The level that the GameObject is associated with</param>
+            <param name="startingPosition">The starting position of the GameObject in the level</param>
+        </member>
+        <member name="M:Setnicka.PacMan.Wall.#ctor(Setnicka.PacMan.GameObject[],Setnicka.PacMan.Vector2D)">
+            <param name="level">The level that the GameObject is associated with</param>
+            <param name="position">Positiong of the GameObject in the level</param>
+        </member>
+        <member name="F:Setnicka.PacMan.Program.OFFSET">
+            <summary>
+            The offset of drawn objects in comparison to CursorPosition(0, 0)
+            </summary>
+        </member>
+    </members>
+</doc>
