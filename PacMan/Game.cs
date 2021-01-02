@@ -15,6 +15,8 @@ namespace Setnicka.PacMan
         private const int GAME_UPDATE_FREQUENCY = 400;
         // Delay between main thread updates
         private const int MAIN_THREAD_UPDATE_FREQUENCY = 20;
+        // How long (milliseconds) is the chasing ghosts mode active
+        private const int CHASING_GHOSTS_FOR = 10000;
 
 
         /// <param name="level">Lever that is the player wants to play, cannot be null</param>
@@ -72,15 +74,19 @@ namespace Setnicka.PacMan
             {
                 MoveResult playerMove = Player.Move();
                 if (playerMove == MoveResult.Boost)
-                    CurrentGameState = GameState.ChasingGhosts; // TODO: When eating another boost, the timer should reset
+                    CurrentGameState = GameState.ChasingGhosts;
                 else if (playerMove == MoveResult.Collision)
+                {
                     CurrentGameState = GameState.Collision;
+                    Thread.Sleep(GAME_UPDATE_FREQUENCY);
+                }
 
                 foreach (Ghost ghost in Ghosts)
                 {
                     if(ghost.Move() == MoveResult.Collision)
                     {
                         CurrentGameState = GameState.Collision;
+                        Thread.Sleep(GAME_UPDATE_FREQUENCY);
                         break;
                     }
                 }
@@ -90,21 +96,65 @@ namespace Setnicka.PacMan
         }
 
         /// <summary>
+        /// This is the Update method when player ate boost and is chasing ghosts instead
+        /// </summary>
+        private void UpdateChasingGhosts()
+        {
+            // TODO: Make ghosts go slower than player
+            // TODO: Make ghosts blink for some time before the mode turns off
+
+            int timeLeft = CHASING_GHOSTS_FOR;
+
+            while(timeLeft > 0)
+            {
+                MoveResult playerMove = Player.Move();
+                if (playerMove == MoveResult.Boost)
+                    timeLeft = CHASING_GHOSTS_FOR;
+                else if (playerMove == MoveResult.Collision)
+                {
+                    CurrentGameState = GameState.Collision;
+                    Thread.Sleep(GAME_UPDATE_FREQUENCY);
+                }
+
+                foreach (Ghost ghost in Ghosts)
+                {
+                    ghost.InvertedMove = true;
+                    if (ghost.Move() == MoveResult.Collision)
+                    {
+                        CurrentGameState = GameState.Collision;
+                        Thread.Sleep(GAME_UPDATE_FREQUENCY);
+                        break;
+                    }
+                    ghost.InvertedMove = false;
+                }
+
+                timeLeft -= GAME_UPDATE_FREQUENCY;
+                Thread.Sleep(GAME_UPDATE_FREQUENCY);
+            }
+
+            CurrentGameState = GameState.Normal;
+        }
+
+        /// <summary>
         /// This method stars the game from the outside and controls running of the input thread and game thread
         /// </summary>
-        public void Start()
+        public void Run()
         {
             // Print all the elements
             Print();
 
-            // Start the threads
+            // TODO: Delete if it proves useless
+            /*// Start the threads
             StartThreads(InputManager.CheckForInput, Update);
 
             CurrentGameState = GameState.Normal;
             GameState previousGamestate = CurrentGameState;
 
             InputManagerThread.Start();
-            GameRunningThread.Start();
+            GameRunningThread.Start();*/
+
+            CurrentGameState = GameState.Normal;
+            GameState previousGamestate = GameState.Off;
 
             do
             {
@@ -116,10 +166,19 @@ namespace Setnicka.PacMan
 
                     switch (previousGamestate)
                     {
+                        case GameState.Normal:
+                            if(InputManagerThread != null && GameRunningThread != null)
+                                AbortThreads();
+                            StartThreads(InputManager.CheckForInput, Update);
+                            break;
                         case GameState.Collision:
                             AbortThreads();
                             Console.SetCursorPosition(0, 0);
                             Console.Write("Collision!");
+                            break;
+                        case GameState.ChasingGhosts:
+                            AbortThreads();
+                            StartThreads(InputManager.CheckForInput, UpdateChasingGhosts);
                             break;
                         // TODO: Finish
                         default:
@@ -147,6 +206,9 @@ namespace Setnicka.PacMan
         {
             InputManagerThread = new Thread(inputThreadStart);
             GameRunningThread = new Thread(gameThreadStart);
+
+            InputManagerThread.Start();
+            GameRunningThread.Start();
         }
 
         /// <summary>

@@ -102,7 +102,7 @@ namespace Setnicka.PacMan
             }
         }
 
-        protected bool InvertedMove
+        public bool InvertedMove
         {
             get
             {
@@ -338,6 +338,9 @@ namespace Setnicka.PacMan
             List<GameObject> movableTilesAround = GetMovableTilesAround(Position);
             Vector2D invertedMoveTile = Position - (new Vector2D(Heading));
 
+            // Does the ghost have more options to go --> don't go on another ghost
+            Avoid<Ghost>();
+
             // Only way to move --> go uninverted
             if (movableTilesAround.Count == 1)
                 return Position + (new Vector2D(Heading));
@@ -345,27 +348,32 @@ namespace Setnicka.PacMan
                 movableTilesAround.Remove(Level[(Position + new Vector2D(Heading)).X, (Position + new Vector2D(Heading)).Y]);
 
             // Does the ghost have more options to go --> don't go next to player
-            while(movableTilesAround.Count > 1)
-            {
-                int movableTilesBefore = movableTilesAround.Count;
-
-                foreach(GameObject tileNextToPlayer in GetMovableTilesAround(PlayerPositionThisTurn))
-                {
-                    if (movableTilesAround.Contains(tileNextToPlayer))
-                    {
-                        movableTilesAround.Remove(tileNextToPlayer);
-                        break;
-                    }
-                }
-
-                if (movableTilesAround.Count == movableTilesBefore)
-                    break;
-            }
+            Avoid<Player>();
 
             if (!Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), invertedMoveTile) && movableTilesAround.Contains(Level[invertedMoveTile.X, invertedMoveTile.Y]))
                 return invertedMoveTile;
             else
                 return movableTilesAround[0].Position;
+
+            void Avoid<T>()
+            {
+                while (movableTilesAround.Count > 1)
+                {
+                    int movableTilesBefore = movableTilesAround.Count;
+
+                    foreach (GameObject movableTile in movableTilesAround)
+                    {
+                        if (movableTile is T)
+                        {
+                            movableTilesAround.Remove(movableTile);
+                            break;
+                        }
+                    }
+
+                    if (movableTilesAround.Count == movableTilesBefore)
+                        break;
+                }
+            }
         }
 
         /// <summary>

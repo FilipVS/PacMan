@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Setnicka.PacMan
 {
@@ -10,16 +12,18 @@ namespace Setnicka.PacMan
         {
             #region Test Level
             GameObject[,] level = new GameObject[9, 9];
-            /*for(int i = 0; i < 9; i++)
+            for(int i = 0; i < 9; i++)
             {
                 level[i, 0] = new Wall(level, new Vector2D(i, 0));
                 level[i, 8] = new Wall(level, new Vector2D(i, 8));
                 level[0, i] = new Wall(level, new Vector2D(0, i));
                 level[8, i] = new Wall(level, new Vector2D(8, i));
-            }*/
+            }
             level[1, 3] = new Player(level, new Vector2D(1, 3));
-            //level[7, 7] = new Blinky(level, new Vector2D(7, 7), new Vector2D(1, 3));
+            level[7, 7] = new Blinky(level, new Vector2D(7, 7), new Vector2D(1, 3));
             level[6, 7] = new Clyde(level, new Vector2D(6, 7), new Vector2D(1, 3));
+
+            level[6, 3] = new Empty(level, new Vector2D(6, 3), false, true);
 
             //level[1, 2] = new Wall(level, new Vector2D(1, 2));
             level[2, 2] = new Wall(level, new Vector2D(2, 2));
@@ -31,15 +35,15 @@ namespace Setnicka.PacMan
 
             for (int x = 0; x < 9; x++)
             {
-                for(int y = 0; y < 9; y++)
+                for (int y = 0; y < 9; y++)
                 {
                     if (level[x, y] == null)
-                        level[x, y] = new Empty(level, new Vector2D(x,y), true, false);
+                        level[x, y] = new Empty(level, new Vector2D(x, y), true, false);
                 }
             }
 
             Game game = new Game(level);
-            game.Start();
+            game.Run();
             #endregion
 
             Console.ReadKey();
