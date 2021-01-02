@@ -11,10 +11,8 @@ namespace Setnicka.PacMan
     {
         /// <param name="level">The level that the GameObject is associated with</param>
         /// <param name="startingPosition">The starting position of the GameObject in the level</param>
-        /// <param name="appearance">Char that is drawn out in the console to represent the GameObject</param>
-        public GameObject(GameObject[] level, Vector2D startingPosition, char appearance)
+        public GameObject(GameObject[,] level, Vector2D startingPosition)
         {
-            Appearance = appearance;
             Level = level;
             Position = startingPosition;
         }
@@ -25,16 +23,11 @@ namespace Setnicka.PacMan
         /// </summary>
         private Vector2D position;
 
-        /// <summary>
-        /// Char that is drawn out in the console to represent the GameObject
-        /// </summary>
-        private char appearance;
-
 
         /// <summary>
         /// The level that the GameObject is associated with
         /// </summary>
-        private GameObject[] level;
+        private GameObject[,] level;
         #endregion
 
         #region Properties
@@ -50,19 +43,7 @@ namespace Setnicka.PacMan
             }
         }
 
-        protected char Appearance
-        {
-            get
-            {
-                return appearance;
-            }
-            private set
-            {
-                appearance = value;
-            }
-        }
-
-        protected GameObject[] Level
+        protected GameObject[,] Level
         {
             get
             {
@@ -77,9 +58,29 @@ namespace Setnicka.PacMan
 
         #region Methods
         /// <summary>
-        /// Each GameObject will draw itself
+        /// Preparing the cursor for drawing of the object (setting the cursor position)
+        /// The process of drawing itself will be different for each child (via the Draw method)
         /// </summary>
-        public abstract void Draw();
+        public void Print()
+        {
+            Vector2D printingPosition = Position + Game.OFFSET;
+            Console.SetCursorPosition(printingPosition.X, printingPosition.Y);
+
+            ConsoleColor originalForegroundColor = Console.ForegroundColor;
+            ConsoleColor originalBackgroundColor = Console.BackgroundColor;
+
+            Draw();
+
+            Console.ForegroundColor = originalForegroundColor;
+            Console.BackgroundColor = originalBackgroundColor;
+
+            Console.CursorVisible = false;
+        }
+
+        /// <summary>
+        /// The actual process of drawing something on the screen
+        /// </summary>
+        protected abstract void Draw();
         #endregion
     }
 }

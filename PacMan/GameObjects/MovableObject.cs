@@ -11,16 +11,19 @@ namespace Setnicka.PacMan
     {
         /// <param name="level">The level that the GameObject is associated with</param>
         /// <param name="startingPosition">The starting position of the GameObject in the level</param>
-        /// <param name="appearance">Char that is drawn out in the console to represent the GameObject</param>
-        public MovableObject(GameObject[] level, Vector2D startingPosition, char appearance) : base(level, startingPosition, appearance)
+        public MovableObject(GameObject[,] level, Vector2D startingPosition) : base(level, startingPosition)
         {
+            spawnPoint = startingPosition.Copy();
         }
+
 
         #region Fields
         /// <summary>
         /// Determines which way the objects intends to go on the next update
         /// </summary>
         private Direction heading;
+
+        private Vector2D spawnPoint;
         #endregion
 
         #region Properties
@@ -35,11 +38,18 @@ namespace Setnicka.PacMan
                 heading = value;
             }
         }
+
+        protected Vector2D SpawnPoint
+        {
+            get
+            {
+                return spawnPoint;
+            }
+        }
         #endregion
 
         #region Methods
-        // TODO: Decide whether virtual/abstract
-        public virtual void Move() { }
+        public abstract MoveResult Move();
         #endregion
     }
 
@@ -48,9 +58,19 @@ namespace Setnicka.PacMan
     /// </summary>
     public enum Direction
     {
-        Top,
+        Up,
         Down,
         Left,
         Right
+    }
+
+    /// <summary>
+    /// The enum that is returned by the Move method, signalize the result of the move
+    /// </summary>
+    public enum MoveResult
+    {
+        None,
+        Boost,
+        Collision
     }
 }

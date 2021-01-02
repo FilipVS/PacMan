@@ -6,19 +6,22 @@ namespace Setnicka.PacMan
 {
     class Wall : GameObject
     {
+        private const char APPEARANCE = ' ';
+
         /// <param name="level">The level that the GameObject is associated with</param>
         /// <param name="position">Positiong of the GameObject in the level</param>
-        public Wall(GameObject[] level, Vector2D position) : base(level, position, ' ')
+        public Wall(GameObject[,] level, Vector2D position) : base(level, position)
         {
 
         }
 
         #region Methods
-        public override void Draw()
+        protected override void Draw()
         {
-            // TODO: Fininish
+            Console.ForegroundColor = Colors.WallColor;
+            Console.BackgroundColor = Colors.WallColor;
 
-            throw new NotImplementedException();
+            Console.Write(APPEARANCE);
         }
         #endregion
     }

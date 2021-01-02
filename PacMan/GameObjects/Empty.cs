@@ -10,17 +10,26 @@ namespace Setnicka.PacMan
     /// </summary>
     class Empty : GameObject
     {
+        private const char APPEARANCE_EMPTY = ' ';
+        private const char APPEARANCE_WITH_COIN = '-';
+        private const char APPEARANCE_WITH_BOOST = 'O';
+
         /// <param name="level">The level that the GameObject is associated with</param>
         /// <param name="position">Positiong of the GameObject in the level</param>
-        public Empty(GameObject[] level, Vector2D position) : base(level, position, ' ')
+        /// <param name="containsCoin">Determines if the Empty GameObject contains coin (can only hold coin or boost)</param>
+        /// <param name="containsBoost">Determines if the Empty GameObject contains boost (can only hold coin or boost)</param>
+        public Empty(GameObject[,] level, Vector2D position, bool containsCoin = false, bool containsBoost = false) : base(level, position)
         {
+            if (containsCoin && containsBoost)
+                throw new ArgumentException("Cannot hold both coin and boost!");
+
+            ContainsCoin = containsCoin;
+            ContainsBoost = containsBoost;
         }
 
         #region Fields
         private bool containsCoin;
         private bool containsBoost;
-
-
         #endregion
 
         #region Properties
@@ -60,11 +69,25 @@ namespace Setnicka.PacMan
         #endregion
 
         #region Methods
-        public override void Draw()
+        protected override void Draw()
         {
-            // TODO: Finish
+            Console.BackgroundColor = Colors.EmptyColor;
 
-            throw new NotImplementedException();
+            if (ContainsBoost)
+            {
+                Console.ForegroundColor = Colors.BoostColor;
+                Console.Write(APPEARANCE_WITH_BOOST);
+            }
+            else if (ContainsCoin)
+            {
+                Console.ForegroundColor = Colors.CoinColor;
+                Console.Write(APPEARANCE_WITH_COIN);
+            }
+            else
+            {
+                Console.ForegroundColor = Colors.EmptyColor;
+                Console.Write(APPEARANCE_EMPTY);
+            }
         }
         #endregion
     }
