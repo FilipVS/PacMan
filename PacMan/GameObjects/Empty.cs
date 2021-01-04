@@ -8,7 +8,7 @@ namespace Setnicka.PacMan
     /// Type of GameObject that player and ghosts can move across (it can as well store collectible objetcs - coins and boosts)
     /// Each Empty GameObject can store only one collectible object (a coin or a boost)
     /// </summary>
-    class Empty : GameObject
+    public class Empty : GameObject
     {
         private const char APPEARANCE_EMPTY = ' ';
         private const char APPEARANCE_WITH_COIN = '-';

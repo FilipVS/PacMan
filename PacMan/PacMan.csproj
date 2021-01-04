@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuxiliaryClasses\GameKeyBinding.cs" />
     <Compile Include="GameObjects\Ghosts\Blinky.cs" />
     <Compile Include="GameObjects\Ghosts\Clyde.cs" />
     <Compile Include="AuxiliaryClasses\Colors.cs" />

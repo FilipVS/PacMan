@@ -7,7 +7,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Base class for all uncollectable objects in the game (walls, ghosts, player...)
     /// </summary>
-    abstract class GameObject
+    public abstract class GameObject
     {
         /// <param name="level">The level that the GameObject is associated with</param>
         /// <param name="startingPosition">The starting position of the GameObject in the level</param>

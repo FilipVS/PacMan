@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Setnicka.PacMan
 {
-    class Wall : GameObject
+    public class Wall : GameObject
     {
         private const char APPEARANCE = ' ';
 

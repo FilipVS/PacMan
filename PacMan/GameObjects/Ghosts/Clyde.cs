@@ -7,7 +7,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Type of ghost that chases Pac-Man like Blinky, but when he gets too close, he turns around
     /// </summary>
-    class Clyde : Ghost
+    public class Clyde : Ghost
     {
         private const int MINIMAL_DISTANCE_FROM_PLAYER = 4;
 

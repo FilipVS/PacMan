@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Setnicka.PacMan
 {
-    class Player : MovableObject
+    public class Player : MovableObject
     {
         private const char APPEARANCE = '@';
         private const int STARTING_HEALTH = 3;
@@ -97,20 +97,20 @@ namespace Setnicka.PacMan
 
             switch (keyEventArgs.keyPressed)
             {
-                case ConsoleKey.UpArrow:
-                case ConsoleKey.W:
+                case GameKeyBinding.MoveUp:
+                case GameKeyBinding.MoveUpSecondary:
                     Heading = Direction.Up;
                     break;
-                case ConsoleKey.DownArrow:
-                case ConsoleKey.S:
+                case GameKeyBinding.MoveDown:
+                case GameKeyBinding.MoveDownSecondary:
                     Heading = Direction.Down;
                     break;
-                case ConsoleKey.LeftArrow:
-                case ConsoleKey.A:
+                case GameKeyBinding.MoveLeft:
+                case GameKeyBinding.MoveLeftSecondary:
                     Heading = Direction.Left;
                     break;
-                case ConsoleKey.RightArrow:
-                case ConsoleKey.D:
+                case GameKeyBinding.MoveRight:
+                case GameKeyBinding.MoveRightSecondary:
                     Heading = Direction.Right;
                     break;
                 default:

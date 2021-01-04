@@ -8,7 +8,7 @@ namespace Setnicka.PacMan
     /// Base class for all ghosts
     /// Contains maze-solving logic (it is the same for all ghosts)
     /// </summary>
-    abstract class Ghost : MovableObject
+    public abstract class Ghost : MovableObject
     {
         protected const char APPEARANCE = '&';
 

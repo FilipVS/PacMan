@@ -7,7 +7,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Triggers and event when certain keys are pressed
     /// </summary>
-    class InputManager
+    public class InputManager
     {
         /// <param name="keysOfInterest">Keys that the input manager should react to</param>
         public InputManager(List<ConsoleKey> keysOfInterest)
@@ -28,7 +28,7 @@ namespace Setnicka.PacMan
             this.keysOfInterest = keysOfInterest;
         }
 
-        private readonly List<ConsoleKey> keysOfInterest;
+        public readonly List<ConsoleKey> keysOfInterest;
 
         public delegate void KeyPressedEventHandler(object sender, KeyEventArgs eventArgs);
         /// <summary>
