@@ -7,7 +7,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Base class for all uncollectable objects in the game (walls, ghosts, player...)
     /// </summary>
-    abstract class GameObject
+    internal abstract class GameObject
     {
         /// <param name="level">The level that the GameObject is associated with</param>
         /// <param name="startingPosition">The starting position of the GameObject in the level</param>
@@ -61,9 +61,9 @@ namespace Setnicka.PacMan
         /// Preparing the cursor for drawing of the object (setting the cursor position)
         /// The process of drawing itself will be different for each child (via the Draw method)
         /// </summary>
-        public void Print()
+        public void Print(Vector2D printOffset)
         {
-            Vector2D printingPosition = Position + Game.OFFSET;
+            Vector2D printingPosition = Position + printOffset;
             Console.SetCursorPosition(printingPosition.X, printingPosition.Y);
 
             ConsoleColor originalForegroundColor = Console.ForegroundColor;

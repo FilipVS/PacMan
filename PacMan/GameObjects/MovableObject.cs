@@ -7,7 +7,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Base class for all movable objects in the game (ghosts, player)
     /// </summary>
-    abstract class MovableObject : GameObject
+    internal abstract class MovableObject : GameObject
     {
         /// <param name="level">The level that the GameObject is associated with</param>
         /// <param name="startingPosition">The starting position of the GameObject in the level</param>

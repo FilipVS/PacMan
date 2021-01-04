@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Setnicka.PacMan.LevelEditor
 {
-    class LevelEditor
+    /// <summary>
+    /// Used for saving levels to files
+    /// </summary>
+    static class LevelWriter
     {
     }
 }

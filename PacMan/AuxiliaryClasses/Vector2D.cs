@@ -8,13 +8,15 @@ namespace Setnicka.PacMan
     /// Auxiliary class for dealing with position of GameObjects (their X and Y coordinates)
     /// Basic operatios are also defined on Vector2Ds (addition, subtraction)
     /// </summary>
-    class Vector2D
+    internal class Vector2D
     {
         // Made to work with array indexing and printing on the screen (so one move up on the screen means -1 in the int[].GetLength(1) direction)
         public static readonly Vector2D Up = new Vector2D(0, -1);
         public static readonly Vector2D Down = new Vector2D(0, 1);
         public static readonly Vector2D Right = new Vector2D(1, 0);
         public static readonly Vector2D Left = new Vector2D(-1, 0);
+
+        public static readonly Vector2D Zero = new Vector2D(0, 0);
 
         #region Constructors
         /// <summary>

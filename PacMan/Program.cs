@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Setnicka.PacMan.LevelEditor;
 
 namespace Setnicka.PacMan
 {
@@ -10,6 +11,18 @@ namespace Setnicka.PacMan
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Do you want to test level (press 'L') or level editor (press 'E'): ");
+            bool testLevelEditor = (Console.ReadKey(true).Key == ConsoleKey.E);
+
+            #region Test Level Editor
+            if (testLevelEditor)
+            {
+                LevelCreator levelCreator = new LevelCreator(new Vector2D(10, 10));
+                levelCreator.Run();
+                Console.ReadKey();
+            }
+            #endregion
+
             #region Test Level
             GameObject[,] level = new GameObject[9, 9];
             for(int i = 0; i < 9; i++)

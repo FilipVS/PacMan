@@ -8,7 +8,7 @@ namespace Setnicka.PacMan
     /// Base class for all ghosts
     /// Contains maze-solving logic (it is the same for all ghosts)
     /// </summary>
-    abstract class Ghost : MovableObject
+    internal abstract class Ghost : MovableObject
     {
         protected const char APPEARANCE = '&';
 
@@ -313,7 +313,7 @@ namespace Setnicka.PacMan
                 TileStanding = empty;
 
                 // Redraw tile that the ghost previously stood on
-                Level[Position.X, Position.Y].Print();
+                Level[Position.X, Position.Y].Print(Game.OFFSET);
 
                 Position = moveToTile;
                 Level[Position.X, Position.Y] = this;
@@ -324,7 +324,7 @@ namespace Setnicka.PacMan
             }
 
             // Redraw the ghost
-            Print();
+            Print(Game.OFFSET);
 
             return MoveResult.None;
         }

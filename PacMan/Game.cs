@@ -194,7 +194,7 @@ namespace Setnicka.PacMan
         private void Print()
         {
             foreach (GameObject gameObject in Level)
-                gameObject.Print();
+                gameObject.Print(Game.OFFSET);
 
             // TODO: Finish (user interface elements...)
         }

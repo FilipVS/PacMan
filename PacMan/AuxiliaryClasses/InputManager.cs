@@ -7,7 +7,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Triggers and event when certain keys are pressed
     /// </summary>
-    class InputManager
+    internal class InputManager
     {
         /// <param name="keysOfInterest">Keys that the input manager should react to</param>
         public InputManager(List<ConsoleKey> keysOfInterest)
