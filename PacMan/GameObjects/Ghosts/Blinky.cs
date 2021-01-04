@@ -7,7 +7,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Type of ghost that tries to directly follow Pac-Man
     /// </summary>
-    public class Blinky : Ghost
+    internal class Blinky : Ghost
     {
         /// <param name="level">The level that the GameObject is associated with</param>
         /// <param name="startingPosition">The starting position of the GameObject in the level</param>

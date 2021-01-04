@@ -7,7 +7,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Event args that contain CosoleKey information
     /// </summary>
-    public class KeyEventArgs : EventArgs
+    internal class KeyEventArgs : EventArgs
     {
         public KeyEventArgs(ConsoleKey keyPressed)
         {

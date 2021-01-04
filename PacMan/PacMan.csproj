@@ -57,6 +57,11 @@
     <Compile Include="GameObjects\MovableObject.cs" />
     <Compile Include="GameObjects\Ghosts\Pinky.cs" />
     <Compile Include="GameObjects\Player.cs" />
+    <Compile Include="LevelEditor\LevelEditorColors.cs" />
+    <Compile Include="LevelEditor\LevelCreator.cs" />
+    <Compile Include="LevelEditor\LevelEditorKeyBinding.cs" />
+    <Compile Include="LevelEditor\LevelReader.cs" />
+    <Compile Include="LevelEditor\LevelWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AuxiliaryClasses\Vector2D.cs" />
@@ -65,5 +70,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

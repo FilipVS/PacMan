@@ -7,7 +7,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Type of ghost that behaves unpredictabely (sometimes like Blinky, sometimes like Pinky, sometimes like Clyde)
     /// </summary>
-    public class Inky : Ghost
+    internal class Inky : Ghost
     {
         // For how many Updates does the ghost commit to a certain play-style
         private const int COMMIT_TO_MODE_FOR = 3;

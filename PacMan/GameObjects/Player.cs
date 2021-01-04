@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Setnicka.PacMan
 {
-    public class Player : MovableObject
+    internal class Player : MovableObject
     {
         private const char APPEARANCE = '@';
         private const int STARTING_HEALTH = 3;
@@ -75,10 +75,10 @@ namespace Setnicka.PacMan
 
                 // Move the player and redraw the tiles
                 Level[Position.X, Position.Y] = new Empty(Level, Position);
-                Level[Position.X, Position.Y].Print();
+                Level[Position.X, Position.Y].Print(Game.OFFSET);
                 Position = moveToTile;
                 Level[Position.X, Position.Y] = this;
-                Level[Position.X, Position.Y].Print();
+                Level[Position.X, Position.Y].Print(Game.OFFSET);
 
                 if (containsBoost)
                     return MoveResult.Boost;
