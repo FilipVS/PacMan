@@ -14,7 +14,7 @@ namespace Setnicka.PacMan
         // Delay between individual updates of the game thread
         private const int GAME_UPDATE_FREQUENCY = 400;
         // Delay between main thread updates
-        private const int MAIN_THREAD_UPDATE_FREQUENCY = 20;
+        private const int MAIN_THREAD_UPDATE_FREQUENCY = 10;
         // How long (milliseconds) is the chasing ghosts mode active
         private const int CHASING_GHOSTS_FOR = 10000;
 
@@ -41,6 +41,8 @@ namespace Setnicka.PacMan
             if (Player == null)
                 throw new ArgumentNullException("level", "Player missing");
 
+            // Subscribe Win event handler to Player's GameWon event
+            Player.GameWon += PlayerWon;
 
             // Initializing the inputManager and subscribing individual event handlers
             List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { GameKeyBinding.MoveUp, GameKeyBinding.MoveUpSecondary, GameKeyBinding.MoveDown, GameKeyBinding.MoveDownSecondary, GameKeyBinding.MoveLeft, GameKeyBinding.MoveLeftSecondary, GameKeyBinding.MoveRight, GameKeyBinding.MoveRightSecondary };
@@ -49,8 +51,11 @@ namespace Setnicka.PacMan
             // TODO: subscribe add all the event handlers
         }
 
+        #region Fields
+        private GameState currentGameState = GameState.Off;
+        #endregion
 
-        #region Automatic properties
+        #region Properties
         private GameObject[,] Level { get; set; }
         private Player Player { get; set; }
         private List<Ghost> Ghosts { get; set; }
@@ -60,7 +65,19 @@ namespace Setnicka.PacMan
         private Thread InputManagerThread { get; set; }
         private Thread GameRunningThread { get; set; }
 
-        private GameState CurrentGameState { get; set; } = GameState.Off;
+        private GameState CurrentGameState
+        {
+            get
+            {
+                return currentGameState;
+            }
+            set
+            {
+                // If player already won, the currentGameState can't be overwritten
+                if (currentGameState != GameState.Win)
+                    currentGameState = value;
+            }
+        }
         #endregion
 
 
@@ -172,7 +189,7 @@ namespace Setnicka.PacMan
             CurrentGameState = GameState.Normal;
             GameState previousGamestate = GameState.Off;
 
-            do
+            while(true)
             {
                 if (previousGamestate == CurrentGameState)
                     Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
@@ -187,7 +204,7 @@ namespace Setnicka.PacMan
                             StartThreads(InputManager.CheckForInput, Update, false);
                             break;
                         case GameState.Collision:
-                            AbortThreads(true);
+                            AbortThreads(false);
                             Console.SetCursorPosition(0, 0);
                             Console.Write("Collision!");
                             break;
@@ -195,12 +212,17 @@ namespace Setnicka.PacMan
                             AbortThreads(false);
                             StartThreads(InputManager.CheckForInput, UpdateChasingGhosts, false);
                             break;
+                        case GameState.Win:
+                            AbortThreads(true);
+                            Console.SetCursorPosition(0, 0);
+                            Console.Write("Congratulations, you win!");
+                            break;
                         // TODO: Finish
                         default:
                             break;
                     }
                 }
-            } while (previousGamestate != GameState.Finished);
+            }
         }
 
         /// <summary>
@@ -247,6 +269,11 @@ namespace Setnicka.PacMan
                 GameRunningThread = null;
             }
         }
+
+        private void PlayerWon(object sender, EventArgs eventArgs)
+        {
+            CurrentGameState = GameState.Win;
+        }
         #endregion
     }
 
@@ -259,6 +286,6 @@ namespace Setnicka.PacMan
         Collision,
         Pause,
         Refresh,
-        Finished
+        Win
     }
 }

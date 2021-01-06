@@ -11,7 +11,7 @@ namespace Setnicka.PacMan
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Do you want to test level (press 'L') or level editor (press 'E'): ");
+            Console.WriteLine("Do you want to test level editor (press 'E') or play level (press any other key): ");
             bool testLevelEditor = (Console.ReadKey(true).Key == ConsoleKey.E);
 
             #region Test Level Editor
