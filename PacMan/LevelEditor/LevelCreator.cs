@@ -292,6 +292,11 @@ namespace Setnicka.PacMan.LevelEditor
                 case Type playerType when playerType == typeof(Player):
                     RemoveOtherPlayer();
                     LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = new Player(LevelArray, startingPosition);
+                    // Ghosts need to know about the new Player staring position
+                    UpdateGhostInformation();
+
+                    // TODO: This is only for testing, remove afterwards
+                    LevelWriter.SaveLevel(LevelArray, @"C:\Users\Filip\Desktop\PacMan\TestLevel.txt");
                     break;
                 case Type wallType when wallType == typeof(Wall):
                     LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = new Wall(LevelArray, startingPosition);
@@ -306,7 +311,7 @@ namespace Setnicka.PacMan.LevelEditor
                 case Type pinkyType when pinkyType == typeof(Pinky):
                 case Type inkyType when inkyType == typeof(Inky):
                 case Type clydeType when clydeType == typeof(Clyde):
-                    LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = CreateNewGhost(ObjectsOfChoice[HighlightedObjectOfChoice.X, HighlightedObjectOfChoice.Y].GetType());
+                    LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = CreateNewGhost(ObjectsOfChoice[HighlightedObjectOfChoice.X, HighlightedObjectOfChoice.Y].GetType(), startingPosition);
                     break;
                 default:
                     break;
@@ -335,7 +340,7 @@ namespace Setnicka.PacMan.LevelEditor
                 }
             }
 
-            Ghost CreateNewGhost(Type ghost)
+            Ghost CreateNewGhost(Type ghost, Vector2D ghostStartingPosition)
             {
                 Vector2D playerPosition = null;
                 foreach(GameObject tile in LevelArray)
@@ -352,15 +357,34 @@ namespace Setnicka.PacMan.LevelEditor
                 switch (ghost)
                 {
                     case Type blinkyType when blinkyType == typeof(Blinky):
-                        return new Blinky(LevelArray, startingPosition, playerPosition);
+                        return new Blinky(LevelArray, ghostStartingPosition, playerPosition);
                     case Type pinkyType when pinkyType == typeof(Pinky):
-                        return new Pinky(LevelArray, startingPosition, playerPosition);
+                        return new Pinky(LevelArray, ghostStartingPosition, playerPosition);
                     case Type inkyType when inkyType == typeof(Inky):
-                        return new Inky(LevelArray, startingPosition, playerPosition);
+                        return new Inky(LevelArray, ghostStartingPosition, playerPosition);
                     case Type clydeType when clydeType == typeof(Clyde):
-                        return new Clyde(LevelArray, startingPosition, playerPosition);
+                        return new Clyde(LevelArray, ghostStartingPosition, playerPosition);
                     default:
                         throw new ArgumentException("The type isn't a ghost!");
+                }
+            }
+
+            // Updates the ghost's setting of PlayerStartingPosition
+            void UpdateGhostInformation()
+            {
+                foreach(GameObject gameObject in LevelArray)
+                {
+                    switch (gameObject.GetType())
+                    {
+                        case Type blinkyType when blinkyType == typeof(Blinky):
+                        case Type pinkyType when pinkyType == typeof(Pinky):
+                        case Type inkyType when inkyType == typeof(Inky):
+                        case Type clydeType when clydeType == typeof(Clyde):
+                            LevelArray[gameObject.Position.X, gameObject.Position.Y] = CreateNewGhost(gameObject.GetType(), gameObject.Position);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
