@@ -28,7 +28,7 @@ namespace Setnicka.PacMan
             this.keysOfInterest = keysOfInterest;
         }
 
-        private readonly List<ConsoleKey> keysOfInterest;
+        public readonly List<ConsoleKey> keysOfInterest;
 
         public delegate void KeyPressedEventHandler(object sender, KeyEventArgs eventArgs);
         /// <summary>

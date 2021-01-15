@@ -11,9 +11,6 @@ namespace Setnicka.PacMan
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
-            Console.ReadKey();
-
             Console.WriteLine("Do you want to play game (press 'g'), test level editor (press 'e') or test custom level ('press c'): ");
             ConsoleKeyInfo keyInfo = Console.ReadKey();
 

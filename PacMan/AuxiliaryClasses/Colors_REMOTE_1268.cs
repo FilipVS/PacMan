@@ -7,7 +7,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Static class containing all color settings
     /// </summary>
-    public static class Colors
+    internal static class Colors
     {
         public static ConsoleColor EmptyColor { get; set; } = ConsoleColor.Black;
         public static ConsoleColor CoinColor { get; } = ConsoleColor.Green;

@@ -13,7 +13,11 @@ namespace Setnicka.PacMan
         public static ConsoleColor CoinColor { get; } = ConsoleColor.Green;
         public static ConsoleColor BoostColor { get; } = ConsoleColor.Green;
 
+<<<<<<< HEAD
+        public static ConsoleColor WallColor { get; set; } = ConsoleColor.DarkBlue;
+=======
         public static ConsoleColor WallColor { get; set; } = ConsoleColor.Blue;
+>>>>>>> LevelEditor
 
         public static ConsoleColor PlayerColor { get; } = ConsoleColor.Yellow;
 

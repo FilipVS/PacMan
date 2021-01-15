@@ -9,7 +9,7 @@ namespace Setnicka.PacMan
     /// Contains maze-solving logic (it is the same for all ghosts)
     /// </summary>
     internal abstract class Ghost : MovableObject
-    {
+    { 
         protected const char APPEARANCE = '&';
 
         /// <summary>

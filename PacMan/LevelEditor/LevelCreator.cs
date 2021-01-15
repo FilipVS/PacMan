@@ -93,7 +93,7 @@ namespace Setnicka.PacMan.LevelEditor
             Print();
 
             // Highlight first position
-            ChangeHighlighted(this, new KeyEventArgs(LevelEditorKeyBinding.LevelPlaneUp));    // TODO: Do better (ConsoleKey.W is kind of magical constant)
+            ChangeHighlighted(this, new KeyEventArgs(LevelEditorKeyBinding.LevelPlaneUp));
 
             // Highlight firs key of interest
             ChangeHighlightedObjectOfChoice(this, new KeyEventArgs(LevelEditorKeyBinding.ObjectOfChoiceUp));
@@ -292,11 +292,13 @@ namespace Setnicka.PacMan.LevelEditor
                 case Type playerType when playerType == typeof(Player):
                     RemoveOtherPlayer();
                     LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = new Player(LevelArray, startingPosition);
+
                     // Ghosts need to know about the new Player staring position
                     UpdateGhostInformation();
 
                     // TODO: This is only for testing, remove afterwards
                     LevelWriter.SaveLevel(LevelArray, @"C:\Users\Filip\Desktop\PacMan\TestLevel.txt");
+
                     break;
                 case Type wallType when wallType == typeof(Wall):
                     LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = new Wall(LevelArray, startingPosition);
@@ -311,7 +313,7 @@ namespace Setnicka.PacMan.LevelEditor
                 case Type pinkyType when pinkyType == typeof(Pinky):
                 case Type inkyType when inkyType == typeof(Inky):
                 case Type clydeType when clydeType == typeof(Clyde):
-                    LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = CreateNewGhost(ObjectsOfChoice[HighlightedObjectOfChoice.X, HighlightedObjectOfChoice.Y].GetType(), startingPosition);
+                    LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = CreateNewGhost(ObjectsOfChoice[HighlightedObjectOfChoice.X, HighlightedObjectOfChoice.Y].GetType(), startingPosition, GetPlayerPosition());
                     break;
                 default:
                     break;
@@ -340,20 +342,8 @@ namespace Setnicka.PacMan.LevelEditor
                 }
             }
 
-            Ghost CreateNewGhost(Type ghost, Vector2D ghostStartingPosition)
+            Ghost CreateNewGhost(Type ghost, Vector2D ghostStartingPosition, Vector2D playerPosition)
             {
-                Vector2D playerPosition = null;
-                foreach(GameObject tile in LevelArray)
-                {
-                    if(tile is Player)
-                    {
-                        playerPosition = tile.Position;
-                        break;
-                    }
-                }
-                if (playerPosition == null)
-                    throw new ArgumentException("There is no player in the level!");
-
                 switch (ghost)
                 {
                     case Type blinkyType when blinkyType == typeof(Blinky):
@@ -365,14 +355,29 @@ namespace Setnicka.PacMan.LevelEditor
                     case Type clydeType when clydeType == typeof(Clyde):
                         return new Clyde(LevelArray, ghostStartingPosition, playerPosition);
                     default:
-                        throw new ArgumentException("The type isn't a ghost!");
+                        throw new ArgumentException("The type isn't a valid ghost!");
                 }
             }
+
+            // TODO: Delete if proves useless
+            /*// When player gets moved, the ghosts need to get his new starting position
+            void SetNewPlayerPositionToGhosts(Vector2D newPlayerPosition)
+            {
+                for(int x = 0; x < LevelArray.GetLength(0); x++)
+                {
+                    for(int y = 0; y < LevelArray.GetLength(1); y++)
+                    {
+                        if (LevelArray[x, y] is Ghost)
+                            LevelArray[x, y] = CreateNewGhost(LevelArray[x, y].GetType(), new Vector2D(x, y), GetPlayerPosition());
+                    }
+                }
+            }
+            */
 
             // Updates the ghost's setting of PlayerStartingPosition
             void UpdateGhostInformation()
             {
-                foreach(GameObject gameObject in LevelArray)
+                foreach (GameObject gameObject in LevelArray)
                 {
                     switch (gameObject.GetType())
                     {
@@ -380,12 +385,26 @@ namespace Setnicka.PacMan.LevelEditor
                         case Type pinkyType when pinkyType == typeof(Pinky):
                         case Type inkyType when inkyType == typeof(Inky):
                         case Type clydeType when clydeType == typeof(Clyde):
-                            LevelArray[gameObject.Position.X, gameObject.Position.Y] = CreateNewGhost(gameObject.GetType(), gameObject.Position);
+                            LevelArray[gameObject.Position.X, gameObject.Position.Y] = CreateNewGhost(gameObject.GetType(), gameObject.Position, GetPlayerPosition());
                             break;
                         default:
                             break;
                     }
                 }
+            }
+
+            // Returns the position of player inside the level
+            Vector2D GetPlayerPosition()
+            {
+                foreach (GameObject tile in LevelArray)
+                {
+                    if (tile is Player)
+                    {
+                        return tile.Position;
+                    }
+                }
+
+                throw new ArgumentException("There is no player in the level!");
             }
         }
 
