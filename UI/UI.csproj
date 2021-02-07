@@ -41,7 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuxiliaryClasses\Vector2D.cs" />
+    <Compile Include="Button.cs" />
+    <Compile Include="Dialogs\ConfirmationDialog.cs" />
+    <Compile Include="IClickableUIElement.cs" />
+    <Compile Include="IHighlightableUIElement.cs" />
+    <Compile Include="Lable.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="IUIElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Dialogs\UserDialog.cs" />
+    <Compile Include="Dialogs\TextInputDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
