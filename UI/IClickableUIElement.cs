@@ -8,5 +8,8 @@ namespace Setnicka.UI
 {
     interface IClickableUIElement : IHighlightableUIElement
     {
+        event EventHandler OnClick;
+
+        void Clicked(object sender, EventArgs eventArgs);
     }
 }

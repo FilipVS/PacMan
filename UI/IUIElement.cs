@@ -11,5 +11,29 @@ namespace Setnicka.UI
     /// </summary>
     interface IUIElement
     {
+        HorizontalAllignment HorizontalAllignment { get; set; }
+
+        // Is used when HorizontalAllignment is set to custom
+        Vector2D RenderPosition { get; set; }
+
+        // What is written on the element
+        string Text { get; }
+
+        // Colors that are used, when rendering the element
+        ConsoleColor TextColor { get; }
+        ConsoleColor BackgroundColor { get; }
+
+        void Print();
+    }
+
+    /// <summary>
+    /// Defines, where will be the UIElement rendered
+    /// </summary>
+    public enum HorizontalAllignment
+    {
+        Left,
+        Right,
+        Center,
+        Custom
     }
 }

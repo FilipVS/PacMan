@@ -11,5 +11,11 @@ namespace Setnicka.UI
     /// </summary>
     interface IHighlightableUIElement : IUIElement
     {
+        // Colors when highlighted
+        ConsoleColor HighlightedTextColor { get; }
+        ConsoleColor HighlightedBackgroundColor { get; }
+
+        // Highlights/Unhighlights the object
+        void PrintHighlighted(bool highlighted);
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Setnicka.PacMan.LevelEditor;
+using Setnicka.UI;
 
 namespace Setnicka.PacMan
 {
@@ -11,6 +12,8 @@ namespace Setnicka.PacMan
     {
         static void Main(string[] args)
         {
+            TestRun.Run();
+
             Console.WriteLine("Do you want to test level editor (press 'E') or play level (press any other key): ");
             bool testLevelEditor = (Console.ReadKey(true).Key == ConsoleKey.E);
 
