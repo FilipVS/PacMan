@@ -9,13 +9,22 @@ namespace Setnicka.UI
     /// <summary>
     /// User can trigger certain events with this
     /// </summary>
-    class Button : IClickableUIElement
+    class Button : IClickableUIElement, IActionable
     {
         #region Constructors
-        public Button(string text, HorizontalAllignment horizontalAllignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor)
+        /// <summary>
+        /// Initializes new instance of Button class with information about its line and unhighlighted colors set to current Console colors
+        /// </summary>
+        /// <param name="text">What is written on the element</param>
+        /// <param name="horizontalAlignment">Where will the element be rendered</param>
+        /// <param name="lineNumber">On which line should be the element rendered</param>
+        /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
+        /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
+        /// <param name="action">An action should be performed under ceratin circumstances</param>
+        public Button(string text, HorizontalAlignment horizontalAlignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, Action action = null)
         {
             Text = text;
-            HorizontalAllignment = horizontalAllignment;
+            HorizontalAlignment = horizontalAlignment;
 
             RenderPosition = new Vector2D(-1, lineNumber);
 
@@ -24,17 +33,50 @@ namespace Setnicka.UI
 
             HighlightedTextColor = highlightedTextColor;
             HighlightedBackgroundColor = highlightedBackgroundColor;
+
+            Action = action;
         }
-        public Button(string text, HorizontalAllignment horizontalAllignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor) : this(text, horizontalAllignment, -1, highlightedTextColor, highlightedBackgroundColor)
+        /// <summary>
+        /// Initializes new instance of Button class with full information about its position and unhighlighted colors set to current Console colors
+        /// </summary>
+        /// <param name="text">What is written on the element</param>
+        /// <param name="horizontalAlignment">Where will the element be rendered</param>
+        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="custom")</param>
+        /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
+        /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
+        /// <param name="action">An action should be performed under ceratin circumstances</param>
+        public Button(string text, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, Action action = null) : this(text, horizontalAlignment, -1, highlightedTextColor, highlightedBackgroundColor, action)
         {
             RenderPosition = customRenderPosition;
         }
-        public Button(string text, HorizontalAllignment horizontalAllignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor) : this(text, horizontalAllignment, lineNumber, highlightedTextColor, highlightedBackgroundColor)
+        /// <summary>
+        /// Initializes new instance of Button class with information about its line and full information about the unhighlighted colors
+        /// </summary>
+        /// <param name="text">What is written on the element</param>
+        /// <param name="horizontalAlignment">Where will the element be rendered</param>
+        /// <param name="lineNumber">On which line should be the element rendered</param>
+        /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
+        /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
+        /// <param name="textColor">The text color, when the element is not highlighted</param>
+        /// <param name="backgroundColor">The background color, when the element is not highlighted</param>
+        /// <param name="action">An action should be performed under ceratin circumstances</param>
+        public Button(string text, HorizontalAlignment horizontalAlignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor, Action action = null) : this(text, horizontalAlignment, lineNumber, highlightedTextColor, highlightedBackgroundColor, action)
         {
             TextColor = textColor;
             BackgroundColor = backgroundColor;
         }
-        public Button(string text, HorizontalAllignment horizontalAllignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor) : this(text, horizontalAllignment, -1, highlightedTextColor, highlightedBackgroundColor)
+        /// <summary>
+        /// Initializes new instance of Button class with full information about its position and unhighlighted colors
+        /// </summary>
+        /// <param name="text">What is written on the element</param>
+        /// <param name="horizontalAlignment">Where will the element be rendered</param>
+        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="custom")</param>
+        /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
+        /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
+        /// <param name="textColor">The text color, when the element is not highlighted</param>
+        /// <param name="backgroundColor">The background color, when the element is not highlighted</param>
+        /// <param name="action">An action should be performed under ceratin circumstances</param>
+        public Button(string text, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor, Action action = null) : this(text, horizontalAlignment, -1, highlightedTextColor, highlightedBackgroundColor, action)
         {
             RenderPosition = customRenderPosition;
 
@@ -46,7 +88,7 @@ namespace Setnicka.UI
         public event EventHandler OnClick;
 
         #region Properties
-        public HorizontalAllignment HorizontalAllignment { get; set; }
+        public HorizontalAlignment HorizontalAlignment { get; set; }
 
         public Vector2D RenderPosition { get; set; }
 
@@ -57,18 +99,20 @@ namespace Setnicka.UI
 
         public ConsoleColor HighlightedTextColor { get; }
         public ConsoleColor HighlightedBackgroundColor { get; }
+
+        public Action Action { get; }
         #endregion
 
         #region Methods
         public void Print()
         {
-            TextAlligner.RenderText(Text, HorizontalAllignment, TextColor, BackgroundColor, RenderPosition.Y, RenderPosition.X);
+            TextAligner.RenderText(Text, HorizontalAlignment, TextColor, BackgroundColor, RenderPosition.Y, RenderPosition.X);
         }
 
         public void PrintHighlighted(bool highlighted)
         {
             if (highlighted)
-                TextAlligner.RenderText(Text, HorizontalAllignment, HighlightedTextColor, HighlightedBackgroundColor, RenderPosition.Y, RenderPosition.X);
+                TextAligner.RenderText(Text, HorizontalAlignment, HighlightedTextColor, HighlightedBackgroundColor, RenderPosition.Y, RenderPosition.X);
             else
                 Print();
         }

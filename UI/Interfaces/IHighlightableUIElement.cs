@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Setnicka.UI
 {
     /// <summary>
-    /// Menu item that can be highlighted
+    /// UI elements that can be highlighted
     /// </summary>
     interface IHighlightableUIElement : IUIElement
     {

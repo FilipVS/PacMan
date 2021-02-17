@@ -41,19 +41,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuxiliaryClasses\ActionEventArgs.cs" />
+    <Compile Include="Interfaces\IActionable.cs" />
+    <Compile Include="Interfaces\IInputtableUIElement.cs" />
     <Compile Include="MenuManager.cs" />
-    <Compile Include="Settings\InputManager.cs" />
-    <Compile Include="Settings\KeyEventArgs.cs" />
-    <Compile Include="Settings\MenuKeyBindings.cs" />
-    <Compile Include="Settings\TextAlligner.cs" />
-    <Compile Include="Settings\Vector2D.cs" />
+    <Compile Include="AuxiliaryClasses\InputManager.cs" />
+    <Compile Include="AuxiliaryClasses\KeyEventArgs.cs" />
+    <Compile Include="AuxiliaryClasses\MenuKeyBindings.cs" />
+    <Compile Include="AuxiliaryClasses\TextAligner.cs" />
+    <Compile Include="AuxiliaryClasses\Vector2D.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="Dialogs\ConfirmationDialog.cs" />
-    <Compile Include="IClickableUIElement.cs" />
-    <Compile Include="IHighlightableUIElement.cs" />
-    <Compile Include="Lable.cs" />
+    <Compile Include="Interfaces\IClickableUIElement.cs" />
+    <Compile Include="Interfaces\IHighlightableUIElement.cs" />
+    <Compile Include="Label.cs" />
     <Compile Include="Menu.cs" />
-    <Compile Include="IUIElement.cs" />
+    <Compile Include="Interfaces\IUIElement.cs" />
+    <Compile Include="NumberField.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Dialogs\UserDialog.cs" />
     <Compile Include="Dialogs\TextInputDialog.cs" />

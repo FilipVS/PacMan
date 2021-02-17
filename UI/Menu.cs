@@ -14,11 +14,17 @@ namespace Setnicka.UI
     /// </summary>
     class Menu
     {
-        public const HorizontalAllignment DEFAULT_ALLIGNMENT = HorizontalAllignment.Center;
+        private const HorizontalAlignment DEFAULT_ALLIGNMENT = HorizontalAlignment.Center;
+
+        #region Events
+        internal event EventHandler<ActionEventArgs> PerformAction;
+
+        internal event EventHandler ExitMenu;
+        #endregion
 
         #region Properties
         // This is the main collection, storing all the elements
-        public List<IUIElement> MenuList { get; private set; } = new List<IUIElement>();
+        private List<IUIElement> MenuList { get; set; } = new List<IUIElement>();
 
         private bool ContainsHighlightableElement { get; set; } = false;
 
@@ -26,8 +32,10 @@ namespace Setnicka.UI
         #endregion
 
         #region Methods
-        public void PrintMenu()
+        internal void PrintMenu()
         {
+            Console.Clear();
+
             CurrentlyHighlighted = -1;
 
             for(int i = 0; i < MenuList.Count; i++)
@@ -47,8 +55,8 @@ namespace Setnicka.UI
         public void AddUIElement(IUIElement element)
         {
             // Elements in menus cannot have custom allignment
-            if (element.HorizontalAllignment == HorizontalAllignment.Custom)
-                element.HorizontalAllignment = DEFAULT_ALLIGNMENT;
+            if (element.HorizontalAlignment == HorizontalAlignment.Custom)
+                element.HorizontalAlignment = DEFAULT_ALLIGNMENT;
 
             // The new element is set to be rendered at the end of the current menu
             element.RenderPosition = new Vector2D(-1, MenuList.Count);
@@ -59,7 +67,31 @@ namespace Setnicka.UI
             MenuList.Add(element);
         }
 
-        public void KeyInteraction(object sender, KeyEventArgs keyEventArgs)
+        public void AddUIElementRange(IEnumerable<IUIElement> elementRange)
+        {
+            foreach (IUIElement element in elementRange)
+                AddUIElement(element);
+        }
+
+        /// <summary>
+        /// Used for exiting the menu, using an elemt like button
+        /// </summary>
+        public void DoExitMenu(object sender, EventArgs eventArgs)
+        {
+            ExitMenu(sender, eventArgs);
+        }
+
+        /// <summary>
+        /// Used for moving to submenu, using an elemt like button
+        /// </summary>
+        public void DoPerformAction(object sender, EventArgs eventArgs)
+        {
+            if (sender is IActionable actionable)
+                if (actionable.Action != null)
+                    PerformAction(sender, new ActionEventArgs(actionable.Action));
+        }
+
+        internal void KeyInteraction(object sender, KeyEventArgs keyEventArgs)
         {
             if (keyEventArgs.keyPressed == MenuKeyBindings.CursorUp || keyEventArgs.keyPressed == MenuKeyBindings.CursorUpSecondary)
                 MoveHighlightUp();
@@ -67,6 +99,8 @@ namespace Setnicka.UI
                 MoveHighlightDown();
             else if (keyEventArgs.keyPressed == MenuKeyBindings.ClickKey)
                 ClickOnHighlightedElement(sender, keyEventArgs);
+
+            SendInputToHighlightedElement(sender, keyEventArgs);
         }
 
         private void MoveHighlightUp()
@@ -149,6 +183,15 @@ namespace Setnicka.UI
             {
                 if (MenuList[CurrentlyHighlighted] is IClickableUIElement clickable)
                     clickable.Clicked(sender, eventArgs);
+            }
+        }
+
+        private void SendInputToHighlightedElement(object sender, KeyEventArgs eventArgs)
+        {
+            if(CurrentlyHighlighted > -1 && CurrentlyHighlighted < MenuList.Count)
+            {
+                if (MenuList[CurrentlyHighlighted] is IInputtableUIElement inputtableUI)
+                    inputtableUI.HandleInput(sender, eventArgs, true);
             }
         }
         #endregion

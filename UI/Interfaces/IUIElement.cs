@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace Setnicka.UI
 {
     /// <summary>
-    /// A class has to implement this interface in order to be usable as a part of the menu
+    /// A class has to implement this interface in order to be usable as a part of UI
     /// </summary>
     interface IUIElement
     {
-        HorizontalAllignment HorizontalAllignment { get; set; }
+        HorizontalAlignment HorizontalAlignment { get; set; }
 
         // Is used when HorizontalAllignment is set to custom
         Vector2D RenderPosition { get; set; }
@@ -29,7 +29,7 @@ namespace Setnicka.UI
     /// <summary>
     /// Defines, where will be the UIElement rendered
     /// </summary>
-    public enum HorizontalAllignment
+    public enum HorizontalAlignment
     {
         Left,
         Right,

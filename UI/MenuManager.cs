@@ -14,15 +14,27 @@ namespace Setnicka.UI
         // Delay between main thread updates
         private const int MAIN_THREAD_UPDATE_FREQUENCY = 10;
 
-        public MenuManager(Menu menu)
+        #region Constructors
+        /// <summary>
+        /// Initializes new instance of MenuManager class
+        /// </summary>
+        /// <param name="menu">The Menu that the MenuManager should manage</param>
+        public MenuManager(Menu menu, IEnumerable<ConsoleKey> inputToHandle = null)
         {
             Menu = menu;
 
             // Initializing the inputManager and subscribing individual event handlers
             List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { MenuKeyBindings.CursorUp, MenuKeyBindings.CursorUpSecondary, MenuKeyBindings.CursorDown, MenuKeyBindings.CursorDownSecondary, MenuKeyBindings.ClickKey };
+            if(inputToHandle != null)
+                keysOfInterest.AddRange(inputToHandle);
             InputManager = new InputManager(keysOfInterest);
             InputManager.KeyPressed += Menu.KeyInteraction;
+
+            // Subscribe menu controlling events
+            menu.PerformAction += PerformAction;
+            menu.ExitMenu += ExitMenu;
         }
+        #endregion
 
         #region Properties
         private Menu Menu { get; set; }
@@ -32,15 +44,18 @@ namespace Setnicka.UI
         private InputManager InputManager { get; set; } 
 
         private Thread InputManagerThread { get; set; }
+
+        // An action taht the menu should perform
+        private Action ScheduledAction { get; set; }
         #endregion
 
         #region Methods
         public void Run()
         {
             // TODO: Finish
-            Menu.PrintMenu();
+            Print();
 
-            CurrentMenuState = MenuState.Running;
+            CurrentMenuState = MenuState.On;
             MenuState previousState = MenuState.Off;
 
             while (true)
@@ -53,15 +68,47 @@ namespace Setnicka.UI
 
                     switch (previousState)
                     {
-                        case MenuState.Running:
+                        case MenuState.On:
                             AbortThreads(false);
                             StartThreads(InputManager.CheckForInput, false);
                             break;
+                        case MenuState.PerformAction:
+                            AbortThreads(true);
+
+                            if (ScheduledAction != null)
+                                ScheduledAction();
+                            Print();
+
+                            CurrentMenuState = previousState = MenuState.On;
+
+                            StartThreads(InputManager.CheckForInput, true);
+                            break;
+                        case MenuState.Escaping:
+                            AbortThreads(true);
+                            return;
                         default:
                             break;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Used for moving into the next submenu when the event in Menu is fired
+        /// </summary>
+        private void PerformAction(object sender, ActionEventArgs eventArgs)
+        {
+            ScheduledAction = eventArgs.Action;
+
+            CurrentMenuState = MenuState.PerformAction;   
+        }
+
+        /// <summary>
+        /// Used for exiting the menu when the event in Menu is fired
+        /// </summary>
+        private void ExitMenu(object sender, EventArgs eventArgs)
+        {
+            CurrentMenuState = MenuState.Escaping;
         }
 
         /// <summary>
@@ -105,7 +152,8 @@ namespace Setnicka.UI
         private enum MenuState
         {
             Off,
-            Running,
+            On,
+            PerformAction,
             Escaping
         }
     }
