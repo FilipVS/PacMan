@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Setnicka.PacMan
+namespace Setnicka.AuxiliaryClasses
 {
     /// <summary>
     /// Auxiliary class for dealing with position of GameObjects (their X and Y coordinates)
     /// Basic operatios are also defined on Vector2Ds (addition, subtraction)
     /// </summary>
-    internal class Vector2D
+    public class Vector2D
     {
         // Made to work with array indexing and printing on the screen (so one move up on the screen means -1 in the int[].GetLength(1) direction)
         public static readonly Vector2D Up = new Vector2D(0, -1);
@@ -127,7 +129,7 @@ namespace Setnicka.PacMan
 
         public override bool Equals(object obj)
         {
-            if(obj is Vector2D vector)
+            if (obj is Vector2D vector)
             {
                 if (vector.X == this.X && vector.Y == this.Y)
                     return true;
@@ -187,5 +189,17 @@ namespace Setnicka.PacMan
             return new Vector2D((b.X * a), (b.Y * a));
         }
         #endregion
+    }
+
+
+    /// <summary>
+    /// MovableObjects use this enum to specify which way the intend to move
+    /// </summary>
+    public enum Direction
+    {
+        Up,
+        Down,
+        Left,
+        Right
     }
 }

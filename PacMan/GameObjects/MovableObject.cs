@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.PacMan
 {
@@ -51,17 +52,6 @@ namespace Setnicka.PacMan
         #region Methods
         public abstract MoveResult Move();
         #endregion
-    }
-
-    /// <summary>
-    /// MovableObjects use this enum to specify which way the intend to move
-    /// </summary>
-    public enum Direction
-    {
-        Up,
-        Down,
-        Left,
-        Right
     }
 
     /// <summary>

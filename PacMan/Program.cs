@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using Setnicka.PacMan.LevelEditor;
+using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.PacMan
 {

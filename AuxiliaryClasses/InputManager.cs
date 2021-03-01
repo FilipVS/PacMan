@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Setnicka.PacMan
+namespace Setnicka.AuxiliaryClasses
 {
     /// <summary>
     /// Triggers and event when certain keys are pressed
     /// </summary>
-    internal class InputManager
+    public class InputManager
     {
         /// <param name="keysOfInterest">Keys that the input manager should react to</param>
         public InputManager(List<ConsoleKey> keysOfInterest)
         {
             // Remove duplicate keys
-            for(int i = 0; i < keysOfInterest.Count; i++)
+            for (int i = 0; i < keysOfInterest.Count; i++)
             {
-                for(int j = 0; j < keysOfInterest.Count; j++)
+                for (int j = 0; j < keysOfInterest.Count; j++)
                 {
                     if (i == j)
                         continue;
@@ -57,7 +59,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private bool KeyOfInterest(ConsoleKey key)
         {
-            foreach(ConsoleKey consoleKey in keysOfInterest)
+            foreach (ConsoleKey consoleKey in keysOfInterest)
             {
                 if (consoleKey == key)
                     return true;
