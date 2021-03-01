@@ -4,11 +4,9 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using Setnicka.PacMan.LevelEditor;
-<<<<<<< HEAD
 using Setnicka.UI;
-=======
 using Setnicka.AuxiliaryClasses;
->>>>>>> AuxiliaryClasses
+
 
 namespace Setnicka.PacMan
 {
@@ -16,12 +14,9 @@ namespace Setnicka.PacMan
     {
         static void Main(string[] args)
         {
-<<<<<<< HEAD
             TestRun.Run();
+            Console.Clear();
 
-            Console.WriteLine("Do you want to test level editor (press 'E') or play level (press any other key): ");
-            bool testLevelEditor = (Console.ReadKey(true).Key == ConsoleKey.E);
-=======
             Console.WriteLine("Do you want to play game (press 'g'), test level editor (press 'e') or test custom level ('press c'): ");
             ConsoleKeyInfo keyInfo = Console.ReadKey();
 
@@ -35,7 +30,6 @@ namespace Setnicka.PacMan
                 game1.Run();
             }
             #endregion
->>>>>>> AuxiliaryClasses
 
             #region Test Level Editor
             if (keyInfo.Key == ConsoleKey.E)

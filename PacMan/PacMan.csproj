@@ -79,6 +79,8 @@
       <Name>AuxiliaryClasses</Name>
     </ProjectReference>
   </ItemGroup>
-  <Content Include="Levels\CustomLevel.txt" />
+  <ItemGroup>
+    <Content Include="Levels\CustomLevel.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
