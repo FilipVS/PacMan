@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Setnicka.PacMan
+namespace Setnicka.AuxiliaryClasses
 {
     /// <summary>
     /// Event args that contain CosoleKey information
     /// </summary>
-    internal class KeyEventArgs : EventArgs
+    public class KeyEventArgs : EventArgs
     {
         public KeyEventArgs(ConsoleKey keyPressed)
         {

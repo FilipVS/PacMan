@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.PacMan
 {
@@ -78,13 +79,13 @@ namespace Setnicka.PacMan
             }
         }
 
-        protected Vector2D PlayerPositionThisTurn
+        public Vector2D PlayerPositionThisTurn
         {
             get
             {
                 return playerPositionThisTurn;
             }
-            set
+            protected set
             {
                 playerPositionThisTurn = value;
             }

@@ -5,7 +5,11 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacMan", "PacMan\PacMan.csproj", "{6460E881-30CE-4C00-B5B8-1F034B14FD2A}"
 EndProject
+<<<<<<< HEAD
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{E2DD5AE9-397E-498E-9B6E-F811C4503D92}"
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuxiliaryClasses", "AuxiliaryClasses\AuxiliaryClasses.csproj", "{4D4EDCA0-5B77-4321-BFF5-A667609ED55C}"
+>>>>>>> AuxiliaryClasses
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +21,17 @@ Global
 		{6460E881-30CE-4C00-B5B8-1F034B14FD2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6460E881-30CE-4C00-B5B8-1F034B14FD2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6460E881-30CE-4C00-B5B8-1F034B14FD2A}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{E2DD5AE9-397E-498E-9B6E-F811C4503D92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E2DD5AE9-397E-498E-9B6E-F811C4503D92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2DD5AE9-397E-498E-9B6E-F811C4503D92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2DD5AE9-397E-498E-9B6E-F811C4503D92}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+		{4D4EDCA0-5B77-4321-BFF5-A667609ED55C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D4EDCA0-5B77-4321-BFF5-A667609ED55C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D4EDCA0-5B77-4321-BFF5-A667609ED55C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D4EDCA0-5B77-4321-BFF5-A667609ED55C}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> AuxiliaryClasses
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
