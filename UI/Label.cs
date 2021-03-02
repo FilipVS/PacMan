@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.UI
 {
     /// <summary>
     /// Used for displaying text to the user 
     /// </summary>
-    class Label : IUIElement
+    public class Label : IUIElement
     {
         #region Constructors
         /// <summary>

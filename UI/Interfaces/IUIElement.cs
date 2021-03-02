@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.UI
 {
     /// <summary>
     /// A class has to implement this interface in order to be usable as a part of UI
     /// </summary>
-    interface IUIElement
+    public interface IUIElement
     {
         HorizontalAlignment HorizontalAlignment { get; set; }
 

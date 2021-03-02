@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Setnicka.UI
+namespace Setnicka.AuxiliaryClasses
 {
     /// <summary>
     /// Event args that contain the extra information about an Action
     /// </summary>
-    class ActionEventArgs : EventArgs
+    public class ActionEventArgs : EventArgs
     {
         public ActionEventArgs(Action action)
         {

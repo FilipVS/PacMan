@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Setnicka.AuxiliaryClasses;
+
 
 namespace Setnicka.UI
 {
@@ -12,7 +14,7 @@ namespace Setnicka.UI
     /// Items can be added, they can't be removed or shifted
     /// When drawn, each item will be printed on a separate line starting at the top of the screen   
     /// </summary>
-    class Menu
+    public class Menu
     {
         private const HorizontalAlignment DEFAULT_ALLIGNMENT = HorizontalAlignment.Center;
 
@@ -111,7 +113,10 @@ namespace Setnicka.UI
                 if(MenuList[i] is IHighlightableUIElement highlightable)
                 {
                     if (MenuList[CurrentlyHighlighted] is IHighlightableUIElement currentlyHighlighted)
+                    {
+                        currentlyHighlighted.OnElementUnhighlighted();
                         HighlightElement(highlightable, currentlyHighlighted);
+                    }
                     else
                         HighlightElement(highlightable);
                     CurrentlyHighlighted = i;
@@ -126,7 +131,10 @@ namespace Setnicka.UI
                 if (MenuList[i] is IHighlightableUIElement highlightable)
                 {
                     if (MenuList[CurrentlyHighlighted] is IHighlightableUIElement currentlyHighlighted)
+                    {
+                        currentlyHighlighted.OnElementUnhighlighted();
                         HighlightElement(highlightable, currentlyHighlighted);
+                    }
                     else
                         HighlightElement(highlightable);
                     CurrentlyHighlighted = i;
@@ -144,7 +152,10 @@ namespace Setnicka.UI
                 if(MenuList[i] is IHighlightableUIElement highlightable)
                 {
                     if (MenuList[CurrentlyHighlighted] is IHighlightableUIElement currentlyHighlighted)
+                    {
+                        currentlyHighlighted.OnElementUnhighlighted();
                         HighlightElement(highlightable, currentlyHighlighted);
+                    }
                     else
                         HighlightElement(highlightable);
                     CurrentlyHighlighted = i;
@@ -159,7 +170,10 @@ namespace Setnicka.UI
                 if (MenuList[i] is IHighlightableUIElement highlightable)
                 {
                     if (MenuList[CurrentlyHighlighted] is IHighlightableUIElement currentlyHighlighted)
+                    {
+                        currentlyHighlighted.OnElementUnhighlighted();
                         HighlightElement(highlightable, currentlyHighlighted);
+                    }
                     else
                         HighlightElement(highlightable);
                     CurrentlyHighlighted = i;

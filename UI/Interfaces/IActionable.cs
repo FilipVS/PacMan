@@ -9,7 +9,7 @@ namespace Setnicka.UI
     /// <summary>
     /// Classes that implement this interface contain some Action that they want to execute in certain condition
     /// </summary>
-    interface IActionable
+    public interface IActionable
     {
         Action Action { get; }
     }

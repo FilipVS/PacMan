@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.UI
 {
     /// <summary>
     /// This class is used to manage menus - turn input into action...
     /// </summary>
-    class MenuManager
+    public class MenuManager
     {
         // Delay between main thread updates
         private const int MAIN_THREAD_UPDATE_FREQUENCY = 10;

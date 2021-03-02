@@ -14,11 +14,8 @@ namespace Setnicka.PacMan
     {
         static void Main(string[] args)
         {
-            TestRun.Run();
-            Console.Clear();
-
             Console.WriteLine("Do you want to play game (press 'g'), test level editor (press 'e') or test custom level ('press c'): ");
-            ConsoleKeyInfo keyInfo = Console.ReadKey();
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
             #region CustomLevelTest
             if(keyInfo.Key == ConsoleKey.C)
@@ -27,7 +24,14 @@ namespace Setnicka.PacMan
                 string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName.ToString();
                 GameObject[,] level1 = LevelReader.ReadLevel(projectDirectory + @"\\Levels\\CustomLevel.txt");
                 Game game1 = new Game(level1);
-                game1.Run();
+
+
+                Menu menu = new Menu();
+                Button btn = new Button("Press to run the game", HorizontalAlignment.Center, 0, ConsoleColor.Red, ConsoleColor.White, game1.Run);
+                btn.OnClick += menu.DoPerformAction;
+                menu.AddUIElement(btn);
+                MenuManager manager = new MenuManager(menu);
+                manager.Run();
             }
             #endregion
 

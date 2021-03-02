@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.UI
 {
     /// <summary>
     /// This class allows the user to input numbers
     /// </summary>
-    class NumberField : IInputtableUIElement
+    public class NumberField : IInputtableUIElement
     {
         public const int MAXIMUM_DIGITS = 5;
+
+        public event EventHandler ElementUnhighlighted;
 
         #region Constructors
         /// <summary>
@@ -38,6 +41,8 @@ namespace Setnicka.UI
                 throw new ArgumentException("numberOfDigits has to be between 0 and MAXIMUM_DIGITS!");
             NumberOfDigits = numberOfDigitsToEnter;
             NumberCharArray = new char[NumberOfDigits];
+            CursorAt = 1;
+            NumberCharArray[0] = '1';
 
         }
         /// <summary>
@@ -104,7 +109,7 @@ namespace Setnicka.UI
 
         // Properties that are used for handling the user input
         private int NumberOfDigits { get; }
-        private int CursorAt { get; set; } = 0;
+        private int CursorAt { get; set; }
         private char[] NumberCharArray { get; set; }
 
         // Returns the number in format for printing
@@ -126,13 +131,13 @@ namespace Setnicka.UI
             }
         }
 
-        // This property returns the number stored in the char array as int
+        // This property returns the number stored in the char array as int (if it fails, it returns -1)
         public int Number
         {
             get
             {
                 int number;
-                if (int.TryParse(new string(NumberCharArray), out number))
+                if (int.TryParse(NumberString, out number))
                     return number;
                 else
                     return -1;
@@ -224,6 +229,12 @@ namespace Setnicka.UI
                 TextAligner.RenderText(Text, NumberString, HorizontalAlignment.Center, TextColor, BackgroundColor, HighlightedTextColor, HighlightedBackgroundColor, RenderPosition.Y, RenderPosition.X);
             else
                 Print();
+        }
+
+        public void OnElementUnhighlighted()
+        {
+            if(ElementUnhighlighted != null)
+                ElementUnhighlighted(this, EventArgs.Empty);
         }
         #endregion
     }

@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.UI
 {
     /// <summary>
     /// User can trigger certain events with this
     /// </summary>
-    class Button : IClickableUIElement, IActionable
+    public class Button : IClickableUIElement, IActionable
     {
+        public event EventHandler ElementUnhighlighted;
+
         #region Constructors
         /// <summary>
         /// Initializes new instance of Button class with information about its line and unhighlighted colors set to current Console colors
@@ -123,6 +126,12 @@ namespace Setnicka.UI
                 return;
 
             OnClick(this, eventArgs);
+        }
+
+        public void OnElementUnhighlighted()
+        {
+            if(ElementUnhighlighted != null)
+                ElementUnhighlighted(this, EventArgs.Empty);
         }
         #endregion
     }

@@ -13,6 +13,12 @@ namespace Setnicka.UI
     {
         public static void Run()
         {
+            ConfirmationDialog dialog = new ConfirmationDialog(ConfirmationOptions.YesNoCancel, "Choose one of the options");
+            dialog.Run();
+            Console.Clear();
+            Console.WriteLine(dialog.DialogResult);
+            Console.ReadKey();
+
             List<ConsoleKey> numbers = new List<ConsoleKey>() { ConsoleKey.D0, ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.NumPad0, ConsoleKey.NumPad1, ConsoleKey.NumPad2, ConsoleKey.NumPad3, ConsoleKey.NumPad4, ConsoleKey.NumPad5, ConsoleKey.NumPad6, ConsoleKey.NumPad7, ConsoleKey.NumPad8, ConsoleKey.NumPad9 };
 
             Menu subsubMenu = new Menu();
