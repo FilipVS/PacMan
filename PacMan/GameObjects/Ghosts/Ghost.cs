@@ -314,7 +314,7 @@ namespace Setnicka.PacMan
                 TileStanding = empty;
 
                 // Redraw tile that the ghost previously stood on
-                Level[Position.X, Position.Y].Print(Game.OFFSET);
+                Level[Position.X, Position.Y].Print(GameManager.OFFSET);
 
                 Position = moveToTile;
                 Level[Position.X, Position.Y] = this;
@@ -325,7 +325,7 @@ namespace Setnicka.PacMan
             }
 
             // Redraw the ghost
-            Print(Game.OFFSET);
+            Print(GameManager.OFFSET);
 
             return MoveResult.None;
         }

@@ -14,6 +14,14 @@ namespace Setnicka.PacMan
     {
         static void Main(string[] args)
         {
+            AppManager appManager = new AppManager();
+            appManager.Run();
+
+            Console.Clear();
+            Console.WriteLine("I'm back at program!");
+            Console.ReadKey(true);
+
+
             Console.WriteLine("Do you want to play game (press 'g'), test level editor (press 'e') or test custom level ('press c'): ");
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
@@ -23,7 +31,7 @@ namespace Setnicka.PacMan
                 string workingDirectory = AppDomain.CurrentDomain.BaseDirectory;
                 string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName.ToString();
                 GameObject[,] level1 = LevelReader.ReadLevel(projectDirectory + @"\\Levels\\CustomLevel.txt");
-                Game game1 = new Game(level1);
+                GameManager game1 = new GameManager(level1);
 
 
                 Menu menu = new Menu();
@@ -38,7 +46,7 @@ namespace Setnicka.PacMan
             #region Test Level Editor
             if (keyInfo.Key == ConsoleKey.E)
             {
-                LevelCreator levelCreator = new LevelCreator(new Vector2D(20, 10));
+                LevelEditorManager levelCreator = new LevelEditorManager(new Vector2D(20, 10));
                 levelCreator.Run();
                 Console.ReadKey();
             }
@@ -78,7 +86,7 @@ namespace Setnicka.PacMan
                     }
                 }
 
-                Game game = new Game(level);
+                GameManager game = new GameManager(level);
                 game.Run();
             }
             #endregion

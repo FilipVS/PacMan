@@ -8,10 +8,12 @@ namespace Setnicka.PacMan.LevelEditor
     /// <summary>
     /// This class is used for creation of levels (everything connected to it - checking for input through InputManager, validating input)
     /// </summary>
-    internal class LevelCreator
+    internal class LevelEditorManager
     {
-        // TODO: Set proper maximum level size
-        public static readonly Vector2D MAXIMUM_LEVEL_SIZE = new Vector2D(50, 30);
+        // Minimal size of a level
+        public static readonly Vector2D MINIMUM_LEVEL_SIZE = new Vector2D(2, 2);
+        // Maximal size of a level
+        public static readonly Vector2D MAXIMUM_LEVEL_SIZE = new Vector2D(100, 25);
         // Delay between main thread updates
         private const int MAIN_THREAD_UPDATE_FREQUENCY = 20;
         // The offset of drawn level objects in relation to CursorPosition(0, 0)
@@ -20,7 +22,7 @@ namespace Setnicka.PacMan.LevelEditor
         private readonly Vector2D OFFSET_OBJECTS_FOR_CHOICE;
 
 
-        public LevelCreator(Vector2D levelSize)
+        public LevelEditorManager(Vector2D levelSize)
         {
             // Check for valid levelSize and initialize LevelArray
             if (levelSize.X < 1 || levelSize.Y < 1 || levelSize.X > MAXIMUM_LEVEL_SIZE.X || levelSize.Y > MAXIMUM_LEVEL_SIZE.Y)

@@ -43,12 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppManager.cs" />
     <Compile Include="Settings\GameKeyBinding.cs" />
     <Compile Include="GameObjects\Ghosts\Blinky.cs" />
     <Compile Include="GameObjects\Ghosts\Clyde.cs" />
     <Compile Include="Settings\Colors.cs" />
     <Compile Include="GameObjects\Empty.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="GameManager.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\Ghosts\Ghost.cs" />
     <Compile Include="GameObjects\Ghosts\Inky.cs" />
@@ -56,7 +57,7 @@
     <Compile Include="GameObjects\Ghosts\Pinky.cs" />
     <Compile Include="GameObjects\Player.cs" />
     <Compile Include="LevelEditor\LevelEditorColors.cs" />
-    <Compile Include="LevelEditor\LevelCreator.cs" />
+    <Compile Include="LevelEditor\LevelEditorManager.cs" />
     <Compile Include="LevelEditor\LevelEditorKeyBinding.cs" />
     <Compile Include="LevelEditor\LevelReader.cs" />
     <Compile Include="LevelEditor\LevelWriter.cs" />

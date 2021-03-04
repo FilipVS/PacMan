@@ -73,12 +73,15 @@ namespace Setnicka.AuxiliaryClasses
             while (true)
             {
                 do
-                {
-                    keyInfo = Console.ReadKey(true);
+                 {
+                    if (Console.KeyAvailable)
+                        keyInfo = Console.ReadKey(true);
+                    else
+                        continue;
 
                     if (KeyOfInterest(keyInfo.Key) && KeyPressed != null)
-                        KeyPressed(this, new KeyEventArgs(keyInfo.Key));
-                } while (Console.KeyAvailable);
+                         KeyPressed(this, new KeyEventArgs(keyInfo.Key));
+                 } while (Console.KeyAvailable);        
             }
         }
 

@@ -8,7 +8,7 @@ namespace Setnicka.PacMan
     /// <summary>
     /// Class that runs each individual game (playthrough of each level is an individual game)
     /// </summary>
-    class Game
+    class GameManager
     {
         // The offset of drawn objects in relation to CursorPosition(0, 0)
         public static readonly Vector2D OFFSET = new Vector2D(2, 1);
@@ -21,7 +21,7 @@ namespace Setnicka.PacMan
 
 
         /// <param name="level">Lever that is the player wants to play, cannot be null</param>
-        public Game(GameObject[,] level)
+        public GameManager(GameObject[,] level)
         {
             // level assignment
             if (level == null)
@@ -82,7 +82,7 @@ namespace Setnicka.PacMan
         #endregion
 
 
-        #region Methods
+        #region Methods for gameplay
         /// <summary>
         /// This method is running inside the GameRunningThread and is responsible for the gameplay
         /// </summary>
@@ -205,10 +205,11 @@ namespace Setnicka.PacMan
                             StartThreads(InputManager.CheckForInput, Update, false);
                             break;
                         case GameState.Collision:
-                            AbortThreads(false);
+                            AbortThreads(true); // TODO: Change to false
                             Console.SetCursorPosition(0, 0);
                             Console.Write("Collision!");
-                            break;
+                            // TODO: Finish
+                            return;
                         case GameState.ChasingGhosts:
                             AbortThreads(false);
                             StartThreads(InputManager.CheckForInput, UpdateChasingGhosts, false);
@@ -234,7 +235,7 @@ namespace Setnicka.PacMan
             Console.Clear();
 
             foreach (GameObject gameObject in Level)
-                gameObject.Print(Game.OFFSET);
+                gameObject.Print(GameManager.OFFSET);
 
             // TODO: Finish (user interface elements...)
         }
@@ -276,9 +277,13 @@ namespace Setnicka.PacMan
             CurrentGameState = GameState.Win;
         }
         #endregion
+
+        #region Methods for UI
+        
+        #endregion
     }
 
-    
+
     public enum GameState
     {
         Off,

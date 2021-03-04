@@ -57,7 +57,7 @@ namespace Setnicka.UI
             menu.AddUIElement(new Label("Buttons that actually work", HorizontalAlignment.Center, 0, ConsoleColor.Yellow, ConsoleColor.Black));
             Button buttonDo = new Button("Button Do", HorizontalAlignment.Center, 0, ConsoleColor.Red, ConsoleColor.Green);
             Button buttonUndo = new Button("Button Undo", HorizontalAlignment.Center, 0, ConsoleColor.Red, ConsoleColor.Green);
-            menu.AddUIElement(new NumberField("X size of level: ", 3, HorizontalAlignment.Center, 0, ConsoleColor.Red, ConsoleColor.Green));
+          //  menu.AddUIElement(new NumberField("X size of level: ", 3, HorizontalAlignment.Center, 0, ConsoleColor.Red, ConsoleColor.Green));
             Button buttonMoveToSubmenu = new Button("Button Move to submenu", HorizontalAlignment.Center, 0, ConsoleColor.Red, ConsoleColor.Green, subMenuManager.Run);
             Button buttonExit = new Button("Button Exit", HorizontalAlignment.Center, 0, ConsoleColor.Red, ConsoleColor.Green);
             buttonDo.OnClick += Do;

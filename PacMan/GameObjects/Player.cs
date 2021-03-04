@@ -102,10 +102,10 @@ namespace Setnicka.PacMan
 
                 // Move the player and redraw the tiles
                 Level[Position.X, Position.Y] = new Empty(Level, Position);
-                Level[Position.X, Position.Y].Print(Game.OFFSET);
+                Level[Position.X, Position.Y].Print(GameManager.OFFSET);
                 Position = moveToTile;
                 Level[Position.X, Position.Y] = this;
-                Level[Position.X, Position.Y].Print(Game.OFFSET);
+                Level[Position.X, Position.Y].Print(GameManager.OFFSET);
 
                 if (containsBoost)
                     return MoveResult.Boost;
