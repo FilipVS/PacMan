@@ -1,0 +1,161 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Setnicka.AuxiliaryClasses;
+
+namespace Setnicka.UI
+{
+    /// <summary>
+    /// This class is used to manage menus - turn input into action...
+    /// </summary>
+    public class MenuManager
+    {
+        // Delay between main thread updates
+        private const int MAIN_THREAD_UPDATE_FREQUENCY = 10;
+
+        #region Constructors
+        /// <summary>
+        /// Initializes new instance of MenuManager class
+        /// </summary>
+        /// <param name="menu">The Menu that the MenuManager should manage</param>
+        public MenuManager(Menu menu, IEnumerable<ConsoleKey> inputToHandle = null)
+        {
+            Menu = menu;
+
+            // Initializing the inputManager and subscribing individual event handlers
+            List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { MenuKeyBindings.CursorUp, MenuKeyBindings.CursorUpSecondary, MenuKeyBindings.CursorDown, MenuKeyBindings.CursorDownSecondary, MenuKeyBindings.ClickKey };
+            if(inputToHandle != null)
+                keysOfInterest.AddRange(inputToHandle);
+            InputManager = new InputManager(keysOfInterest);
+            InputManager.KeyPressed += Menu.KeyInteraction;
+
+            // Subscribe menu controlling events
+            menu.PerformAction += PerformAction;
+            menu.ExitMenu += ExitMenu;
+        }
+        #endregion
+
+        #region Properties
+        private Menu Menu { get; set; }
+
+        private MenuState CurrentMenuState { get; set; }
+
+        private InputManager InputManager { get; set; } 
+
+        private Thread InputManagerThread { get; set; }
+
+        // An action taht the menu should perform
+        private Action ScheduledAction { get; set; }
+        #endregion
+
+        #region Methods
+        public void Run()
+        {
+            // TODO: Finish
+            Print();
+
+            CurrentMenuState = MenuState.On;
+            MenuState previousState = MenuState.Off;
+
+            while (true)
+            {
+                if (previousState == CurrentMenuState)
+                    Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
+                else
+                {
+                    previousState = CurrentMenuState;
+
+                    switch (previousState)
+                    {
+                        case MenuState.On:
+                            AbortThreads(false);
+                            StartThreads(InputManager.CheckForInput, false);
+                            break;
+                        case MenuState.PerformAction:
+                            AbortThreads(true);
+
+                            if (ScheduledAction != null)
+                                ScheduledAction();
+                            Print();
+
+                            CurrentMenuState = previousState = MenuState.On;
+
+                            StartThreads(InputManager.CheckForInput, true);
+                            break;
+                        case MenuState.Escaping:
+                            AbortThreads(true);
+                            return;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Used for moving into the next submenu when the event in Menu is fired
+        /// </summary>
+        private void PerformAction(object sender, ActionEventArgs eventArgs)
+        {
+            ScheduledAction = eventArgs.Action;
+
+            CurrentMenuState = MenuState.PerformAction;   
+        }
+
+        /// <summary>
+        /// Used for exiting the menu when the event in Menu is fired
+        /// </summary>
+        private void ExitMenu(object sender, EventArgs eventArgs)
+        {
+            CurrentMenuState = MenuState.Escaping;
+        }
+
+        /// <summary>
+        /// Prints the menu
+        /// </summary>
+        private void Print()
+        {
+            Console.Clear();
+
+            Menu.PrintMenu();
+
+            // TODO: Finish (user interface elements...)
+        }
+
+        /// <summary>
+        /// Sets up the thread to run the input manager and starts it
+        /// </summary>
+        private void StartThreads(ThreadStart inputThreadStart, bool startNewInputManager = true)
+        {
+            if (InputManagerThread == null || startNewInputManager)
+            {
+                InputManagerThread = new Thread(inputThreadStart);
+                InputManagerThread.Start();
+            }
+        }
+
+        /// <summary>
+        /// Aborts the thread that runs the input manager
+        /// </summary>
+        private void AbortThreads(bool abortInputManager = true)
+        {
+            if (abortInputManager && InputManagerThread != null)
+            {
+                InputManagerThread.Abort();
+                InputManagerThread = null;
+            }
+        }
+        #endregion
+
+
+        private enum MenuState
+        {
+            Off,
+            On,
+            PerformAction,
+            Escaping
+        }
+    }
+}

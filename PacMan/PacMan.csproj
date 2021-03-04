@@ -68,13 +68,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Levels\CustomLevel.txt" />
+    <ProjectReference Include="..\UI\UI.csproj">
+      <Project>{e2dd5ae9-397e-498e-9b6e-f811c4503d92}</Project>
+      <Name>UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AuxiliaryClasses\AuxiliaryClasses.csproj">
       <Project>{4d4edca0-5b77-4321-bff5-a667609ed55c}</Project>
       <Name>AuxiliaryClasses</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Levels\CustomLevel.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

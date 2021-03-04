@@ -11,32 +11,60 @@ namespace Setnicka.AuxiliaryClasses
     /// </summary>
     public class InputManager
     {
-        /// <param name="keysOfInterest">Keys that the input manager should react to</param>
-        public InputManager(List<ConsoleKey> keysOfInterest)
+        #region Constructors
+        /// <summary>
+        /// Initializes enw instance of InputManager that will listen for all input
+        /// </summary>
+        public InputManager()
         {
-            // Remove duplicate keys
-            for (int i = 0; i < keysOfInterest.Count; i++)
+            ListenForAllInput = true;
+        }
+
+        /// <summary>
+        /// Initializes enw instance of InputManager that will listen for specified input
+        /// </summary>
+        /// <param name="keysOfInterest">Keys that the input manager should react to</param>
+        public InputManager(IEnumerable<ConsoleKey> keysOfInterest)
+        {
+            List<ConsoleKey> keysOfInterestList = new List<ConsoleKey>();
+            foreach (ConsoleKey key in keysOfInterest)
+                keysOfInterestList.Add(key);
+
+            if(keysOfInterestList.Count < 1)
             {
-                for (int j = 0; j < keysOfInterest.Count; j++)
+                ListenForAllInput = true;
+                return;
+            }
+
+            // Remove duplicate keys
+            for (int i = 0; i < keysOfInterestList.Count; i++)
+            {
+                for (int j = 0; j < keysOfInterestList.Count; j++)
                 {
                     if (i == j)
                         continue;
 
-                    if (keysOfInterest[i] == keysOfInterest[j])
-                        keysOfInterest.RemoveAt(j);
+                    if (keysOfInterestList[i] == keysOfInterestList[j])
+                        keysOfInterestList.RemoveAt(j);
                 }
             }
 
-            this.keysOfInterest = keysOfInterest;
+            this.KeysOfInterest = keysOfInterestList;
+            ListenForAllInput = false;
         }
-
-        public readonly List<ConsoleKey> keysOfInterest;
+        #endregion
 
         public delegate void KeyPressedEventHandler(object sender, KeyEventArgs eventArgs);
         /// <summary>
         /// Event that is triggered when a key of interest is pressed
         /// </summary>
         public event KeyPressedEventHandler KeyPressed;
+
+        #region Properties
+        private List<ConsoleKey> KeysOfInterest { get; }
+
+        private bool ListenForAllInput { get; }
+        #endregion
 
         public void CheckForInput()
         {
@@ -48,7 +76,7 @@ namespace Setnicka.AuxiliaryClasses
                 {
                     keyInfo = Console.ReadKey(true);
 
-                    if (KeyOfInterest(keyInfo.Key))
+                    if (KeyOfInterest(keyInfo.Key) && KeyPressed != null)
                         KeyPressed(this, new KeyEventArgs(keyInfo.Key));
                 } while (Console.KeyAvailable);
             }
@@ -59,7 +87,10 @@ namespace Setnicka.AuxiliaryClasses
         /// </summary>
         private bool KeyOfInterest(ConsoleKey key)
         {
-            foreach (ConsoleKey consoleKey in keysOfInterest)
+            if (ListenForAllInput)
+                return true;
+
+            foreach (ConsoleKey consoleKey in KeysOfInterest)
             {
                 if (consoleKey == key)
                     return true;

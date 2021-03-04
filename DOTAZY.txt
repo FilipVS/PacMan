@@ -1,0 +1,6 @@
+Git branch - potřebuju upravit něco a pak to mergnout všude - nový větev a tu mergnout všude?
+Mám ve finální hře nějak zobrazovat ovládání (šipky, WSAD) nebo to stačí napsat do readme?
+Díval jste se na kód? Založil jsem to na threadech
+Množství komentářů
+
+Díval jste se na můj pull request? Potřebuji ho mergnout
