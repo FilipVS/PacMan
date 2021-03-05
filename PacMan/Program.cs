@@ -21,7 +21,8 @@ namespace Setnicka.PacMan
             Console.WriteLine("I'm back at program!");
             Console.ReadKey(true);
 
-
+            // Outdated
+            /*
             Console.WriteLine("Do you want to play game (press 'g'), test level editor (press 'e') or test custom level ('press c'): ");
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
@@ -92,6 +93,7 @@ namespace Setnicka.PacMan
             #endregion
 
             Console.ReadKey();
+            */
         }
     }
 }

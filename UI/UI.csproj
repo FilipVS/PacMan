@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\MessageDialog.cs" />
     <Compile Include="Interfaces\IActionable.cs" />
     <Compile Include="Interfaces\IInputtableUIElement.cs" />
     <Compile Include="MenuManager.cs" />

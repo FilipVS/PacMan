@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using Setnicka.AuxiliaryClasses;
+using Setnicka.UI;
+using System.IO;
 
 namespace Setnicka.PacMan.LevelEditor
 {
@@ -10,6 +12,9 @@ namespace Setnicka.PacMan.LevelEditor
     /// </summary>
     internal class LevelEditorManager
     {
+        #region Constants
+        // General constants
+
         // Minimal size of a level
         public static readonly Vector2D MINIMUM_LEVEL_SIZE = new Vector2D(2, 2);
         // Maximal size of a level
@@ -20,6 +25,25 @@ namespace Setnicka.PacMan.LevelEditor
         private static readonly Vector2D OFFSET = new Vector2D(2, 2);
         // The offset of objects for choice
         private readonly Vector2D OFFSET_OBJECTS_FOR_CHOICE;
+
+
+        // Menu constants
+
+        private const ConsoleColor UNHIGHLIGHTED_FOREGROUND_COLOR = ConsoleColor.White;
+        private const ConsoleColor UNHIGHLIGHTED_BACKGROUND_COLOR = ConsoleColor.Black;
+
+        private const ConsoleColor HIGHLIGHTED_FOREGROUND_COLOR = ConsoleColor.Black;
+        private const ConsoleColor HIGHLIGHTED_BACKGROUND_COLOR = ConsoleColor.Red;
+
+        private const ConsoleColor MAIN_LABEL_FOREGROUND_COLOR = ConsoleColor.Black;
+        private const ConsoleColor MAIN_LABEL_BACKGROUND_COLOR = ConsoleColor.Yellow;
+
+        private const string EMPTY_LABEL_TEXT = "";
+
+        private const string MAIN_LABEL_TEXT = "Level Editor Menu";
+        private const string SAVE_BUTTON_TEXT = "Save level";
+        private const string ESCAPE_BUTTON_TEXT = "Escape";
+        #endregion
 
 
         public LevelEditorManager(Vector2D levelSize)
@@ -38,13 +62,13 @@ namespace Setnicka.PacMan.LevelEditor
             }
 
             // Initialize InputManager
-            List<ConsoleKey> keysOfInteresst = new List<ConsoleKey>() { LevelEditorKeyBinding.LevelPlaneDown, LevelEditorKeyBinding.LevelPlaneUp, LevelEditorKeyBinding.LevelPlaneRight, LevelEditorKeyBinding.LevelPlaneLeft, LevelEditorKeyBinding.ObjectOfChoiceUp, LevelEditorKeyBinding.ObjectOfChoiceDown, LevelEditorKeyBinding.PlaceObject, LevelEditorKeyBinding.DeleteObject };
+            List<ConsoleKey> keysOfInteresst = new List<ConsoleKey>() { LevelEditorKeyBinding.LevelPlaneDown, LevelEditorKeyBinding.LevelPlaneUp, LevelEditorKeyBinding.LevelPlaneRight, LevelEditorKeyBinding.LevelPlaneLeft, LevelEditorKeyBinding.ObjectOfChoiceUp, LevelEditorKeyBinding.ObjectOfChoiceDown, LevelEditorKeyBinding.PlaceObject, LevelEditorKeyBinding.DeleteObject, LevelEditorKeyBinding.GoToMenu };
             InputManager = new InputManager(keysOfInteresst);
             InputManager.KeyPressed += ChangeHighlighted;
             InputManager.KeyPressed += ChangeHighlightedObjectOfChoice;
             InputManager.KeyPressed += PlaceGameObject;
             InputManager.KeyPressed += DeleteGameObject;
-            // TODO: Subsribe event handlers
+            InputManager.KeyPressed += GoToMenu;
 
             InitializeObjectsForChoice();
 
@@ -66,10 +90,12 @@ namespace Setnicka.PacMan.LevelEditor
                 ObjectsOfChoice[0, 6] = new Inky(ObjectsOfChoice, new Vector2D(0, 6), new Vector2D(0, 3));
                 ObjectsOfChoice[0, 7] = new Clyde(ObjectsOfChoice, new Vector2D(0, 7), new Vector2D(0, 3));
             }
+
+            InitializeMenuAndManager();
         }
 
 
-        #region Automatic properties
+        #region Properties
         InputManager InputManager { get; set; }
 
         Thread InputManagerThread { get; set; }
@@ -84,6 +110,9 @@ namespace Setnicka.PacMan.LevelEditor
 
         // Player chooses which GameObject he wants to place with these
         GameObject[,] ObjectsOfChoice;
+
+        Menu Menu;
+        MenuManager MenuManager;
         #endregion
 
         #region Methods
@@ -115,11 +144,22 @@ namespace Setnicka.PacMan.LevelEditor
                     switch (CurrentRunningState)
                     {
                         case RunningState.On:
+                            Print();
                             AbortThread();
                             StartThread(InputManager.CheckForInput);
                             break;
                         case RunningState.Finished:
                             AbortThread();
+                            break;
+                        case RunningState.Menu:
+                            AbortThread();
+
+                            MenuManager.Run();
+
+                            if (CurrentRunningState == RunningState.Finished)
+                                return;
+
+                            CurrentRunningState = RunningState.On;
                             break;
                         default:
                             break;
@@ -158,7 +198,7 @@ namespace Setnicka.PacMan.LevelEditor
 
             PrintBorder();
 
-            // TODO: Finish (user interface elements...)
+            InitialHighlight();
         }
 
         /// <summary>
@@ -202,6 +242,19 @@ namespace Setnicka.PacMan.LevelEditor
 
                 Console.CursorVisible = false;
             }
+        }
+
+        /// <summary>
+        /// Hihglights the initial objects at the beginning
+        /// </summary>
+        private void InitialHighlight()
+        {
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { Colors.EmptyColor, Colors.WallColor }; // The original Pacman.Colors setting
+
+            SetColorsHighlight(true, unhighlightedColors);
+            LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
+            ObjectsOfChoice[HighlightedObjectOfChoice.X, HighlightedObjectOfChoice.Y].Print(OFFSET_OBJECTS_FOR_CHOICE);
+            SetColorsHighlight(false, unhighlightedColors);
         }
 
         /// <summary>
@@ -299,9 +352,6 @@ namespace Setnicka.PacMan.LevelEditor
                     // Ghosts need to know about the new Player staring position
                     UpdateGhostInformation();
 
-                    // TODO: This is only for testing, remove afterwards
-                    LevelWriter.SaveLevel(LevelArray, @"C:\Users\Filip\Desktop\PacMan\TestLevel.txt");
-
                     break;
                 case Type wallType when wallType == typeof(Wall):
                     LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = new Wall(LevelArray, startingPosition);
@@ -361,21 +411,6 @@ namespace Setnicka.PacMan.LevelEditor
                         throw new ArgumentException("The type isn't a valid ghost!");
                 }
             }
-
-            // TODO: Delete if proves useless
-            /*// When player gets moved, the ghosts need to get his new starting position
-            void SetNewPlayerPositionToGhosts(Vector2D newPlayerPosition)
-            {
-                for(int x = 0; x < LevelArray.GetLength(0); x++)
-                {
-                    for(int y = 0; y < LevelArray.GetLength(1); y++)
-                    {
-                        if (LevelArray[x, y] is Ghost)
-                            LevelArray[x, y] = CreateNewGhost(LevelArray[x, y].GetType(), new Vector2D(x, y), GetPlayerPosition());
-                    }
-                }
-            }
-            */
 
             // Updates the ghost's setting of PlayerStartingPosition
             void UpdateGhostInformation()
@@ -456,10 +491,89 @@ namespace Setnicka.PacMan.LevelEditor
         }
         #endregion
 
+        #region UI Methods
+        private void InitializeMenuAndManager()
+        {
+            Menu = new Menu();
+
+            Label emptyLabel1 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Label mainLabel = new Label(MAIN_LABEL_TEXT, HorizontalAlignment.Center, 1, MAIN_LABEL_FOREGROUND_COLOR, MAIN_LABEL_BACKGROUND_COLOR);
+
+            Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Button saveButton = new Button(SAVE_BUTTON_TEXT, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            saveButton.OnClick += SaveLevel;
+            saveButton.OnClick += Menu.DoExitMenu;
+
+            Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 4, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Button escapeButton = new Button(ESCAPE_BUTTON_TEXT, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            escapeButton.OnClick += EscapeMenu;
+            escapeButton.OnClick += Menu.DoExitMenu;
+
+            Menu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, saveButton, emptyLabel3, escapeButton });
+            MenuManager = new MenuManager(Menu);
+        }
+
+        private void GoToMenu(object sender, KeyEventArgs args)
+        {
+            if (args.keyPressed != LevelEditorKeyBinding.GoToMenu)
+                return;
+
+            CurrentRunningState = RunningState.Menu;
+        }
+
+        private void SaveLevel(object sender, EventArgs args)
+        {
+            TextInputDialog dialog = new TextInputDialog("Please enter path to save your level", "Tha path should contain the name of the file as well, example: 'C:\\level.txt'");
+
+            dialog.Run();
+
+            string path = dialog.DialogStringResult;
+
+            // Try to save find/create the file
+            try
+            {
+                if (!File.Exists(path))
+                    File.Create(path).Dispose();
+            }
+            catch (UnauthorizedAccessException) { }
+            catch (ArgumentNullException) { }
+            catch (ArgumentException) { }
+            catch (PathTooLongException) { }
+            catch (DirectoryNotFoundException) { }
+            catch (NotSupportedException) { }
+            catch (IOException) { }
+
+            // If the file was not created, signal error to the user
+            if (!File.Exists(path))
+            {
+                MessageDialog messageDialog = new MessageDialog("The program was not capable of finding/creating that file");
+                messageDialog.Run();
+                return;
+            }
+
+            // If the error did not occur, save the level
+            LevelWriter.SaveLevel(LevelArray, path);
+        }
+
+        private void EscapeMenu(object sender, EventArgs args)
+        {
+            ConfirmationDialog dialog = new ConfirmationDialog(ConfirmationOptions.YesNo, "Do you really want to escape (did you save the level/want it to be discarded)?");
+
+            dialog.Run();
+
+            if(dialog.DialogResult == DialogResult.Yes)
+                CurrentRunningState = RunningState.Finished;
+        }
+        #endregion
+
         private enum RunningState
         {
             Off,
             On,
+            Menu,
             Finished
         }
     }

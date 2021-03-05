@@ -22,5 +22,7 @@ namespace Setnicka.PacMan.LevelEditor
         public const ConsoleKey PlaceObject = ConsoleKey.Enter;
 
         public const ConsoleKey DeleteObject = ConsoleKey.Delete;
+
+        public const ConsoleKey GoToMenu = ConsoleKey.Escape;
     }
 }

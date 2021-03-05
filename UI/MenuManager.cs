@@ -40,7 +40,7 @@ namespace Setnicka.UI
         #region Properties
         private Menu Menu { get; set; }
 
-        private MenuState CurrentMenuState { get; set; }
+        private RunningState CurrentMenuState { get; set; }
 
         private InputManager InputManager { get; set; } 
 
@@ -56,8 +56,8 @@ namespace Setnicka.UI
             // TODO: Finish
             Print();
 
-            CurrentMenuState = MenuState.On;
-            MenuState previousState = MenuState.Off;
+            CurrentMenuState = RunningState.On;
+            RunningState previousState = RunningState.Off;
 
             while (true)
             {
@@ -69,22 +69,22 @@ namespace Setnicka.UI
 
                     switch (previousState)
                     {
-                        case MenuState.On:
+                        case RunningState.On:
                             AbortThreads(false);
                             StartThreads(InputManager.CheckForInput, false);
                             break;
-                        case MenuState.PerformAction:
+                        case RunningState.PerformAction:
                             AbortThreads(true);
 
                             if (ScheduledAction != null)
                                 ScheduledAction();
                             Print();
 
-                            CurrentMenuState = previousState = MenuState.On;
+                            CurrentMenuState = previousState = RunningState.On;
 
                             StartThreads(InputManager.CheckForInput, true);
                             break;
-                        case MenuState.Escaping:
+                        case RunningState.Escaping:
                             AbortThreads(true);
                             return;
                         default:
@@ -101,7 +101,7 @@ namespace Setnicka.UI
         {
             ScheduledAction = eventArgs.Action;
 
-            CurrentMenuState = MenuState.PerformAction;   
+            CurrentMenuState = RunningState.PerformAction;   
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Setnicka.UI
         /// </summary>
         private void ExitMenu(object sender, EventArgs eventArgs)
         {
-            CurrentMenuState = MenuState.Escaping;
+            CurrentMenuState = RunningState.Escaping;
         }
 
         /// <summary>
@@ -120,8 +120,6 @@ namespace Setnicka.UI
             Console.Clear();
 
             Menu.PrintMenu();
-
-            // TODO: Finish (user interface elements...)
         }
 
         /// <summary>
@@ -150,7 +148,7 @@ namespace Setnicka.UI
         #endregion
 
 
-        private enum MenuState
+        private enum RunningState
         {
             Off,
             On,
