@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Setnicka.PacMan
 {
-    static class GameKeyBinding
+    internal static class GameKeyBinding
     {
         public const ConsoleKey MoveUp = ConsoleKey.W;
         public const ConsoleKey MoveUpSecondary = ConsoleKey.UpArrow;
@@ -21,5 +21,7 @@ namespace Setnicka.PacMan
         public const ConsoleKey MoveRightSecondary = ConsoleKey.RightArrow;
 
         public const ConsoleKey GoToMenu = ConsoleKey.Escape;
+
+        public const ConsoleKey Refresh = ConsoleKey.R;
     }
 }

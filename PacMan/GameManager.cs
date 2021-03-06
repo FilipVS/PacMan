@@ -121,7 +121,7 @@ namespace Setnicka.PacMan
         private void Update()
         {
             // Set proper color scheme
-            Colors.ChasingGhosts = false;
+            GameColors.ChasingGhosts = false;
 
             while (true)
             {
@@ -171,8 +171,8 @@ namespace Setnicka.PacMan
             int timeLeft = CHASING_GHOSTS_FOR;
 
             // Set proper color scheme
-            Colors.ChasingGhosts = true;
-            Colors.ChasingGhostsMainVersion = true;
+            GameColors.ChasingGhosts = true;
+            GameColors.ChasingGhostsMainVersion = true;
 
             // Ghosts move is skipped when eating a boost, so they are the first ones to move here
             MoveGhosts();
@@ -207,10 +207,10 @@ namespace Setnicka.PacMan
                 if(timeLeft < (CHASING_GHOSTS_FOR * CHASING_GHOSTS_BLINKING))
                 {
                     // If they are currently in theair main version, go alternate, else go main
-                    if (Colors.ChasingGhostsMainVersion)
-                        Colors.ChasingGhostsMainVersion = false;
+                    if (GameColors.ChasingGhostsMainVersion)
+                        GameColors.ChasingGhostsMainVersion = false;
                     else
-                        Colors.ChasingGhostsMainVersion = true;
+                        GameColors.ChasingGhostsMainVersion = true;
                 }
 
                 foreach (Ghost ghost in Ghosts)
@@ -329,8 +329,8 @@ namespace Setnicka.PacMan
 
                 Console.SetCursorPosition(x, y);
 
-                Console.ForegroundColor = Colors.LevelBorderColor;
-                Console.BackgroundColor = Colors.LevelBorderColor;
+                Console.ForegroundColor = GameColors.LevelBorderColor;
+                Console.BackgroundColor = GameColors.LevelBorderColor;
 
                 Console.Write(" ");
 

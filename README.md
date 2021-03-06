@@ -15,6 +15,7 @@ Ovládání
 		Pomocí WSAD lze ovládat kurzor na editované hrací ploše
 		Pomocí šipek nahoru a dolů lze vybírat mezi umísťovanými objekty
 		Pomocí klávesy escape lze vyvolat menu
+	Zobrazení Menu, Hry i LevelEditoru lze refreshnout (například po změnení velikosti okna konzole) pomocí klávesy R.
 		
 
 Pro optimální vykreslování je nejlepší mít nastaveny barvy v konzoli na černé pozadí a bílý text

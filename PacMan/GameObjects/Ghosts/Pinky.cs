@@ -42,8 +42,8 @@ namespace Setnicka.PacMan
 
         protected override void Draw()
         {
-            Console.ForegroundColor = Colors.PinkyColor;
-            Console.BackgroundColor = Colors.EmptyColor;
+            Console.ForegroundColor = GameColors.PinkyColor;
+            Console.BackgroundColor = GameColors.EmptyColor;
 
             Console.Write(APPEARANCE);
         }

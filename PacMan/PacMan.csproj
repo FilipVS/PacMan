@@ -75,7 +75,7 @@
     <Compile Include="Settings\GameKeyBinding.cs" />
     <Compile Include="GameObjects\Ghosts\Blinky.cs" />
     <Compile Include="GameObjects\Ghosts\Clyde.cs" />
-    <Compile Include="Settings\Colors.cs" />
+    <Compile Include="Settings\GameColors.cs" />
     <Compile Include="GameObjects\Empty.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="GameObjects\GameObject.cs" />

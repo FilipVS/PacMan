@@ -25,11 +25,12 @@ namespace Setnicka.UI
             Menu = menu;
 
             // Initializing the inputManager and subscribing individual event handlers
-            List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { MenuKeyBindings.CursorUp, MenuKeyBindings.CursorUpSecondary, MenuKeyBindings.CursorDown, MenuKeyBindings.CursorDownSecondary, MenuKeyBindings.ClickKey };
+            List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { MenuKeyBindings.CursorUp, MenuKeyBindings.CursorUpSecondary, MenuKeyBindings.CursorDown, MenuKeyBindings.CursorDownSecondary, MenuKeyBindings.ClickKey, MenuKeyBindings.RefreshKey };
             if(inputToHandle != null)
                 keysOfInterest.AddRange(inputToHandle);
             InputManager = new InputManager(keysOfInterest);
             InputManager.KeyPressed += Menu.KeyInteraction;
+            InputManager.KeyPressed += Refresh;
 
             // Subscribe menu controlling events
             menu.PerformAction += PerformAction;
@@ -110,6 +111,17 @@ namespace Setnicka.UI
         private void ExitMenu(object sender, EventArgs eventArgs)
         {
             CurrentMenuState = RunningState.Escaping;
+        }
+
+        /// <summary>
+        /// Used for refreshing (when the menu glitches...)
+        /// </summary>
+        private void Refresh(object sender, KeyEventArgs keyEventArgs)
+        {
+            if (keyEventArgs.keyPressed != MenuKeyBindings.RefreshKey)
+                return;
+
+            Print();
         }
 
         /// <summary>

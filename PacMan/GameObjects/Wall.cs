@@ -19,8 +19,8 @@ namespace Setnicka.PacMan
         #region Methods
         protected override void Draw()
         {
-            Console.ForegroundColor = Colors.WallColor;
-            Console.BackgroundColor = Colors.WallColor;
+            Console.ForegroundColor = GameColors.WallColor;
+            Console.BackgroundColor = GameColors.WallColor;
 
             Console.Write(APPEARANCE);
         }

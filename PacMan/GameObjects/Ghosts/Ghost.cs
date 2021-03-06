@@ -25,95 +25,18 @@ namespace Setnicka.PacMan
             PlayerPositionThisTurn = playerStartingPosition;
         }
 
-
-        #region Fields
-        private int[,] mazeMap;
-
-        private Vector2D playerPositionLastTurn;
-        private Vector2D playerPositionThisTurn;
-
-        // The Empty GameObject that the Ghost is currently standing on
-        private Empty tileStanding;
-
-        // Tile that the ghost wants to eventually reach
-        private Vector2D desiredTile;
-
-        private bool invertedMove = false;
-        #endregion
-
-
         #region Properties
-        public int[,] MazeMap
-        {
-            get
-            {
-                return mazeMap;
-            }
-            private set
-            {
-                mazeMap = value;
-            }
-        }
+        public int[,] MazeMap { get; private set; }
 
-        private Empty TileStanding
-        {
-            get
-            {
-                return tileStanding;
-            }
-            set
-            {
-                tileStanding = value;
-            }
-        }
+        private Empty TileStanding { get; set; }
 
-        protected Vector2D PlayerPositionLastTurn
-        {
-            get
-            {
-                return playerPositionLastTurn;
-            }
-            set
-            {
-                playerPositionLastTurn = value;
-            }
-        }
+        protected Vector2D PlayerPositionLastTurn { get; set; }
 
-        public Vector2D PlayerPositionThisTurn
-        {
-            get
-            {
-                return playerPositionThisTurn;
-            }
-            protected set
-            {
-                playerPositionThisTurn = value;
-            }
-        }
+        public Vector2D PlayerPositionThisTurn { get; protected set; }
 
-        protected Vector2D DesiredTile
-        {
-            get
-            {
-                return desiredTile;
-            }
-            set
-            {
-                desiredTile = value;
-            }
-        }
+        protected Vector2D DesiredTile { get; set; }
 
-        public bool InvertedMove
-        {
-            get
-            {
-                return invertedMove;
-            }
-            set
-            {
-                invertedMove = value;
-            }
-        }
+        public bool InvertedMove { get; set; }
         #endregion
 
 

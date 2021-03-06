@@ -5,9 +5,9 @@ using System.Text;
 namespace Setnicka.PacMan
 {
     /// <summary>
-    /// Static class containing all color settings
+    /// Static class containing all game color settings
     /// </summary>
-    public static class Colors
+    internal static class GameColors
     {
         // Return normal ghost colors or their chasing ghosts version
         public static bool ChasingGhosts { get; set; } = false;

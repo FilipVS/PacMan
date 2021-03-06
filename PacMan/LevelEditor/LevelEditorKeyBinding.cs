@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Setnicka.PacMan.LevelEditor
 {
-    static class LevelEditorKeyBinding
+    internal static class LevelEditorKeyBinding
     {
         // TODO: Finish (make into IEnumerable?)
 
@@ -24,5 +24,7 @@ namespace Setnicka.PacMan.LevelEditor
         public const ConsoleKey DeleteObject = ConsoleKey.Delete;
 
         public const ConsoleKey GoToMenu = ConsoleKey.Escape;
+
+        public const ConsoleKey Refresh = ConsoleKey.R;
     }
 }

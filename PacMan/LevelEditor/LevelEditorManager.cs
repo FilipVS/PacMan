@@ -38,6 +38,9 @@ namespace Setnicka.PacMan.LevelEditor
         private const ConsoleColor MAIN_LABEL_FOREGROUND_COLOR = ConsoleColor.Black;
         private const ConsoleColor MAIN_LABEL_BACKGROUND_COLOR = ConsoleColor.Yellow;
 
+        private const ConsoleColor MESSAGE_LABEL_FOREGROUND_COLOR = ConsoleColor.White;
+        private const ConsoleColor MESSAGE_LABEL_BACKGROUND_COLOT = ConsoleColor.Red;
+
         private const string EMPTY_LABEL_TEXT = "";
 
         private const string MAIN_LABEL_TEXT = "Level Editor Menu";
@@ -45,6 +48,7 @@ namespace Setnicka.PacMan.LevelEditor
         private const string ESCAPE_BUTTON_TEXT = "Escape";
         #endregion
 
+        #region Constructors
 
         public LevelEditorManager(Vector2D levelSize)
         {
@@ -53,27 +57,29 @@ namespace Setnicka.PacMan.LevelEditor
                 throw new ArgumentException("levelSize is not proper number!");
             LevelArray = new GameObject[levelSize.X, levelSize.Y];
             // Create new Empty GameObject on each tile of the LevelArray
-            for(int x = 0; x < LevelArray.GetLength(0); x++)
+            for (int x = 0; x < LevelArray.GetLength(0); x++)
             {
-                for(int y = 0; y < LevelArray.GetLength(1); y++)
+                for (int y = 0; y < LevelArray.GetLength(1); y++)
                 {
                     LevelArray[x, y] = new Empty(LevelArray, new Vector2D(x, y));
                 }
             }
 
             // Initialize InputManager
-            List<ConsoleKey> keysOfInteresst = new List<ConsoleKey>() { LevelEditorKeyBinding.LevelPlaneDown, LevelEditorKeyBinding.LevelPlaneUp, LevelEditorKeyBinding.LevelPlaneRight, LevelEditorKeyBinding.LevelPlaneLeft, LevelEditorKeyBinding.ObjectOfChoiceUp, LevelEditorKeyBinding.ObjectOfChoiceDown, LevelEditorKeyBinding.PlaceObject, LevelEditorKeyBinding.DeleteObject, LevelEditorKeyBinding.GoToMenu };
+            List<ConsoleKey> keysOfInteresst = new List<ConsoleKey>() { LevelEditorKeyBinding.LevelPlaneDown, LevelEditorKeyBinding.LevelPlaneUp, LevelEditorKeyBinding.LevelPlaneRight, LevelEditorKeyBinding.LevelPlaneLeft, LevelEditorKeyBinding.ObjectOfChoiceUp, LevelEditorKeyBinding.ObjectOfChoiceDown, LevelEditorKeyBinding.PlaceObject, LevelEditorKeyBinding.DeleteObject, LevelEditorKeyBinding.GoToMenu, LevelEditorKeyBinding.Refresh };
             InputManager = new InputManager(keysOfInteresst);
+            InputManager.KeyPressed += DeleteMessage;
             InputManager.KeyPressed += ChangeHighlighted;
             InputManager.KeyPressed += ChangeHighlightedObjectOfChoice;
             InputManager.KeyPressed += PlaceGameObject;
             InputManager.KeyPressed += DeleteGameObject;
             InputManager.KeyPressed += GoToMenu;
+            InputManager.KeyPressed += Refresh;
 
             InitializeObjectsForChoice();
 
             // Initiallizen offset of objects for choice - it needs to be next to the edited level
-            OFFSET_OBJECTS_FOR_CHOICE = Vector2D.Right * levelSize.X + OFFSET + 2*Vector2D.Right;
+            OFFSET_OBJECTS_FOR_CHOICE = Vector2D.Right * levelSize.X + OFFSET + 2 * Vector2D.Right;
 
             // Player always has to be present on the level
             LevelArray[0, 0] = new Player(LevelArray, new Vector2D(0, 0));
@@ -92,8 +98,14 @@ namespace Setnicka.PacMan.LevelEditor
             }
 
             InitializeMenuAndManager();
-        }
 
+            InitializeMessageLabel();
+        }
+        #endregion
+
+        #region Fields
+        string message = EMPTY_LABEL_TEXT;
+        #endregion
 
         #region Properties
         InputManager InputManager { get; set; }
@@ -113,6 +125,32 @@ namespace Setnicka.PacMan.LevelEditor
 
         Menu Menu;
         MenuManager MenuManager;
+
+        // For dispalying messages to the user
+        string Message
+        {
+            get
+            {
+                return message;
+            }
+            set
+            {
+                string newMessage = value;
+
+                if (value == null)
+                    newMessage = "";
+
+                // Delete previous message
+                MessageLabel.Delete();
+                
+                // Print new one
+                MessageLabel.Text = newMessage;
+                MessageLabel.Print();
+
+                message = newMessage;
+            }
+        }
+        Label MessageLabel { get; set; }
         #endregion
 
         #region Methods
@@ -121,9 +159,6 @@ namespace Setnicka.PacMan.LevelEditor
         /// </summary>
         public void Run()
         {
-            // Print all the elements
-            Print();
-
             // Highlight first position
             ChangeHighlighted(this, new KeyEventArgs(LevelEditorKeyBinding.LevelPlaneUp));
 
@@ -249,7 +284,7 @@ namespace Setnicka.PacMan.LevelEditor
         /// </summary>
         private void InitialHighlight()
         {
-            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { Colors.EmptyColor, Colors.WallColor }; // The original Pacman.Colors setting
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { GameColors.EmptyColor, GameColors.WallColor }; // The original Pacman.Colors setting
 
             SetColorsHighlight(true, unhighlightedColors);
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
@@ -292,7 +327,7 @@ namespace Setnicka.PacMan.LevelEditor
             // Reset previously highlighted position
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
             // Highlight new position
-            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { Colors.EmptyColor, Colors.WallColor }; // The original Pacman.Colors setting
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { GameColors.EmptyColor, GameColors.WallColor }; // The original Pacman.Colors setting
             HighlightedPosition += highlightChange;
             SetColorsHighlight(true, unhighlightedColors);
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
@@ -322,7 +357,7 @@ namespace Setnicka.PacMan.LevelEditor
                     HighlightedObjectOfChoice += Vector2D.Down;
             }
 
-            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { Colors.EmptyColor, Colors.WallColor };
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { GameColors.EmptyColor, GameColors.WallColor };
             SetColorsHighlight(true, unhighlightedColors);
             ObjectsOfChoice[HighlightedObjectOfChoice.X, HighlightedObjectOfChoice.Y].Print(OFFSET_OBJECTS_FOR_CHOICE);
             SetColorsHighlight(false, unhighlightedColors);
@@ -339,7 +374,10 @@ namespace Setnicka.PacMan.LevelEditor
 
             // You can't overwrite a player (player has to be present all the time)
             if (LevelArray[HighlightedPosition.X, HighlightedPosition.Y] is Player)
-                return; // TODO: Add message - can't overwrite a player, playe him elsewhere
+            {
+                Message = "You cannot overwrite the player, try to move the player first.";
+                return;
+            }
 
             Vector2D startingPosition = HighlightedPosition.Copy();
 
@@ -373,7 +411,7 @@ namespace Setnicka.PacMan.LevelEditor
             }
 
             // Highlight the newly placed tile
-            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { Colors.EmptyColor, Colors.WallColor };
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { GameColors.EmptyColor, GameColors.WallColor };
             SetColorsHighlight(true, unhighlightedColors);
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
             SetColorsHighlight(false, unhighlightedColors);
@@ -454,7 +492,7 @@ namespace Setnicka.PacMan.LevelEditor
             // Player cannot be deleted from the level
             if (LevelArray[HighlightedPosition.X, HighlightedPosition.Y] is Player)
             {
-                // TODO: Add message - player cannot be deleted, move him away
+                Message = "Player cannot be deleted, you can only move him.";
                 return;
             }
 
@@ -462,10 +500,21 @@ namespace Setnicka.PacMan.LevelEditor
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = new Empty(LevelArray, new Vector2D(HighlightedPosition.X, HighlightedPosition.Y));
 
             // Print the changes
-            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { Colors.EmptyColor, Colors.WallColor };
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { GameColors.EmptyColor, GameColors.WallColor };
             SetColorsHighlight(true, unhighlightedColors);
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
             SetColorsHighlight(false, unhighlightedColors);
+        }
+
+        /// <summary>
+        /// Allows the user to refresh the screen
+        /// </summary>
+        private void Refresh(object sender, KeyEventArgs keyEventArgs)
+        {
+            if (keyEventArgs.keyPressed != LevelEditorKeyBinding.Refresh)
+                return;
+
+            Print();
         }
 
         /// <summary>
@@ -480,13 +529,13 @@ namespace Setnicka.PacMan.LevelEditor
 
             if (setHighlighted)
             {
-                Colors.EmptyColor = LevelEditorColors.HighlightedEmptyColor;
-                Colors.WallColor = LevelEditorColors.HighlightedWallColor;
+                GameColors.EmptyColor = LevelEditorColors.HighlightedEmptyColor;
+                GameColors.WallColor = LevelEditorColors.HighlightedWallColor;
             }
             else
             {
-                Colors.EmptyColor = unhighlightedColors[0];
-                Colors.WallColor = unhighlightedColors[1];
+                GameColors.EmptyColor = unhighlightedColors[0];
+                GameColors.WallColor = unhighlightedColors[1];
             }
         }
         #endregion
@@ -514,6 +563,16 @@ namespace Setnicka.PacMan.LevelEditor
 
             Menu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, saveButton, emptyLabel3, escapeButton });
             MenuManager = new MenuManager(Menu);
+        }
+
+        private void InitializeMessageLabel()
+        {
+            Vector2D messageLabelPosition = (LevelArray[0, LevelArray.GetLength(1) - 1].Position + OFFSET) + Vector2D.Left + Vector2D.Down + Vector2D.Down;
+
+            if (messageLabelPosition.Y <= (ObjectsOfChoice[0, (ObjectsOfChoice.GetLength(1) - 1)].Position + OFFSET).Y)
+                messageLabelPosition.Y =(ObjectsOfChoice[0, (ObjectsOfChoice.GetLength(1) - 1)].Position + OFFSET).Y + 2;
+
+            MessageLabel = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Custom, messageLabelPosition, MESSAGE_LABEL_FOREGROUND_COLOR, MESSAGE_LABEL_BACKGROUND_COLOT);
         }
 
         private void GoToMenu(object sender, KeyEventArgs args)
@@ -566,6 +625,15 @@ namespace Setnicka.PacMan.LevelEditor
 
             if(dialog.DialogResult == DialogResult.Yes)
                 CurrentRunningState = RunningState.Finished;
+        }
+
+
+        /// <summary>
+        /// The message gets deleted every time, the user presses some button (that the input handler is listening to)
+        /// </summary>
+        private void DeleteMessage(object sender, KeyEventArgs keyEventArgs)
+        {
+            Message = "";
         }
         #endregion
 
