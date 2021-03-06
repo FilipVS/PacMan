@@ -95,6 +95,12 @@ namespace Setnicka.PacMan
         private Thread InputManagerThread { get; set; }
         private Thread GameRunningThread { get; set; }
 
+        // Used for controlling the state of game thread
+        private bool GameThreadRunning { get; set; } = false;
+
+        // Used for aborting the game thread from the inside
+        private bool AbortGameThread { get; set; } = false;
+
         private RunningState CurrentRunningState
         {
             get
@@ -111,6 +117,9 @@ namespace Setnicka.PacMan
 
         private Menu Menu { get; set; }
         private MenuManager MenuManager { get; set; }
+
+        // Stores the information about time left for chasing ghosts
+        private int BoostTimeLeft { get; set; } = -1;
         #endregion
 
 
@@ -120,6 +129,8 @@ namespace Setnicka.PacMan
         /// </summary>
         private void Update()
         {
+            GameThreadRunning = true;
+
             // Set proper color scheme
             GameColors.ChasingGhosts = false;
 
@@ -129,7 +140,27 @@ namespace Setnicka.PacMan
 
                 GhostsMove();
 
-                Thread.Sleep(GAME_UPDATE_FREQUENCY);
+                // Thread sleeps and pereodicaly checks if it is supposed to abort
+                if (AbortGameThread)
+                {
+                    AbortGameThread = false;
+                    GameThreadRunning = false;
+                    return;
+                }
+                Thread.Sleep(GAME_UPDATE_FREQUENCY/2);
+                if (AbortGameThread)
+                {
+                    AbortGameThread = false;
+                    GameThreadRunning = false;
+                    return;
+                }
+                Thread.Sleep(GAME_UPDATE_FREQUENCY / 2);
+                if (AbortGameThread)
+                {
+                    AbortGameThread = false;
+                    GameThreadRunning = false;
+                    return;
+                }
             }
 
             void PlayerMove()
@@ -163,30 +194,62 @@ namespace Setnicka.PacMan
         /// </summary>
         private void UpdateChasingGhosts()
         {
-            // TODO: Make ghosts go slower than player
+            GameThreadRunning = true;
 
             // Thread sleep is skipped when eating a boost, this ensures smoother transition between Update and UpdateChasingGhosts
             Thread.Sleep(GAME_UPDATE_FREQUENCY);
 
-            int timeLeft = CHASING_GHOSTS_FOR;
+            int timeLeft;
+
+            if (BoostTimeLeft < 0)
+            {
+                timeLeft = CHASING_GHOSTS_FOR;
+
+                // Ghosts move is skipped when eating a boost, so they are the first ones to move here
+                MoveGhosts();
+            }
+            else
+                timeLeft = BoostTimeLeft;
 
             // Set proper color scheme
             GameColors.ChasingGhosts = true;
             GameColors.ChasingGhostsMainVersion = true;
 
-            // Ghosts move is skipped when eating a boost, so they are the first ones to move here
-            MoveGhosts();
+           
 
-            while(timeLeft > 0)
+            do
             {
                 MovePlayer();
 
                 MoveGhosts();
 
                 timeLeft -= GAME_UPDATE_FREQUENCY;
-                Thread.Sleep(GAME_UPDATE_FREQUENCY);
-            }
 
+                // Thread sleeps and pereodicaly checks if it is supposed to abort
+                if (AbortGameThread)
+                {
+                    BeforeReturn();
+                    return;
+                }
+                Thread.Sleep(GAME_UPDATE_FREQUENCY / 2);
+                if (AbortGameThread)
+                {
+                    BeforeReturn();
+                    return;
+                }
+                Thread.Sleep(GAME_UPDATE_FREQUENCY / 2);
+                if (AbortGameThread)
+                {
+                    BeforeReturn();
+                    return;
+                }
+            } while (timeLeft >= 0);
+
+            BeforeReturn();
+
+            AbortGameThread = false;
+            GameThreadRunning = false;
+            BoostTimeLeft = timeLeft;
             CurrentRunningState = RunningState.On;
 
             void MovePlayer()
@@ -225,6 +288,14 @@ namespace Setnicka.PacMan
                     ghost.InvertedMove = false;
                 }
             }
+
+            void BeforeReturn()
+            {
+                AbortGameThread = false;
+                GameThreadRunning = false;
+                BoostTimeLeft = timeLeft;
+                CurrentRunningState = RunningState.On;
+            }
         }
 
         /// <summary>
@@ -243,9 +314,10 @@ namespace Setnicka.PacMan
                     Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
                 else
                 {
+                    RunningState previousGameStateCopy = previousGamestate;
                     previousGamestate = CurrentRunningState;
 
-                    switch (previousGamestate)
+                    switch (CurrentRunningState)
                     {
                         case RunningState.On:
                             AbortThreads(false);
@@ -276,7 +348,11 @@ namespace Setnicka.PacMan
                                 return;
 
                             Print();
-                            CurrentRunningState = RunningState.On;
+
+                            if (previousGameStateCopy == RunningState.On)
+                                CurrentRunningState = RunningState.On;
+                            else if (previousGameStateCopy == RunningState.ChasingGhosts)
+                                CurrentRunningState = RunningState.ChasingGhosts;
                             break;
                         default:
                             break;
@@ -368,7 +444,11 @@ namespace Setnicka.PacMan
             }
             if(GameRunningThread != null)
             {
-                GameRunningThread.Abort();
+                if (GameThreadRunning)
+                    AbortGameThread = true;
+
+                GameRunningThread.Join();
+
                 GameRunningThread = null;
             }
         }
