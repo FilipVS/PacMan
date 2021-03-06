@@ -19,5 +19,7 @@ namespace Setnicka.PacMan
 
         public const ConsoleKey MoveRight = ConsoleKey.D;
         public const ConsoleKey MoveRightSecondary = ConsoleKey.RightArrow;
+
+        public const ConsoleKey GoToMenu = ConsoleKey.Escape;
     }
 }

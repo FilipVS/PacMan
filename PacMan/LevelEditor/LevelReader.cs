@@ -12,12 +12,19 @@ namespace Setnicka.PacMan.LevelEditor
     /// </summary>
     static class LevelReader
     {
+        /// <summary>
+        /// Reads the level and returns it in an GameObject array
+        /// </summary>
+        /// <param name="path">Path to the level</param>
+        /// <returns>The level as GameObject array, in case of problem, it returns null</returns>
         public static GameObject[,] ReadLevel(string path)
         {
             if (String.IsNullOrEmpty(path))
-                throw new ArgumentNullException("path", "path argument cannot be null or empty!");
+                return null;
+                //throw new ArgumentNullException("path", "path argument cannot be null or empty!");
             if (!File.Exists(path))
-                throw new ArgumentException("path", "The path argument doesn't lead to any file!");
+                return null;
+               //throw new ArgumentException("path", "The path argument doesn't lead to any file!");
 
             GameObject[,] level;
 
@@ -25,7 +32,8 @@ namespace Setnicka.PacMan.LevelEditor
             {
                 // Confirm that the header text is present
                 if (reader.ReadLine() != LevelWriter.HEADER_TEXT)
-                    throw new ArgumentException("path", "The file doesn't cointain proper level information!");
+                    return null;
+                    //throw new ArgumentException("path", "The file doesn't cointain proper level information!");
 
                 // Read the version number and use appropriate reader for it
                 string version = reader.ReadLine();
@@ -35,14 +43,12 @@ namespace Setnicka.PacMan.LevelEditor
                         level = ReadLevelV1(reader);
                         break;
                     default:
-                        throw new ArgumentException("path", "Unknown version!");
+                        return null;
+                        //throw new ArgumentException("path", "Unknown version!");
                 }
             }
 
-            if (level != null)
-                return level;
-            else
-                throw new Exception("No level found!");
+            return level;
         }
 
         #region ReaderV1

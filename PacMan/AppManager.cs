@@ -147,7 +147,7 @@ namespace Setnicka.PacMan
 
                 Label emptyLabel1 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-                Label mainLabel = new Label(MAIN_LABEL_TEXT_PLAYGAME_SUBMENU, HorizontalAlignment.Center, 1, MAIN_LABEL_FOREGROUND_COLOR, MAIN_LABEL_BACKGROUND_COLOR);
+                Label mainLabel = new Label(MAIN_LABEL_TEXT_OPEN_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 1, MAIN_LABEL_FOREGROUND_COLOR, MAIN_LABEL_BACKGROUND_COLOR);
 
                 Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
@@ -179,19 +179,13 @@ namespace Setnicka.PacMan
 
         private void PlayLevel1()
         {
-            string workingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName.ToString();
-            string pathToLevel = (projectDirectory + @"\\Levels\\CustomLevel.txt");
+            string pathToLevel = GetPathToLevels() + "Level1.txt";
 
             PlayLevel(pathToLevel);
-
-            // TODO: Set proper path
         }
         private void PlayLevel2()
         {
-            string workingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName.ToString();
-            string pathToLevel = (projectDirectory + @"\\Levels\\CustomLevel.txt");
+            string pathToLevel = GetPathToLevels() + "Level1.txt";
 
             PlayLevel(pathToLevel);
 
@@ -199,28 +193,84 @@ namespace Setnicka.PacMan
         }
         private void PlayLevel3()
         {
-            string workingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName.ToString();
-            string pathToLevel = (projectDirectory + @"\\Levels\\CustomLevel.txt");
+            string pathToLevel = GetPathToLevels() + "Level1.txt";
 
             PlayLevel(pathToLevel);
-
             // TODO: Set proper path
         }
         private void PlayCustomLevel()
         {
-            string workingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName.ToString();
-            string pathToLevel = (projectDirectory + @"\\Levels\\CustomLevel.txt");
+            TextInputDialog dialog = new TextInputDialog("Please enter path of the level", @"Example: C:\PacMan\Levels\CustomLevel.txt");
 
-            PlayLevel(pathToLevel);
+            dialog.Run();
 
-            // TODO: Set proper path
+            string path = dialog.DialogStringResult;
+
+            bool fileOpenable = false;
+
+            // Test if the file can be opened
+            try
+            {
+                File.Open(path, FileMode.Open).Dispose();
+
+                fileOpenable = true;
+            }
+            catch (ArgumentOutOfRangeException) { }
+            catch (FileNotFoundException) { }
+            catch (ArgumentNullException) { }
+            catch (ArgumentException) { }
+            catch (PathTooLongException) { }
+            catch (DirectoryNotFoundException) { }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+            catch (NotSupportedException) { }
+
+            // Signal the error to the user
+            if (!fileOpenable)
+            {
+                MessageDialog messageDialog = new MessageDialog("The file was not found.");
+                messageDialog.Run();
+                return;
+            }
+
+            // Otherwise open the level
+            PlayLevel(path);
         }
         private void PlayLevel(string pathToLevel)
         {
-            GameManager manager = new GameManager(LevelReader.ReadLevel(pathToLevel));
+            GameObject[,] level = LevelReader.ReadLevel(pathToLevel);
+
+            // If the level loading did not go well
+            if(level == null)
+            {
+                MessageDialog messageDialog = new MessageDialog("The level was not loaded succesfully.");
+                messageDialog.Run();
+                return;
+            }
+
+            GameManager manager = new GameManager(level);
             manager.Run();
+        }
+
+        /// <summary>
+        /// Returns the directory, where the levels are located
+        /// </summary>
+        /// <returns></returns>
+        private string GetPathToLevels()
+        {
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string[] pathParts = baseDirectory.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+
+            string levelsDerectory = String.Empty;
+
+            // If the app is running from debug
+            if (pathParts[pathParts.Length - 1] == "Debug" && pathParts[pathParts.Length - 2] == "bin")
+                levelsDerectory = (baseDirectory.Remove((baseDirectory.Length - "bin\\Debug\\".Length))) + "Levels\\";
+            // The app is published
+            else
+                levelsDerectory = baseDirectory + "Levels\\";
+
+            return levelsDerectory;
         }
         #endregion
 

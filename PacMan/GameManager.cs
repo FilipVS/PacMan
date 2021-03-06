@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Setnicka.AuxiliaryClasses;
+using Setnicka.UI;
 
 namespace Setnicka.PacMan
 {
@@ -10,6 +11,9 @@ namespace Setnicka.PacMan
     /// </summary>
     class GameManager
     {
+        #region Constants
+        // General Constants
+
         // The offset of drawn objects in relation to CursorPosition(0, 0)
         public static readonly Vector2D OFFSET = new Vector2D(2, 1);
         // Delay between individual updates of the game thread
@@ -18,8 +22,29 @@ namespace Setnicka.PacMan
         private const int MAIN_THREAD_UPDATE_FREQUENCY = 10;
         // How long (milliseconds) is the chasing ghosts mode active
         private const int CHASING_GHOSTS_FOR = 10000;
+        // How long before the chasing ghosts period ends do the ghosts blink (expressed as a part of the whole time)
+        private const double CHASING_GHOSTS_BLINKING = 1 / 4;
+
+        // Menu constats
+
+        private const ConsoleColor UNHIGHLIGHTED_FOREGROUND_COLOR = ConsoleColor.White;
+        private const ConsoleColor UNHIGHLIGHTED_BACKGROUND_COLOR = ConsoleColor.Black;
+
+        private const ConsoleColor HIGHLIGHTED_FOREGROUND_COLOR = ConsoleColor.Black;
+        private const ConsoleColor HIGHLIGHTED_BACKGROUND_COLOR = ConsoleColor.Red;
+
+        private const ConsoleColor MAIN_LABEL_FOREGROUND_COLOR = ConsoleColor.Black;
+        private const ConsoleColor MAIN_LABEL_BACKGROUND_COLOR = ConsoleColor.Yellow;
+
+        private const string EMPTY_LABEL_TEXT = "";
+
+        private const string MAIN_LABEL_TEXT = "Game menu";
+        private const string CONTINUE_BUTTON_TEXT = "Continue";
+        private const string ESCAPE_BUTTON_TEXT = "Escape";
+        #endregion
 
 
+        #region Constructors
         /// <param name="level">Lever that is the player wants to play, cannot be null</param>
         public GameManager(GameObject[,] level)
         {
@@ -31,7 +56,7 @@ namespace Setnicka.PacMan
 
             // player and ghosts assignment
             Ghosts = new List<Ghost>();
-            foreach(GameObject tile in level)
+            foreach (GameObject tile in level)
             {
                 if (tile is Player player)
                     this.Player = player;
@@ -46,14 +71,18 @@ namespace Setnicka.PacMan
             Player.GameWon += PlayerWon;
 
             // Initializing the inputManager and subscribing individual event handlers
-            List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { GameKeyBinding.MoveUp, GameKeyBinding.MoveUpSecondary, GameKeyBinding.MoveDown, GameKeyBinding.MoveDownSecondary, GameKeyBinding.MoveLeft, GameKeyBinding.MoveLeftSecondary, GameKeyBinding.MoveRight, GameKeyBinding.MoveRightSecondary };
+            List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { GameKeyBinding.MoveUp, GameKeyBinding.MoveUpSecondary, GameKeyBinding.MoveDown, GameKeyBinding.MoveDownSecondary, GameKeyBinding.MoveLeft, GameKeyBinding.MoveLeftSecondary, GameKeyBinding.MoveRight, GameKeyBinding.MoveRightSecondary, GameKeyBinding.GoToMenu };
             InputManager = new InputManager(keysOfInterest);
             InputManager.KeyPressed += Player.ChangeHeading;
-            // TODO: subscribe add all the event handlers
+            InputManager.KeyPressed += GoToMenu;
+
+            // Initialize Menu and MenuManager
+            InitializeMenuAndManager();
         }
+        #endregion
 
         #region Fields
-        private GameState currentGameState = GameState.Off;
+        private RunningState currentGameState = RunningState.Off;
         #endregion
 
         #region Properties
@@ -66,7 +95,7 @@ namespace Setnicka.PacMan
         private Thread InputManagerThread { get; set; }
         private Thread GameRunningThread { get; set; }
 
-        private GameState CurrentGameState
+        private RunningState CurrentRunningState
         {
             get
             {
@@ -75,10 +104,13 @@ namespace Setnicka.PacMan
             set
             {
                 // If player already won, the currentGameState can't be overwritten
-                if (currentGameState != GameState.Win)
+                if (currentGameState != RunningState.Win)
                     currentGameState = value;
             }
         }
+
+        private Menu Menu { get; set; }
+        private MenuManager MenuManager { get; set; }
         #endregion
 
 
@@ -101,10 +133,10 @@ namespace Setnicka.PacMan
             {
                 MoveResult playerMove = Player.Move();
                 if (playerMove == MoveResult.Boost)
-                    CurrentGameState = GameState.ChasingGhosts;
+                    CurrentRunningState = RunningState.ChasingGhosts;
                 else if (playerMove == MoveResult.Collision)
                 {
-                    CurrentGameState = GameState.Collision;
+                    CurrentRunningState = RunningState.Collision;
                     Thread.Sleep(GAME_UPDATE_FREQUENCY);
                 }
             }
@@ -115,7 +147,7 @@ namespace Setnicka.PacMan
                 {
                     if (ghost.Move() == MoveResult.Collision)
                     {
-                        CurrentGameState = GameState.Collision;
+                        CurrentRunningState = RunningState.Collision;
                         Thread.Sleep(GAME_UPDATE_FREQUENCY);
                         break;
                     }
@@ -149,7 +181,7 @@ namespace Setnicka.PacMan
                 Thread.Sleep(GAME_UPDATE_FREQUENCY);
             }
 
-            CurrentGameState = GameState.Normal;
+            CurrentRunningState = RunningState.On;
 
             void MovePlayer()
             {
@@ -158,7 +190,7 @@ namespace Setnicka.PacMan
                     timeLeft = CHASING_GHOSTS_FOR;
                 else if (playerMove == MoveResult.Collision)
                 {
-                    CurrentGameState = GameState.Collision;
+                    CurrentRunningState = RunningState.Collision;
                     Thread.Sleep(GAME_UPDATE_FREQUENCY);
                 }
             }
@@ -170,7 +202,7 @@ namespace Setnicka.PacMan
                     ghost.InvertedMove = true;
                     if (ghost.Move() == MoveResult.Collision)
                     {
-                        CurrentGameState = GameState.Collision;
+                        CurrentRunningState = RunningState.Collision;
                         Thread.Sleep(GAME_UPDATE_FREQUENCY);
                         break;
                     }
@@ -184,42 +216,51 @@ namespace Setnicka.PacMan
         /// </summary>
         public void Run()
         {
-            // Print all the elements
-            Print();
-
-            CurrentGameState = GameState.Normal;
-            GameState previousGamestate = GameState.Off;
+            CurrentRunningState = RunningState.On;
+            RunningState previousGamestate = RunningState.Off;
 
             while(true)
             {
-                if (previousGamestate == CurrentGameState)
+                if (previousGamestate == CurrentRunningState)
                     Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
                 else
                 {
-                    previousGamestate = CurrentGameState;
+                    previousGamestate = CurrentRunningState;
 
                     switch (previousGamestate)
                     {
-                        case GameState.Normal:
+                        case RunningState.On:
+                            Print();
+
                             AbortThreads(false);
                             StartThreads(InputManager.CheckForInput, Update, false);
                             break;
-                        case GameState.Collision:
+                        case RunningState.Collision:
                             AbortThreads(true); // TODO: Change to false
                             Console.SetCursorPosition(0, 0);
                             Console.Write("Collision!");
+                            Console.ReadKey(true);
                             // TODO: Finish
                             return;
-                        case GameState.ChasingGhosts:
+                        case RunningState.ChasingGhosts:
                             AbortThreads(false);
                             StartThreads(InputManager.CheckForInput, UpdateChasingGhosts, false);
                             break;
-                        case GameState.Win:
+                        case RunningState.Win:
                             AbortThreads(true);
                             Console.SetCursorPosition(0, 0);
                             Console.Write("Congratulations, you win!");
                             break;
-                        // TODO: Finish
+                        case RunningState.Menu:
+                            AbortThreads(true);
+
+                            MenuManager.Run();
+
+                            if (CurrentRunningState == RunningState.Finished)
+                                return;
+
+                            CurrentRunningState = RunningState.On;
+                            break;
                         default:
                             break;
                     }
@@ -237,7 +278,50 @@ namespace Setnicka.PacMan
             foreach (GameObject gameObject in Level)
                 gameObject.Print(GameManager.OFFSET);
 
-            // TODO: Finish (user interface elements...)
+            PrintBorder();
+        }
+
+        /// <summary>
+        /// Draws border around the level, so the user knows, where he can walk
+        /// </summary>
+        private void PrintBorder()
+        {
+            Vector2D topLeftCorner = (Level[0, 0].Position + OFFSET) + Vector2D.Left + Vector2D.Up;
+            Vector2D topRightCorner = (Level[Level.GetLength(0) - 1, 0].Position + OFFSET) + Vector2D.Right + Vector2D.Up;
+            Vector2D bottomLeftCorner = (Level[0, Level.GetLength(1) - 1].Position + OFFSET) + Vector2D.Left + Vector2D.Down;
+            Vector2D bottomRightCorner = (Level[Level.GetLength(0) - 1, Level.GetLength(1) - 1].Position + OFFSET) + Vector2D.Right + Vector2D.Down;
+
+            for (int x = topLeftCorner.X; x <= topRightCorner.X; x++)
+                PrintTile(x, topLeftCorner.Y);
+            for (int y = topLeftCorner.Y; y <= bottomLeftCorner.Y; y++)
+                PrintTile(topLeftCorner.X, y);
+            for (int x = bottomLeftCorner.X; x <= bottomRightCorner.X; x++)
+                PrintTile(x, bottomRightCorner.Y);
+            for (int y = topRightCorner.Y; y <= bottomRightCorner.Y; y++)
+                PrintTile(topRightCorner.X, y);
+
+            // Prints one border tile
+            void PrintTile(int x, int y)
+            {
+                // Validating input
+                if (x < 0 || y < 0)
+                    return;
+
+                ConsoleColor originalForeground = Console.ForegroundColor;
+                ConsoleColor originalBackground = Console.BackgroundColor;
+
+                Console.SetCursorPosition(x, y);
+
+                Console.ForegroundColor = Colors.LevelBorderColor;
+                Console.BackgroundColor = Colors.LevelBorderColor;
+
+                Console.Write(" ");
+
+                Console.ForegroundColor = originalForeground;
+                Console.BackgroundColor = originalBackground;
+
+                Console.CursorVisible = false;
+            }
         }
 
         /// <summary>
@@ -274,24 +358,65 @@ namespace Setnicka.PacMan
 
         private void PlayerWon(object sender, EventArgs eventArgs)
         {
-            CurrentGameState = GameState.Win;
+            CurrentRunningState = RunningState.Win;
         }
         #endregion
 
+
         #region Methods for UI
-        
+        private void InitializeMenuAndManager()
+        {
+            Menu = new Menu();
+
+            Label emptyLabel1 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Label mainLabel = new Label(MAIN_LABEL_TEXT, HorizontalAlignment.Center, 1, MAIN_LABEL_FOREGROUND_COLOR, MAIN_LABEL_BACKGROUND_COLOR);
+
+            Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Button buttonContinue = new Button(CONTINUE_BUTTON_TEXT, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            buttonContinue.OnClick += Menu.DoExitMenu;
+
+            Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 4, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Button buttonEscape = new Button(ESCAPE_BUTTON_TEXT, HorizontalAlignment.Center, 5, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            buttonEscape.OnClick += EscapeGame;
+            buttonEscape.OnClick += Menu.DoExitMenu;
+
+            Menu.AddUIElementRange(new List<IUIElement> { emptyLabel1, mainLabel, emptyLabel2, buttonContinue, emptyLabel3, buttonEscape });
+
+            MenuManager = new MenuManager(Menu);
+        }
+
+        private void GoToMenu(object sender, KeyEventArgs keyEventArgs)
+        {
+            if (keyEventArgs.keyPressed != GameKeyBinding.GoToMenu)
+                return;
+
+            CurrentRunningState = RunningState.Menu;
+        }
+
+        private void EscapeGame(object sender, EventArgs args)
+        {
+            ConfirmationDialog dialog = new ConfirmationDialog(ConfirmationOptions.YesNo, "Do you really want to end the game?");
+
+            dialog.Run();
+
+            if (dialog.DialogResult == DialogResult.Yes)
+                CurrentRunningState = RunningState.Finished;
+        }
         #endregion
     }
 
 
-    public enum GameState
+    public enum RunningState
     {
         Off,
-        Normal,
+        On,
         ChasingGhosts,
         Collision,
-        Pause,
-        Refresh,
-        Win
+        Menu,
+        Win,
+        Finished
     }
 }

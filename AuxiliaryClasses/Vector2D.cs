@@ -137,7 +137,7 @@ namespace Setnicka.AuxiliaryClasses
                     return false;
             }
             else
-                return base.Equals(obj);
+                return false;
         }
 
         public override int GetHashCode()

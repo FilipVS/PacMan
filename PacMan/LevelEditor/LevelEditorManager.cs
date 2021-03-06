@@ -509,7 +509,7 @@ namespace Setnicka.PacMan.LevelEditor
             Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 4, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
             Button escapeButton = new Button(ESCAPE_BUTTON_TEXT, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
-            escapeButton.OnClick += EscapeMenu;
+            escapeButton.OnClick += EscapeEditor;
             escapeButton.OnClick += Menu.DoExitMenu;
 
             Menu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, saveButton, emptyLabel3, escapeButton });
@@ -526,7 +526,7 @@ namespace Setnicka.PacMan.LevelEditor
 
         private void SaveLevel(object sender, EventArgs args)
         {
-            TextInputDialog dialog = new TextInputDialog("Please enter path to save your level", "Tha path should contain the name of the file as well, example: 'C:\\level.txt'");
+            TextInputDialog dialog = new TextInputDialog("Please enter path to save your level", "Tha path should contain the name of the file as well and shouldn't contain special characters or spaces, example: 'C:\\level.txt'");
 
             dialog.Run();
 
@@ -558,7 +558,7 @@ namespace Setnicka.PacMan.LevelEditor
             LevelWriter.SaveLevel(LevelArray, path);
         }
 
-        private void EscapeMenu(object sender, EventArgs args)
+        private void EscapeEditor(object sender, EventArgs args)
         {
             ConfirmationDialog dialog = new ConfirmationDialog(ConfirmationOptions.YesNo, "Do you really want to escape (did you save the level/want it to be discarded)?");
 

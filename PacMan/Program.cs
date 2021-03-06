@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
-using Setnicka.PacMan.LevelEditor;
-using Setnicka.UI;
-using Setnicka.AuxiliaryClasses;
 
 
 namespace Setnicka.PacMan
@@ -13,7 +7,7 @@ namespace Setnicka.PacMan
     class Program
     {
         static void Main(string[] args)
-        {
+        {      
             AppManager appManager = new AppManager();
             appManager.Run();
 

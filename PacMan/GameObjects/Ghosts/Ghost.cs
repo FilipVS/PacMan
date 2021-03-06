@@ -187,14 +187,16 @@ namespace Setnicka.PacMan
                 if (positionDifference.Y == 0)
                     Heading = Direction.Right;
                 else
-                    throw new ArgumentException("Incorrect result!");
+                    DoNotMove();
+                    //throw new ArgumentException("Incorrect result!");
             }
             else if(positionDifference.X == -1)
             {
                 if (positionDifference.Y == 0)
                     Heading = Direction.Left;
                 else
-                    throw new ArgumentException("Incorrect result!");
+                    DoNotMove();
+                    //throw new ArgumentException("Incorrect result!");
             }
             else if (positionDifference.X == 0)
             {
@@ -203,10 +205,18 @@ namespace Setnicka.PacMan
                 else if (positionDifference.Y == -1)
                     Heading = Direction.Up;
                 else
-                    throw new ArgumentException("Incorrect result!");
+                    DoNotMove();
+                    //throw new ArgumentException("Incorrect result!");
             }
             else
-                throw new ArgumentException("Incorrect result!");
+                DoNotMove();
+                //throw new ArgumentException("Incorrect result!");
+
+            // Sets the desired tile to be the same as current tile
+            void DoNotMove()
+            {
+                DesiredTile = Position.Copy();
+            }
         }
 
         /// <summary>

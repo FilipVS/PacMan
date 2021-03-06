@@ -21,5 +21,7 @@ namespace Setnicka.PacMan
         public static ConsoleColor PinkyColor { get; } = ConsoleColor.Magenta;
         public static ConsoleColor InkyColor { get; } = ConsoleColor.Cyan;
         public static ConsoleColor ClydeColor { get; } = ConsoleColor.White;
+
+        public static ConsoleColor LevelBorderColor { get; } = ConsoleColor.DarkMagenta;
     }
 }
