@@ -23,7 +23,7 @@ namespace Setnicka.PacMan
         // How long (milliseconds) is the chasing ghosts mode active
         private const int CHASING_GHOSTS_FOR = 10000;
         // How long before the chasing ghosts period ends do the ghosts blink (expressed as a part of the whole time)
-        private const double CHASING_GHOSTS_BLINKING = 1 / 4;
+        private const double CHASING_GHOSTS_BLINKING = 0.25;
 
         // Menu constats
 
@@ -120,6 +120,9 @@ namespace Setnicka.PacMan
         /// </summary>
         private void Update()
         {
+            // Set proper color scheme
+            Colors.ChasingGhosts = false;
+
             while (true)
             {
                 PlayerMove();
@@ -161,12 +164,15 @@ namespace Setnicka.PacMan
         private void UpdateChasingGhosts()
         {
             // TODO: Make ghosts go slower than player
-            // TODO: Make ghosts blink for some time before the mode turns off
 
             // Thread sleep is skipped when eating a boost, this ensures smoother transition between Update and UpdateChasingGhosts
             Thread.Sleep(GAME_UPDATE_FREQUENCY);
 
             int timeLeft = CHASING_GHOSTS_FOR;
+
+            // Set proper color scheme
+            Colors.ChasingGhosts = true;
+            Colors.ChasingGhostsMainVersion = true;
 
             // Ghosts move is skipped when eating a boost, so they are the first ones to move here
             MoveGhosts();
@@ -197,6 +203,16 @@ namespace Setnicka.PacMan
 
             void MoveGhosts()
             {
+                // Check if they are supposed to blink
+                if(timeLeft < (CHASING_GHOSTS_FOR * CHASING_GHOSTS_BLINKING))
+                {
+                    // If they are currently in theair main version, go alternate, else go main
+                    if (Colors.ChasingGhostsMainVersion)
+                        Colors.ChasingGhostsMainVersion = false;
+                    else
+                        Colors.ChasingGhostsMainVersion = true;
+                }
+
                 foreach (Ghost ghost in Ghosts)
                 {
                     ghost.InvertedMove = true;
@@ -219,7 +235,9 @@ namespace Setnicka.PacMan
             CurrentRunningState = RunningState.On;
             RunningState previousGamestate = RunningState.Off;
 
-            while(true)
+            Print();
+
+            while (true)
             {
                 if (previousGamestate == CurrentRunningState)
                     Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
@@ -230,8 +248,6 @@ namespace Setnicka.PacMan
                     switch (previousGamestate)
                     {
                         case RunningState.On:
-                            Print();
-
                             AbortThreads(false);
                             StartThreads(InputManager.CheckForInput, Update, false);
                             break;
@@ -259,6 +275,7 @@ namespace Setnicka.PacMan
                             if (CurrentRunningState == RunningState.Finished)
                                 return;
 
+                            Print();
                             CurrentRunningState = RunningState.On;
                             break;
                         default:
