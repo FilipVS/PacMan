@@ -112,6 +112,7 @@
   <ItemGroup>
     <Content Include="Levels\CustomLevel.txt" />
     <Content Include="Levels\Level1.txt" />
+    <Content Include="Levels\Level3.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

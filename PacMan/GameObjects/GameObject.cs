@@ -18,43 +18,10 @@ namespace Setnicka.PacMan
             Position = startingPosition;
         }
 
-        #region Fields
-        /// <summary>
-        /// Represents the GameObjetc's position in the level
-        /// </summary>
-        private Vector2D position;
-
-
-        /// <summary>
-        /// The level that the GameObject is associated with
-        /// </summary>
-        private GameObject[,] level;
-        #endregion
-
         #region Properties
-        public Vector2D Position
-        {
-            get
-            {
-                return position;
-            }
-            protected set
-            {
-                position = value;
-            }
-        }
+        public Vector2D Position { get; protected set; }
 
-        protected GameObject[,] Level
-        {
-            get
-            {
-                return level;
-            }
-            private set
-            {
-                level = value;
-            }
-        }
+        protected GameObject[,] Level { get; }
         #endregion
 
         #region Methods

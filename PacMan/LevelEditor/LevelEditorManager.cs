@@ -18,7 +18,7 @@ namespace Setnicka.PacMan.LevelEditor
         // Minimal size of a level
         public static readonly Vector2D MINIMUM_LEVEL_SIZE = new Vector2D(2, 2);
         // Maximal size of a level
-        public static readonly Vector2D MAXIMUM_LEVEL_SIZE = new Vector2D(100, 25);
+        public static readonly Vector2D MAXIMUM_LEVEL_SIZE = new Vector2D(75, 25);
         // Delay between main thread updates
         private const int MAIN_THREAD_UPDATE_FREQUENCY = 20;
         // The offset of drawn level objects in relation to CursorPosition(0, 0)
@@ -585,7 +585,7 @@ namespace Setnicka.PacMan.LevelEditor
 
         private void SaveLevel(object sender, EventArgs args)
         {
-            TextInputDialog dialog = new TextInputDialog("Please enter path to save your level", "Tha path should contain the name of the file as well and shouldn't contain special characters or spaces, example: 'C:\\level.txt'");
+            TextInputDialog dialog = new TextInputDialog("Please enter path to save your level", "Include the file name, path should not contain special characters or spaces, ex.: 'C:\\level.txt'");
 
             dialog.Run();
 

@@ -28,7 +28,7 @@ namespace Setnicka.PacMan
         #region Properties
         public int[,] MazeMap { get; private set; }
 
-        private Empty TileStanding { get; set; }
+        public Empty TileStanding { get; private set; }
 
         protected Vector2D PlayerPositionLastTurn { get; set; }
 

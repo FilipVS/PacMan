@@ -24,6 +24,14 @@ namespace Setnicka.PacMan
         private const int CHASING_GHOSTS_FOR = 10000;
         // How long before the chasing ghosts period ends do the ghosts blink (expressed as a part of the whole time)
         private const double CHASING_GHOSTS_BLINKING = 0.25;
+        // How often the game thread each cycle checks for abort
+        private const int CHECK_FOR_ABORT_TIMES = 3;
+        // How many numbers does the game countdown and what is the time between individual counts
+        private const int COUNTDOWN_START = 3;
+        private const int COUNTDOWN_FREQUENCY = 750;
+        // Scoring
+        private const int SCORE_FOR_COIN = 1;
+        private const int SCORE_FOR_GHOST = 100;
 
         // Menu constats
 
@@ -71,18 +79,28 @@ namespace Setnicka.PacMan
             Player.GameWon += PlayerWon;
 
             // Initializing the inputManager and subscribing individual event handlers
-            List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { GameKeyBinding.MoveUp, GameKeyBinding.MoveUpSecondary, GameKeyBinding.MoveDown, GameKeyBinding.MoveDownSecondary, GameKeyBinding.MoveLeft, GameKeyBinding.MoveLeftSecondary, GameKeyBinding.MoveRight, GameKeyBinding.MoveRightSecondary, GameKeyBinding.GoToMenu };
+            List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { GameKeyBinding.MoveUp, GameKeyBinding.MoveUpSecondary, GameKeyBinding.MoveDown, GameKeyBinding.MoveDownSecondary, GameKeyBinding.MoveLeft, GameKeyBinding.MoveLeftSecondary, GameKeyBinding.MoveRight, GameKeyBinding.MoveRightSecondary, GameKeyBinding.GoToMenu, GameKeyBinding.Refresh };
             InputManager = new InputManager(keysOfInterest);
             InputManager.KeyPressed += Player.ChangeHeading;
             InputManager.KeyPressed += GoToMenu;
+            InputManager.KeyPressed += Refresh;
 
             // Initialize Menu and MenuManager
             InitializeMenuAndManager();
+
+            // Initialize message label
+            InitializeLabels();
         }
         #endregion
 
         #region Fields
         private RunningState currentGameState = RunningState.Off;
+
+        private string message = EMPTY_LABEL_TEXT;
+
+        private string healthMessage = EMPTY_LABEL_TEXT;
+
+        private string scoreMessage = EMPTY_LABEL_TEXT;
         #endregion
 
         #region Properties
@@ -118,6 +136,88 @@ namespace Setnicka.PacMan
         private Menu Menu { get; set; }
         private MenuManager MenuManager { get; set; }
 
+        // For displaying messages to the user
+        private Label MessageLabel { get; set; }
+        private string Message
+        {
+            get
+            {
+                return message;
+            }
+            set
+            {
+                string newMessage = value;
+
+                if (value == null)
+                    newMessage = "";
+
+                // Delete previous message
+                MessageLabel.Delete();
+
+                // Print new one
+                MessageLabel.Text = newMessage;
+                MessageLabel.Print();
+
+                message = newMessage;
+            }
+        }
+
+        // For displaying health to the user
+        private Label HealthLabel { get; set; }
+        private string HealthMessage
+        {
+            get
+            {
+                return healthMessage;
+            }
+            set
+            {
+                string newHealth = value;
+
+                if (value == null)
+                    newHealth = "";
+
+                // Delete previous health
+                HealthLabel.Delete();
+
+                // Print new one
+                HealthLabel.Text = newHealth;
+                HealthLabel.Print();
+
+                healthMessage = newHealth;
+            }
+        }
+
+        // For displaying score to the user
+        private Label ScoreLabel { get; set; }
+        private string ScoreMessage
+        {
+            get
+            {
+                return scoreMessage;
+            }
+            set
+            {
+                string newScore = value;
+
+                if (value == null)
+                    newScore = "";
+
+                // Delete previous health
+                ScoreLabel.Delete();
+
+                // Print new one
+                ScoreLabel.Text = newScore;
+                ScoreLabel.Print();
+
+                scoreMessage = newScore;
+            }
+        }
+
+        // For counting score
+        private int Score { get; set; } = 0;
+
+
         // Stores the information about time left for chasing ghosts
         private int BoostTimeLeft { get; set; } = -1;
         #endregion
@@ -131,30 +231,11 @@ namespace Setnicka.PacMan
         {
             GameThreadRunning = true;
 
-            // Set proper color scheme
-            GameColors.ChasingGhosts = false;
-
-            while (true)
+            // This prevents countdown after we've returned from chasing ghosts
+            if (!GameColors.ChasingGhosts)
             {
-                PlayerMove();
-
-                GhostsMove();
-
-                // Thread sleeps and pereodicaly checks if it is supposed to abort
-                if (AbortGameThread)
-                {
-                    AbortGameThread = false;
-                    GameThreadRunning = false;
-                    return;
-                }
-                Thread.Sleep(GAME_UPDATE_FREQUENCY/2);
-                if (AbortGameThread)
-                {
-                    AbortGameThread = false;
-                    GameThreadRunning = false;
-                    return;
-                }
-                Thread.Sleep(GAME_UPDATE_FREQUENCY / 2);
+                // Countdown, so the player can get ready and check, if the player wanted to go back
+                Countdown();
                 if (AbortGameThread)
                 {
                     AbortGameThread = false;
@@ -162,6 +243,47 @@ namespace Setnicka.PacMan
                     return;
                 }
             }
+
+            // Set proper color scheme
+            GameColors.ChasingGhosts = false;
+
+            // The update sequence itself
+            while (true)
+            {
+                PlayerMove();
+
+                if (AbortGameThread)
+                {
+                    AbortGameThread = false;
+                    GameThreadRunning = false;
+                    return;
+                }
+
+                GhostsMove();
+
+                // Thread sleeps and pereodicaly checks if it is supposed to abort
+                for (int i = 0; i < CHECK_FOR_ABORT_TIMES; i++)
+                {
+                    Thread.Sleep(GAME_UPDATE_FREQUENCY / CHECK_FOR_ABORT_TIMES);
+                    if (AbortGameThread)
+                    {
+                        AbortGameThread = false;
+                        GameThreadRunning = false;
+                        return;
+                    }
+
+
+                    if (AbortGameThread)
+                    {
+                        AbortGameThread = false;
+                        GameThreadRunning = false;
+                        return;
+                    }
+                }
+                
+            }
+
+
 
             void PlayerMove()
             {
@@ -173,6 +295,8 @@ namespace Setnicka.PacMan
                     CurrentRunningState = RunningState.Collision;
                     Thread.Sleep(GAME_UPDATE_FREQUENCY);
                 }
+                else if (playerMove == MoveResult.Coin)
+                    IncreaseScore(SCORE_FOR_COIN);
             }
 
             void GhostsMove()
@@ -196,27 +320,39 @@ namespace Setnicka.PacMan
         {
             GameThreadRunning = true;
 
-            // Thread sleep is skipped when eating a boost, this ensures smoother transition between Update and UpdateChasingGhosts
-            Thread.Sleep(GAME_UPDATE_FREQUENCY);
-
             int timeLeft;
 
+            // In this case, the previous chasing ghosts cycle ended
             if (BoostTimeLeft < 0)
             {
+                // Thread sleep is skipped when eating a boost, this ensures smoother transition between Update and UpdateChasingGhosts
+                Thread.Sleep(GAME_UPDATE_FREQUENCY);
+
                 timeLeft = CHASING_GHOSTS_FOR;
 
                 // Ghosts move is skipped when eating a boost, so they are the first ones to move here
                 MoveGhosts();
             }
+            // In this case, the previous chasing ghosts cycle was paused and is supposed to be restarted
             else
+            {
                 timeLeft = BoostTimeLeft;
+
+                // Countdown, so the player can get ready and check, if the player wanted to go back
+                Countdown();
+                if (AbortGameThread)
+                {
+                    BeforeReturn();
+                    return;
+                }
+            }
 
             // Set proper color scheme
             GameColors.ChasingGhosts = true;
-            GameColors.ChasingGhostsMainVersion = true;
+            GameColors.ChasingGhostsMainVersion = true;     
 
-           
 
+            // The update sequence itself
             do
             {
                 MovePlayer();
@@ -226,31 +362,20 @@ namespace Setnicka.PacMan
                 timeLeft -= GAME_UPDATE_FREQUENCY;
 
                 // Thread sleeps and pereodicaly checks if it is supposed to abort
-                if (AbortGameThread)
+                for (int i = 0; i < CHECK_FOR_ABORT_TIMES; i++)
                 {
-                    BeforeReturn();
-                    return;
-                }
-                Thread.Sleep(GAME_UPDATE_FREQUENCY / 2);
-                if (AbortGameThread)
-                {
-                    BeforeReturn();
-                    return;
-                }
-                Thread.Sleep(GAME_UPDATE_FREQUENCY / 2);
-                if (AbortGameThread)
-                {
-                    BeforeReturn();
-                    return;
+                    Thread.Sleep(GAME_UPDATE_FREQUENCY / CHECK_FOR_ABORT_TIMES);
+                    if (AbortGameThread)
+                    {
+                        BeforeReturn();
+                        return;
+                    }
                 }
             } while (timeLeft >= 0);
 
-            BeforeReturn();
 
-            AbortGameThread = false;
-            GameThreadRunning = false;
-            BoostTimeLeft = timeLeft;
-            CurrentRunningState = RunningState.On;
+
+            BeforeReturn();
 
             void MovePlayer()
             {
@@ -262,6 +387,8 @@ namespace Setnicka.PacMan
                     CurrentRunningState = RunningState.Collision;
                     Thread.Sleep(GAME_UPDATE_FREQUENCY);
                 }
+                else if (playerMove == MoveResult.Coin)
+                    IncreaseScore(SCORE_FOR_COIN);
             }
 
             void MoveGhosts()
@@ -324,12 +451,19 @@ namespace Setnicka.PacMan
                             StartThreads(InputManager.CheckForInput, Update, false);
                             break;
                         case RunningState.Collision:
-                            AbortThreads(true); // TODO: Change to false
-                            Console.SetCursorPosition(0, 0);
-                            Console.Write("Collision!");
-                            Console.ReadKey(true);
-                            // TODO: Finish
-                            return;
+                            AbortThreads(true);
+
+                            if (previousGameStateCopy == RunningState.ChasingGhosts)
+                                CollisionChasingGhosts();
+                            else
+                                CollisionNormal();
+
+                            if (CurrentRunningState == RunningState.Finished)
+                                return;
+
+                            Print();
+
+                            break;
                         case RunningState.ChasingGhosts:
                             AbortThreads(false);
                             StartThreads(InputManager.CheckForInput, UpdateChasingGhosts, false);
@@ -354,10 +488,73 @@ namespace Setnicka.PacMan
                             else if (previousGameStateCopy == RunningState.ChasingGhosts)
                                 CurrentRunningState = RunningState.ChasingGhosts;
                             break;
+                        case RunningState.Refresh:
+                            AbortThreads(true);
+
+                            Print();
+
+                            if (previousGameStateCopy == RunningState.On)
+                                CurrentRunningState = RunningState.On;
+                            else if (previousGameStateCopy == RunningState.ChasingGhosts)
+                                CurrentRunningState = RunningState.ChasingGhosts;
+                            break;
                         default:
                             break;
                     }
                 }
+            }
+
+            void CollisionNormal()
+            {
+                if (Player.Health == 1)
+                {
+                    PLayerLost();
+                    return;
+                }
+
+                // Move all the movable objects to their starting positions
+                Level[Player.Position.X, Player.Position.Y] = new Empty(Level, Player.Position.Copy());
+
+                foreach(Ghost ghost in Ghosts)
+                {
+                    Level[ghost.Position.X, ghost.Position.Y] = ghost.TileStanding;
+                }
+
+                // Create new player and level with correct stats
+                Player = new Player(Level, Player.SpawnPoint, (Player.Health - 1), Score);
+                HealthMessage = $"Health: {Player.Health}";
+                Player.GameWon += PlayerWon;
+                InputManager.KeyPressed += Player.ChangeHeading;
+
+                for(int i = 0; i < Ghosts.Count; i++)
+                {
+                    Type typeOFGhost = Ghosts[i].GetType();
+
+                    if (typeOFGhost.FullName == typeof(Blinky).ToString())
+                        Ghosts[i] = new Blinky(Level, Ghosts[i].SpawnPoint, Player.Position);
+                    else if(typeOFGhost.FullName == typeof(Clyde).ToString())
+                        Ghosts[i] = new Clyde(Level, Ghosts[i].SpawnPoint, Player.Position);
+                    else if (typeOFGhost.FullName == typeof(Inky).ToString())
+                        Ghosts[i] = new Inky(Level, Ghosts[i].SpawnPoint, Player.Position);
+                    else if (typeOFGhost.FullName == typeof(Pinky).ToString())
+                        Ghosts[i] = new Pinky(Level, Ghosts[i].SpawnPoint, Player.Position);
+                }
+
+                // Put the newely created objects into level
+                Level[Player.Position.X, Player.Position.Y] = Player;
+                foreach (Ghost ghost in Ghosts)
+                {
+                    Level[ghost.Position.X, ghost.Position.Y] = ghost;
+                }
+
+
+                // Start running the game again
+                CurrentRunningState = RunningState.On;
+            }
+
+            void CollisionChasingGhosts()
+            {
+                // TODO: Finish
             }
         }
 
@@ -372,6 +569,9 @@ namespace Setnicka.PacMan
                 gameObject.Print(GameManager.OFFSET);
 
             PrintBorder();
+
+            HealthLabel.Print();
+            ScoreLabel.Print();
         }
 
         /// <summary>
@@ -457,6 +657,51 @@ namespace Setnicka.PacMan
         {
             CurrentRunningState = RunningState.Win;
         }
+
+        private void PLayerLost()
+        {
+            MessageDialog messageDialog = new MessageDialog("You are dead, try again!");
+
+            messageDialog.Run();
+
+            CurrentRunningState = RunningState.Finished;
+        }
+
+        private void IncreaseScore(int increaseBy)
+        {
+            Score += increaseBy;
+
+            ScoreMessage = $"Score: {Score}";
+        }
+
+        /// <summary>
+        /// This allows the player to refresh the visuals if the game glitches
+        /// </summary>
+        private void Refresh(object sender, KeyEventArgs keyEventArgs)
+        {
+            if (keyEventArgs.keyPressed != GameKeyBinding.Refresh)
+                return;
+
+            CurrentRunningState = RunningState.Refresh;
+        }
+
+        /// <summary>
+        /// Counts down before the game, so the player can get ready
+        /// </summary>
+        private void Countdown()
+        {
+            for(int i = COUNTDOWN_START; i > 0; i--)
+            {
+                // This is always run from game thread, so it checks whether the game thread is supposed to abort
+                if (AbortGameThread)
+                    return;
+
+                Message = $"{i}";
+                Thread.Sleep(COUNTDOWN_FREQUENCY);
+            }
+
+            Message = EMPTY_LABEL_TEXT;
+        }
         #endregion
 
 
@@ -483,6 +728,22 @@ namespace Setnicka.PacMan
             Menu.AddUIElementRange(new List<IUIElement> { emptyLabel1, mainLabel, emptyLabel2, buttonContinue, emptyLabel3, buttonEscape });
 
             MenuManager = new MenuManager(Menu);
+        }
+
+        private void InitializeLabels()
+        {
+            Vector2D messageLabelPosition = (Level[Level.GetLength(0) - 1, 0].Position + OFFSET) + Vector2D.Right * 3;
+            Vector2D healthLabelPosition = messageLabelPosition + Vector2D.Down * 2;
+            Vector2D scoreLabelPosition = healthLabelPosition + Vector2D.Down * 2;
+
+            MessageLabel = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Custom, messageLabelPosition, MAIN_LABEL_FOREGROUND_COLOR, MAIN_LABEL_BACKGROUND_COLOR);
+
+            HealthLabel = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Custom, healthLabelPosition, MAIN_LABEL_FOREGROUND_COLOR, MAIN_LABEL_BACKGROUND_COLOR);
+
+            ScoreLabel = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Custom, scoreLabelPosition, MAIN_LABEL_FOREGROUND_COLOR, MAIN_LABEL_BACKGROUND_COLOR);
+
+            HealthMessage = $"Health: {Player.Health}";
+            ScoreMessage = $"Score: {Score}";
         }
 
         private void GoToMenu(object sender, KeyEventArgs keyEventArgs)
@@ -514,6 +775,7 @@ namespace Setnicka.PacMan
         Collision,
         Menu,
         Win,
+        Refresh,
         Finished
     }
 }

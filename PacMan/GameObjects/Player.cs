@@ -17,6 +17,12 @@ namespace Setnicka.PacMan
             Health = STARTING_HEALTH;
         }
 
+        public Player(GameObject[,] level, Vector2D startingPosition, int health, int score) : this(level, startingPosition)
+        {
+            Health = health;
+            Score = score;
+        }
+
         #region Event
         public event EventHandler GameWon;
         #endregion
@@ -37,7 +43,7 @@ namespace Setnicka.PacMan
             {
                 return health;
             }
-            private set
+            set
             {
                 health = value;
             }
@@ -99,6 +105,7 @@ namespace Setnicka.PacMan
                 }
 
                 bool containsBoost = empty.ContainsBoost;
+                bool containsCoin = empty.ContainsCoin;
 
                 // Move the player and redraw the tiles
                 Level[Position.X, Position.Y] = new Empty(Level, Position);
@@ -109,6 +116,8 @@ namespace Setnicka.PacMan
 
                 if (containsBoost)
                     return MoveResult.Boost;
+                else if (containsCoin)
+                    return MoveResult.Coin;
             }
             else if(Level[moveToTile.X, moveToTile.Y] is Ghost ghost)
             {
@@ -159,7 +168,7 @@ namespace Setnicka.PacMan
 
         private void CountAvailableCoins()
         {
-            AvailableCoins = 0;
+            AvailableCoins = (Score - 1);
 
             foreach (GameObject gameObject in Level)
             {

@@ -18,5 +18,9 @@ Ovládání
 	Zobrazení Menu, Hry i LevelEditoru lze refreshnout (například po změnení velikosti okna konzole) pomocí klávesy R.
 		
 
-Pro optimální vykreslování je nejlepší mít nastaveny barvy v konzoli na černé pozadí a bílý text
-AI duchů funguje nejlépe v levelech, které jsou tvořeny uličkami o šířce 1
+Poznámky pro hraní hry
+	Pro optimální vykreslování je nejlepší mít nastaveny barvy v konzoli na černé pozadí a bílý text
+
+Poznámky pro tvoření levelů
+	AI duchů funguje nejlépe v levelech, které jsou tvořeny uličkami o šířce 1
+	Výherní zprávu dostane hráč pouze v levelech, které obsahují aspoň jeden coin
