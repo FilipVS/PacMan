@@ -68,6 +68,7 @@ namespace Setnicka.PacMan
                 if (order == 1)
                     break;
 
+                // Check all the tiles around and try to find the next order tile
                 // TODO: Improve this mess (4x repeated code)
                 checkedTile = currentlyOn + Vector2D.Up;
                 if(!Vector2D.VectorOutOf2DArray(MazeMap.GetLength(0), MazeMap.GetLength(1), checkedTile))
@@ -255,7 +256,11 @@ namespace Setnicka.PacMan
             else if (Level[moveToTile.X, moveToTile.Y] is Player player)
             {
                 return MoveResult.Collision;
-            }
+            }/*
+            else if(Level[moveToTile.X, moveToTile.Y] is Ghost ghost)
+            {
+
+            }*/
 
             // Redraw the ghost
             Print(GameManager.OFFSET);
@@ -281,7 +286,7 @@ namespace Setnicka.PacMan
             else
                 movableTilesAround.Remove(Level[(Position + new Vector2D(Heading)).X, (Position + new Vector2D(Heading)).Y]);
 
-            // Does the ghost have more options to go --> don't go next to player
+            // Does the ghost have more options to go --> don't go on player
             Avoid<Player>();
 
             if (!Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), invertedMoveTile) && movableTilesAround.Contains(Level[invertedMoveTile.X, invertedMoveTile.Y]))
@@ -325,6 +330,49 @@ namespace Setnicka.PacMan
                     break;
                 }
             }
+        }
+
+        // Methods for choosing desired tile
+        /// <summary>
+        /// Aims directly at player
+        /// </summary>
+        protected void AimAtPlayer()
+        {
+            DesiredTile = PlayerPositionThisTurn;
+        }
+
+        /// <summary>
+        /// Aims in front of the player
+        /// </summary>
+        protected void AimInFrontOfPlayer()
+        {
+            Vector2D playerHeading = PlayerPositionThisTurn - PlayerPositionLastTurn;
+
+            Vector2D desiredTile = PlayerPositionThisTurn + playerHeading;
+
+            // Tries to aim to position that the player is heading towards
+            if (!Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), desiredTile))
+                if (!(Level[desiredTile.X, desiredTile.Y] is Wall))
+                {
+                    DesiredTile = desiredTile;
+                    return;
+                }
+
+            // If that position is unachievable, he aims directly for the player
+            DesiredTile = PlayerPositionThisTurn;
+        }
+
+        /// <summary>
+        /// Aims at the position that the player left
+        /// </summary>
+        protected void AimBehindPlayer()
+        {
+            // In order to follow player from behind he aims initially to the tile that player came from and
+            // switches directly to the tile with player when close
+            if (Position.DistanceTo(PlayerPositionThisTurn) > 1)
+                DesiredTile = PlayerPositionLastTurn;
+            else
+                DesiredTile = PlayerPositionThisTurn;
         }
         #endregion
     }

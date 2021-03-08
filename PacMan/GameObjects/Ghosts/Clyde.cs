@@ -23,24 +23,19 @@ namespace Setnicka.PacMan
         #region Methods
         protected override void ChooseDesiredTile()
         {
-            BlinkyChoose();
+            // If inverted move, ghosts allways aim at player
+            if (InvertedMove)
+            {
+                AimAtPlayer();
+                return;
+            }
+
+            AimBehindPlayer();
 
             if (Position.DistanceTo(PlayerPositionThisTurn) < MINIMAL_DISTANCE_FROM_PLAYER)
                 InvertedMove = true;
-            else
-                InvertedMove = false;
-
-            void BlinkyChoose()
-            {
-                base.ChooseDesiredTile();
-
-                // In order to follow player from behind he aims initially to the tile that player came from and
-                // switches directly to the tile with player when close
-                if (Position.DistanceTo(PlayerPositionThisTurn) > 1)
-                    DesiredTile = PlayerPositionLastTurn;
-                else
-                    DesiredTile = PlayerPositionThisTurn;
-            }
+           /* else
+                InvertedMove = false;*/
         }
 
         protected override void Draw()

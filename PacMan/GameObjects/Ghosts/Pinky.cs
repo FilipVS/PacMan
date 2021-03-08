@@ -23,21 +23,15 @@ namespace Setnicka.PacMan
         {
             base.ChooseDesiredTile();
 
-            Vector2D playerHeading = PlayerPositionThisTurn - PlayerPositionLastTurn;
 
-            Vector2D desiredTile = PlayerPositionThisTurn + playerHeading;
+            // If inverted move, ghosts allways aim at player
+            if (InvertedMove)
+            {
+                AimAtPlayer();
+                return;
+            }
 
-            // Tries to aim to position that the player is heading towards
-            if(!Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), desiredTile))
-                if(!(Level[desiredTile.X, desiredTile.Y] is Wall))
-                {
-                    DesiredTile = desiredTile;
-                    base.ChooseDesiredTile();
-                    return;
-                }
-
-            // If that position is unachievable, he aims directly for the player
-            DesiredTile = PlayerPositionThisTurn;
+            AimInFrontOfPlayer();
         }
 
         protected override void Draw()

@@ -13,6 +13,8 @@ namespace Setnicka.PacMan
         // For how many Updates does the ghost commit to a certain play-style
         private const int COMMIT_TO_MODE_FOR = 3;
 
+        private const int MINIMAL_DISTANCE_FROM_PLAYER_CLYDE_MODE = 4;
+
         /// <param name="level">The level that the GameObject is associated with</param>
         /// <param name="startingPosition">The starting position of the GameObject in the level</param>
         /// <param name="playerStartingPosition">The starting position of the player within the level</param>
@@ -31,7 +33,13 @@ namespace Setnicka.PacMan
         #region Methods
         protected override void ChooseDesiredTile()
         {
-            InvertedMove = false;
+
+            // If inverted move, ghosts allways aim at player
+            if (InvertedMove)
+            {
+                AimAtPlayer();
+                return;
+            }
 
             if(DecisionTimer == 0)
             {
@@ -52,60 +60,24 @@ namespace Setnicka.PacMan
             switch (PlayStyle)
             {
                 case PlayStyle.Blinky:
-                    BlinkyChoose();
+                    AimBehindPlayer();
                     break;
                 case PlayStyle.Pinky:
-                    PinkyChoose();
+                    AimInFrontOfPlayer();
                     break;
                 case PlayStyle.Clyde:
-                    ClydeChoose();
+                    AimBehindPlayer();
+
+                    if (Position.DistanceTo(PlayerPositionThisTurn) < MINIMAL_DISTANCE_FROM_PLAYER_CLYDE_MODE)
+                        InvertedMove = true;
+                    /*else
+                        InvertedMove = false;*/
                     break;
                 default:
                     break;
             }
 
             DecisionTimer--;
-
-            void BlinkyChoose()
-            {
-                base.ChooseDesiredTile();
-
-                // In order to follow player from behind he aims initially to the tile that player came from and
-                // switches directly to the tile with player when close
-                if (Position.DistanceTo(PlayerPositionThisTurn) > 1)
-                    DesiredTile = PlayerPositionLastTurn;
-                else
-                    DesiredTile = PlayerPositionThisTurn;
-            }
-
-            void PinkyChoose()
-            {
-                base.ChooseDesiredTile();
-
-                Vector2D playerHeading = PlayerPositionThisTurn - PlayerPositionLastTurn;
-
-                Vector2D desiredTile = PlayerPositionThisTurn + playerHeading;
-
-                // Tries to aim to position that the player is heading towards
-                if (!Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), desiredTile))
-                    if (!(Level[desiredTile.X, desiredTile.Y] is Wall))
-                    {
-                        DesiredTile = desiredTile;
-                        base.ChooseDesiredTile();
-                        return;
-                    }
-
-                // If that position is unachievable, he aims directly for the player
-                DesiredTile = PlayerPositionThisTurn;
-            }
-
-            void ClydeChoose()
-            {
-                BlinkyChoose();
-
-                if (Position.DistanceTo(PlayerPositionThisTurn) < 3)
-                    InvertedMove = true;
-            }
         }
 
         protected override void Draw()
@@ -116,6 +88,7 @@ namespace Setnicka.PacMan
             Console.Write(APPEARANCE);
         }
         #endregion
+
     }
 
     /// <summary>

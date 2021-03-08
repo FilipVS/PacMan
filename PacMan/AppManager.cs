@@ -185,11 +185,9 @@ namespace Setnicka.PacMan
         }
         private void PlayLevel2()
         {
-            string pathToLevel = GetPathToLevels() + "Level1.txt";
+            string pathToLevel = GetPathToLevels() + "Level2.txt";
 
             PlayLevel(pathToLevel);
-
-            // TODO: Set proper path
         }
         private void PlayLevel3()
         {
