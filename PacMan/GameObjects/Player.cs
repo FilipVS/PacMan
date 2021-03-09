@@ -17,23 +17,15 @@ namespace Setnicka.PacMan
             Health = STARTING_HEALTH;
         }
 
-        public Player(GameObject[,] level, Vector2D startingPosition, int health, int score) : this(level, startingPosition)
+        public Player(GameObject[,] level, Vector2D startingPosition, int health) : this(level, startingPosition)
         {
             Health = health;
-            Score = score;
         }
-
-        #region Event
-        public event EventHandler GameWon;
-        #endregion
 
         #region Fields
         private int health;
 
         private int score;
-
-        // -1 means that coins weren't counted yet
-        private int availableCoins = -1;
         #endregion
 
         #region Properties
@@ -46,34 +38,6 @@ namespace Setnicka.PacMan
             set
             {
                 health = value;
-            }
-        }
-
-        public int Score
-        {
-            get
-            {
-                return score;
-            }
-            private set
-            {
-                score = value;
-            }
-        }
-
-        private int AvailableCoins
-        {
-            get
-            {
-                // If coins weren't counted yet, count them
-                if (availableCoins == -1)
-                    CountAvailableCoins();
-
-                return availableCoins;
-            }
-            set
-            {
-                availableCoins = value;
             }
         }
         #endregion
@@ -97,13 +61,6 @@ namespace Setnicka.PacMan
 
             if(Level[moveToTile.X, moveToTile.Y] is Empty empty)
             {
-                if (empty.ContainsCoin)
-                {
-                    Score++;
-                    if (Score == AvailableCoins)
-                        GameWon(this, EventArgs.Empty);
-                }
-
                 bool containsBoost = empty.ContainsBoost;
                 bool containsCoin = empty.ContainsCoin;
 
@@ -163,17 +120,6 @@ namespace Setnicka.PacMan
             catch (IndexOutOfRangeException)
             {
                 Heading = originalHeading;
-            }
-        }
-
-        private void CountAvailableCoins()
-        {
-            AvailableCoins = (Score - 1);
-
-            foreach (GameObject gameObject in Level)
-            {
-                if (gameObject is Empty empty && empty.ContainsCoin)
-                    AvailableCoins++;
             }
         }
         #endregion

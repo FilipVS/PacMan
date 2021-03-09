@@ -23,6 +23,8 @@ namespace Setnicka.PacMan
         #region Methods
         protected override void ChooseDesiredTile()
         {
+            base.ChooseDesiredTile();
+
             // If inverted move, ghosts allways aim at player
             if (InvertedMove)
             {

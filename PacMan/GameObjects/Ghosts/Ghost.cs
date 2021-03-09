@@ -10,9 +10,13 @@ namespace Setnicka.PacMan
     /// Contains maze-solving logic (it is the same for all ghosts)
     /// </summary>
     internal abstract class Ghost : MovableObject
-    { 
+    {
+        #region Constants
         protected const char APPEARANCE = '&';
+        private const int MAXIMUM_GHOSTS_AROUND = 1;
+        #endregion
 
+        #region Constructors
         /// <summary>
         /// Creates a new instance of Ghost with the appearance set to &
         /// </summary>
@@ -24,11 +28,12 @@ namespace Setnicka.PacMan
             PlayerPositionLastTurn = playerStartingPosition;
             PlayerPositionThisTurn = playerStartingPosition;
         }
+        #endregion
 
         #region Properties
         public int[,] MazeMap { get; private set; }
 
-        public Empty TileStanding { get; private set; }
+        public Empty TileStanding { get; set; }
 
         protected Vector2D PlayerPositionLastTurn { get; set; }
 
@@ -37,6 +42,9 @@ namespace Setnicka.PacMan
         protected Vector2D DesiredTile { get; set; }
 
         public bool InvertedMove { get; set; }
+
+        // Used ofr telling the ghosts about tiles he is not supposed to use
+        public Vector2D Beware {get; set;}
         #endregion
 
 
@@ -173,7 +181,7 @@ namespace Setnicka.PacMan
 
                     foreach (GameObject tile2 in GetMovableTilesAround(tile.Position))
                     {
-                        if(MazeMap[tile2.Position.X, tile2.Position.Y] == 0 && !tile2.Equals(Position))
+                        if(MazeMap[tile2.Position.X, tile2.Position.Y] == 0 && !tile2.Position.Equals(Position) && !tile2.Position.Equals(Beware))
                             nextOrderTiles.Add(tile2);
                     }
                 }
@@ -226,9 +234,25 @@ namespace Setnicka.PacMan
             DetermineHeading();
 
             // If the ghost doesn't want to go anywhere
-            if (DesiredTile.Equals(Position))
+            // Or if there are too many ghosts around (so they don't vlock each other's movement, the ghost in the middle will just stop)
+            if (DesiredTile.Equals(Position) || (CountGhostsAround() > MAXIMUM_GHOSTS_AROUND))
+            {
+                Beware = null;
                 return MoveResult.None;
+            }
+            /*
+            // TODO: Delete once finishes testing
+            Vector2D testPos = DesiredTile + GameManager.OFFSET;
 
+            Console.SetCursorPosition(testPos.X, testPos.Y);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("X");
+
+            System.Threading.Thread.Sleep(1000);
+
+            Level[DesiredTile.X, DesiredTile.Y].Print(GameManager.OFFSET);*/
+            // TODO: Delete
+            
             Vector2D moveToTile;
 
             if (!InvertedMove)
@@ -236,6 +260,38 @@ namespace Setnicka.PacMan
             // Inverts the ghost's heading
             else
                 moveToTile = InvertMove();
+
+            // Check we are not aiming at beware
+            if (Beware != null && moveToTile.Equals(Beware))
+            {
+                // TODO: Maybe not just stop?
+                DesiredTile = Position.Copy();
+            }
+
+            // If the ghost doesn't want to go anywhere
+            if (DesiredTile.Equals(Position))
+            {
+                Beware = null;
+                return MoveResult.None;
+            }
+
+            // TODO: Delete
+            /*Vector2D pos = moveToTile + GameManager.OFFSET;
+            Console.SetCursorPosition(pos.X, pos.Y);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("X");
+
+            Console.ReadKey(true);
+
+            try
+            {
+                Level[pos.X, pos.Y].Print(GameManager.OFFSET);
+            }
+            catch (Exception)
+            {
+
+            }*/
+            // TODO: Delete
 
             if (Level[moveToTile.X, moveToTile.Y] is Empty empty)
             {
@@ -255,17 +311,58 @@ namespace Setnicka.PacMan
             }
             else if (Level[moveToTile.X, moveToTile.Y] is Player player)
             {
+                Beware = null;
                 return MoveResult.Collision;
-            }/*
+            }
             else if(Level[moveToTile.X, moveToTile.Y] is Ghost ghost)
             {
+                // Switch the tiles we are standing on
+                Empty myTileStanding = TileStanding;
+                TileStanding = ghost.TileStanding;
+                ghost.TileStanding = myTileStanding;
 
-            }*/
+                // Move us
+                Vector2D myPosition = Position;
+                Level[ghost.Position.X, ghost.Position.Y] = this;
+                Level[myPosition.X, myPosition.Y] = ghost;
+
+                // Reset our positions
+                ghost.Position = myPosition.Copy();
+                Position = moveToTile.Copy();
+
+                // Redraw us
+                ghost.Print(GameManager.OFFSET);
+                this.Print(GameManager.OFFSET);
+
+                // Tell the other ghost not to undo me
+                ghost.Beware = Position.Copy();
+            }
 
             // Redraw the ghost
             Print(GameManager.OFFSET);
 
+            Beware = null;
             return MoveResult.None;
+        }
+
+        /// <summary>
+        /// Counts how many ghosts are around this one
+        /// If the number is higher than one, the ghost will not move - to prevent blocking
+        /// </summary>
+        /// <returns></returns>
+        private int CountGhostsAround()
+        {
+            List<GameObject> movableTilesAround = GetMovableTilesAround(Position);
+
+            int numOfGhosts = 0;
+
+            foreach(GameObject gameObject in movableTilesAround)
+            {
+                if (gameObject is Ghost)
+                    numOfGhosts++;
+            }
+
+            return numOfGhosts;
         }
 
         /// <summary>
@@ -277,8 +374,13 @@ namespace Setnicka.PacMan
             List<GameObject> movableTilesAround = GetMovableTilesAround(Position);
             Vector2D invertedMoveTile = Position - (new Vector2D(Heading));
 
+            // TODO: Delete if proves useless
             // Does the ghost have more options to go --> don't go on another ghost
-            Avoid<Ghost>();
+            //Avoid<Ghost>();
+
+            // If the only available move is to go to go on player, do not move
+            if (movableTilesAround.Count == 1 && Level[movableTilesAround[0].Position.X, movableTilesAround[0].Position.Y] is Player)
+                return Position.Copy();
 
             // Only way to move --> go uninverted
             if (movableTilesAround.Count == 1)
@@ -286,14 +388,12 @@ namespace Setnicka.PacMan
             else
                 movableTilesAround.Remove(Level[(Position + new Vector2D(Heading)).X, (Position + new Vector2D(Heading)).Y]);
 
-            // Does the ghost have more options to go --> don't go on player
-            Avoid<Player>();
-
             if (!Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), invertedMoveTile) && movableTilesAround.Contains(Level[invertedMoveTile.X, invertedMoveTile.Y]))
                 return invertedMoveTile;
             else
                 return movableTilesAround[0].Position;
 
+            // TODO: Delete if proves useless
             void Avoid<T>()
             {
                 while (movableTilesAround.Count > 1)
@@ -330,6 +430,8 @@ namespace Setnicka.PacMan
                     break;
                 }
             }
+
+            // The rest is done in the overrided method of each ghost
         }
 
         // Methods for choosing desired tile

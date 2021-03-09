@@ -61,8 +61,9 @@ namespace Setnicka.PacMan
                 throw new ArgumentNullException("level", "Level cannot be null!");
             this.Level = level;
 
+            AvailableCoins = 0;
 
-            // player and ghosts assignment
+            // player and ghosts assignment, counting the number of coins
             Ghosts = new List<Ghost>();
             foreach (GameObject tile in level)
             {
@@ -70,13 +71,14 @@ namespace Setnicka.PacMan
                     this.Player = player;
                 else if (tile is Ghost ghost)
                     Ghosts.Add(ghost);
+                if (tile is Empty empty && empty.ContainsCoin)
+                    AvailableCoins++;
             }
             // Check that player was found
             if (Player == null)
                 throw new ArgumentNullException("level", "Player missing");
 
-            // Subscribe Win event handler to Player's GameWon event
-            Player.GameWon += PlayerWon;
+
 
             // Initializing the inputManager and subscribing individual event handlers
             List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { GameKeyBinding.MoveUp, GameKeyBinding.MoveUpSecondary, GameKeyBinding.MoveDown, GameKeyBinding.MoveDownSecondary, GameKeyBinding.MoveLeft, GameKeyBinding.MoveLeftSecondary, GameKeyBinding.MoveRight, GameKeyBinding.MoveRightSecondary, GameKeyBinding.GoToMenu, GameKeyBinding.Refresh };
@@ -101,12 +103,16 @@ namespace Setnicka.PacMan
         private string healthMessage = EMPTY_LABEL_TEXT;
 
         private string scoreMessage = EMPTY_LABEL_TEXT;
+
+        private int score = 0;
         #endregion
 
         #region Properties
         private GameObject[,] Level { get; set; }
         private Player Player { get; set; }
         private List<Ghost> Ghosts { get; set; }
+
+        private List<Ghost> EatenGhosts { get; set; } = new List<Ghost>();
 
         private InputManager InputManager { get; set; }
 
@@ -214,8 +220,24 @@ namespace Setnicka.PacMan
             }
         }
 
+        // Number of available coins
+        private int AvailableCoins { get; }
+
         // For counting score
-        private int Score { get; set; } = 0;
+        private int Score
+        {
+            get
+            {
+                return score;
+            }
+            set
+            {
+                score = value;
+
+                if (score == AvailableCoins)
+                    PlayerWon();
+            }
+        }
 
 
         // Stores the information about time left for chasing ghosts
@@ -280,7 +302,7 @@ namespace Setnicka.PacMan
                         return;
                     }
                 }
-                
+
             }
 
 
@@ -349,7 +371,7 @@ namespace Setnicka.PacMan
 
             // Set proper color scheme
             GameColors.ChasingGhosts = true;
-            GameColors.ChasingGhostsMainVersion = true;     
+            GameColors.ChasingGhostsMainVersion = true;
 
 
             // The update sequence itself
@@ -381,7 +403,13 @@ namespace Setnicka.PacMan
             {
                 MoveResult playerMove = Player.Move();
                 if (playerMove == MoveResult.Boost)
+                {
                     timeLeft = CHASING_GHOSTS_FOR;
+
+                    // Set proper color scheme
+                    GameColors.ChasingGhosts = true;
+                    GameColors.ChasingGhostsMainVersion = true;
+                }
                 else if (playerMove == MoveResult.Collision)
                 {
                     CurrentRunningState = RunningState.Collision;
@@ -394,7 +422,7 @@ namespace Setnicka.PacMan
             void MoveGhosts()
             {
                 // Check if they are supposed to blink
-                if(timeLeft < (CHASING_GHOSTS_FOR * CHASING_GHOSTS_BLINKING))
+                if (timeLeft < (CHASING_GHOSTS_FOR * CHASING_GHOSTS_BLINKING))
                 {
                     // If they are currently in theair main version, go alternate, else go main
                     if (GameColors.ChasingGhostsMainVersion)
@@ -423,6 +451,97 @@ namespace Setnicka.PacMan
                 BoostTimeLeft = timeLeft;
                 CurrentRunningState = RunningState.On;
             }
+        }
+
+        /// <summary>
+        /// Used for returning ghosts that the player ate
+        /// </summary>
+        private void ReturnGhosts()
+        {
+            if (EatenGhosts.Count < 1)
+                return;
+
+            foreach (Ghost ghost in EatenGhosts)
+            {
+                // If the ghost's spawn point is not empty, break
+                if (!(Level[ghost.SpawnPoint.X, ghost.SpawnPoint.Y] is Empty))
+                    break;
+
+                // Else place the ghost and set up its information
+                Ghosts.Add(CreateNewGhost(ghost));
+
+                // Print the new ghost
+                Ghosts[Ghosts.Count - 1].Print(OFFSET);
+            }
+        }
+
+        /// <summary>
+        /// Is used when ghsot touches player in normal mode
+        /// </summary>
+        private void CollisionNormal()
+        {
+            if (Player.Health == 1)
+            {
+                PLayerLost();
+                return;
+            }
+
+            // Move all the movable objects to their starting positions
+            Level[Player.Position.X, Player.Position.Y] = new Empty(Level, Player.Position.Copy());
+
+            foreach (Ghost ghost in Ghosts)
+            {
+                Level[ghost.Position.X, ghost.Position.Y] = ghost.TileStanding;
+            }
+
+            // Create new player and level with correct stats
+            Player = new Player(Level, Player.SpawnPoint, (Player.Health - 1));
+            HealthMessage = $"Health: {Player.Health}";
+            InputManager.KeyPressed += Player.ChangeHeading;
+
+            for (int i = 0; i < Ghosts.Count; i++)
+                Ghosts[i] = CreateNewGhost(Ghosts[i]);
+
+            // Put the newely created objects into level
+            Level[Player.Position.X, Player.Position.Y] = Player;
+            foreach (Ghost ghost in Ghosts)
+            {
+                Level[ghost.Position.X, ghost.Position.Y] = ghost;
+            }
+
+
+            // Start running the game again
+            CurrentRunningState = RunningState.On;
+        }
+
+        /// <summary>
+        /// Is used when player eats ghost in ghost-chasing mode
+        /// </summary>
+        private void CollisionChasingGhosts()
+        {
+            // TODO: Finish
+        }
+
+        /// <summary>
+        /// Used to re-create a ghost at its spawn point
+        /// </summary>
+        private Ghost CreateNewGhost(Ghost oldGhost)
+        {
+            Type typeOFGhost = oldGhost.GetType();
+            Ghost newGhost;
+
+            if (typeOFGhost.FullName == typeof(Blinky).ToString())
+                newGhost = new Blinky(Level, oldGhost.SpawnPoint, Player.Position);
+            else if (typeOFGhost.FullName == typeof(Clyde).ToString())
+                newGhost = new Clyde(Level, oldGhost.SpawnPoint, Player.Position);
+            else if (typeOFGhost.FullName == typeof(Inky).ToString())
+                newGhost = new Inky(Level, oldGhost.SpawnPoint, Player.Position);
+            else if (typeOFGhost.FullName == typeof(Pinky).ToString())
+                newGhost = new Pinky(Level, oldGhost.SpawnPoint, Player.Position);
+            else
+                throw new ArgumentException("Unknown ghost");
+
+            return newGhost;
         }
 
         /// <summary>
@@ -504,58 +623,7 @@ namespace Setnicka.PacMan
                 }
             }
 
-            void CollisionNormal()
-            {
-                if (Player.Health == 1)
-                {
-                    PLayerLost();
-                    return;
-                }
-
-                // Move all the movable objects to their starting positions
-                Level[Player.Position.X, Player.Position.Y] = new Empty(Level, Player.Position.Copy());
-
-                foreach(Ghost ghost in Ghosts)
-                {
-                    Level[ghost.Position.X, ghost.Position.Y] = ghost.TileStanding;
-                }
-
-                // Create new player and level with correct stats
-                Player = new Player(Level, Player.SpawnPoint, (Player.Health - 1), Score);
-                HealthMessage = $"Health: {Player.Health}";
-                Player.GameWon += PlayerWon;
-                InputManager.KeyPressed += Player.ChangeHeading;
-
-                for(int i = 0; i < Ghosts.Count; i++)
-                {
-                    Type typeOFGhost = Ghosts[i].GetType();
-
-                    if (typeOFGhost.FullName == typeof(Blinky).ToString())
-                        Ghosts[i] = new Blinky(Level, Ghosts[i].SpawnPoint, Player.Position);
-                    else if(typeOFGhost.FullName == typeof(Clyde).ToString())
-                        Ghosts[i] = new Clyde(Level, Ghosts[i].SpawnPoint, Player.Position);
-                    else if (typeOFGhost.FullName == typeof(Inky).ToString())
-                        Ghosts[i] = new Inky(Level, Ghosts[i].SpawnPoint, Player.Position);
-                    else if (typeOFGhost.FullName == typeof(Pinky).ToString())
-                        Ghosts[i] = new Pinky(Level, Ghosts[i].SpawnPoint, Player.Position);
-                }
-
-                // Put the newely created objects into level
-                Level[Player.Position.X, Player.Position.Y] = Player;
-                foreach (Ghost ghost in Ghosts)
-                {
-                    Level[ghost.Position.X, ghost.Position.Y] = ghost;
-                }
-
-
-                // Start running the game again
-                CurrentRunningState = RunningState.On;
-            }
-
-            void CollisionChasingGhosts()
-            {
-                // TODO: Finish
-            }
+            
         }
 
         /// <summary>
@@ -653,9 +721,13 @@ namespace Setnicka.PacMan
             }
         }
 
-        private void PlayerWon(object sender, EventArgs eventArgs)
+        private void PlayerWon()
         {
-            CurrentRunningState = RunningState.Win;
+            MessageDialog messageDialog = new MessageDialog("Congratulations, you won!");
+
+            messageDialog.Run();
+
+            CurrentRunningState = RunningState.Finished;
         }
 
         private void PLayerLost()

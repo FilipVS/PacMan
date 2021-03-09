@@ -19,7 +19,7 @@ namespace Setnicka.PacMan
         }
 
         #region Properties
-        public Vector2D Position { get; protected set; }
+        public Vector2D Position { get; set; }
 
         protected GameObject[,] Level { get; }
         #endregion
