@@ -15,6 +15,8 @@ namespace Setnicka.PacMan
         public Player(GameObject[,] level, Vector2D startingPosition) : base(level, startingPosition)
         {
             Health = STARTING_HEALTH;
+
+            DesiredTile = startingPosition.Copy();
         }
 
         public Player(GameObject[,] level, Vector2D startingPosition, int health) : this(level, startingPosition)
@@ -24,8 +26,6 @@ namespace Setnicka.PacMan
 
         #region Fields
         private int health;
-
-        private int score;
         #endregion
 
         #region Properties
@@ -40,6 +40,9 @@ namespace Setnicka.PacMan
                 health = value;
             }
         }
+
+        // Where did the player want to go previously
+        public Vector2D DesiredTile { get; private set; }
         #endregion
 
         #region Methods
@@ -53,13 +56,13 @@ namespace Setnicka.PacMan
 
         public override MoveResult Move()
         {
-            Vector2D moveToTile = Position + (new Vector2D(Heading));
+            DesiredTile = Position + (new Vector2D(Heading));
 
             // If the destination tile is outside of the level
-            if (Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), moveToTile))
+            if (Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), DesiredTile))
                 return MoveResult.None;
 
-            if(Level[moveToTile.X, moveToTile.Y] is Empty empty)
+            if(Level[DesiredTile.X, DesiredTile.Y] is Empty empty)
             {
                 bool containsBoost = empty.ContainsBoost;
                 bool containsCoin = empty.ContainsCoin;
@@ -67,7 +70,7 @@ namespace Setnicka.PacMan
                 // Move the player and redraw the tiles
                 Level[Position.X, Position.Y] = new Empty(Level, Position);
                 Level[Position.X, Position.Y].Print(GameManager.OFFSET);
-                Position = moveToTile;
+                Position = DesiredTile;
                 Level[Position.X, Position.Y] = this;
                 Level[Position.X, Position.Y].Print(GameManager.OFFSET);
 
@@ -76,7 +79,7 @@ namespace Setnicka.PacMan
                 else if (containsCoin)
                     return MoveResult.Coin;
             }
-            else if(Level[moveToTile.X, moveToTile.Y] is Ghost ghost)
+            else if(Level[DesiredTile.X, DesiredTile.Y] is Ghost ghost)
             {
                 return MoveResult.Collision;
             }

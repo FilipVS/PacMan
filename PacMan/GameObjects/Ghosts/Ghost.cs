@@ -264,7 +264,6 @@ namespace Setnicka.PacMan
             // Check we are not aiming at beware
             if (Beware != null && moveToTile.Equals(Beware))
             {
-                // TODO: Maybe not just stop?
                 DesiredTile = Position.Copy();
             }
 
@@ -396,7 +395,7 @@ namespace Setnicka.PacMan
             // TODO: Delete if proves useless
             void Avoid<T>()
             {
-                while (movableTilesAround.Count > 1)
+                while (movableTilesAround.Count > 0)
                 {
                     int movableTilesBefore = movableTilesAround.Count;
 

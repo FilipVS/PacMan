@@ -31,7 +31,6 @@ namespace Setnicka.PacMan
         private const int COUNTDOWN_FREQUENCY = 750;
         // Scoring
         private const int SCORE_FOR_COIN = 1;
-        private const int SCORE_FOR_GHOST = 100;
 
         // Menu constats
 
@@ -72,7 +71,7 @@ namespace Setnicka.PacMan
                 else if (tile is Ghost ghost)
                     Ghosts.Add(ghost);
                 if (tile is Empty empty && empty.ContainsCoin)
-                    AvailableCoins++;
+                    AvailableCoins += SCORE_FOR_COIN;
             }
             // Check that player was found
             if (Player == null)
@@ -134,10 +133,12 @@ namespace Setnicka.PacMan
             set
             {
                 // If player already won, the currentGameState can't be overwritten
-                if (currentGameState != RunningState.Win)
+                if (currentGameState != RunningState.Win && RunningStateOverwritable)
                     currentGameState = value;
             }
         }
+        // This is used to prevent overwriting of the CurrentRunningState
+        private bool RunningStateOverwritable { get; set; } = true;
 
         private Menu Menu { get; set; }
         private MenuManager MenuManager { get; set; }
@@ -235,7 +236,7 @@ namespace Setnicka.PacMan
                 score = value;
 
                 if (score == AvailableCoins)
-                    PlayerWon();
+                    CurrentRunningState = RunningState.Win;
             }
         }
 
@@ -272,6 +273,9 @@ namespace Setnicka.PacMan
             // The update sequence itself
             while (true)
             {
+                // If any ghosts need to be respawned, respawn them
+                ReturnGhosts();
+
                 PlayerMove();
 
                 if (AbortGameThread)
@@ -311,11 +315,16 @@ namespace Setnicka.PacMan
             {
                 MoveResult playerMove = Player.Move();
                 if (playerMove == MoveResult.Boost)
+                {
                     CurrentRunningState = RunningState.ChasingGhosts;
+                    RunningStateOverwritable = false;
+                }
                 else if (playerMove == MoveResult.Collision)
                 {
                     CurrentRunningState = RunningState.Collision;
-                    Thread.Sleep(GAME_UPDATE_FREQUENCY);
+                    RunningStateOverwritable = false;
+                    // Maybe back to UPDATE_FREQUENCY
+                    Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
                 }
                 else if (playerMove == MoveResult.Coin)
                     IncreaseScore(SCORE_FOR_COIN);
@@ -413,7 +422,7 @@ namespace Setnicka.PacMan
                 else if (playerMove == MoveResult.Collision)
                 {
                     CurrentRunningState = RunningState.Collision;
-                    Thread.Sleep(GAME_UPDATE_FREQUENCY);
+                    Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
                 }
                 else if (playerMove == MoveResult.Coin)
                     IncreaseScore(SCORE_FOR_COIN);
@@ -436,8 +445,9 @@ namespace Setnicka.PacMan
                     ghost.InvertedMove = true;
                     if (ghost.Move() == MoveResult.Collision)
                     {
+                        ghost.InvertedMove = false;
                         CurrentRunningState = RunningState.Collision;
-                        Thread.Sleep(GAME_UPDATE_FREQUENCY);
+                        Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
                         break;
                     }
                     ghost.InvertedMove = false;
@@ -458,21 +468,33 @@ namespace Setnicka.PacMan
         /// </summary>
         private void ReturnGhosts()
         {
+            List<int> removeAtIndex = new List<int>();
+
             if (EatenGhosts.Count < 1)
                 return;
 
-            foreach (Ghost ghost in EatenGhosts)
+            for(int i = 0; i < EatenGhosts.Count; i++)
             {
                 // If the ghost's spawn point is not empty, break
-                if (!(Level[ghost.SpawnPoint.X, ghost.SpawnPoint.Y] is Empty))
-                    break;
+                if (!(Level[EatenGhosts[i].SpawnPoint.X, EatenGhosts[i].SpawnPoint.Y] is Empty))
+                    continue;
 
-                // Else place the ghost and set up its information
-                Ghosts.Add(CreateNewGhost(ghost));
+                // Else create the ghost and set up its information
+                Ghosts.Add(CreateNewGhost(EatenGhosts[i]));
+
+                // Put the ghost on the level
+                Level[EatenGhosts[i].SpawnPoint.X, EatenGhosts[i].SpawnPoint.Y] = EatenGhosts[i];
 
                 // Print the new ghost
-                Ghosts[Ghosts.Count - 1].Print(OFFSET);
+                Level[EatenGhosts[i].SpawnPoint.X, EatenGhosts[i].SpawnPoint.Y].Print(OFFSET);
+
+                // Set the ghosts's index to be removed from EatenGhosts
+                removeAtIndex.Add(i);
             }
+
+            // Remove the placed ghosts
+            foreach (int num in removeAtIndex)
+                EatenGhosts.RemoveAt(num);
         }
 
         /// <summary>
@@ -508,10 +530,6 @@ namespace Setnicka.PacMan
             {
                 Level[ghost.Position.X, ghost.Position.Y] = ghost;
             }
-
-
-            // Start running the game again
-            CurrentRunningState = RunningState.On;
         }
 
         /// <summary>
@@ -519,7 +537,33 @@ namespace Setnicka.PacMan
         /// </summary>
         private void CollisionChasingGhosts()
         {
-            // TODO: Finish
+            // Check if player really collided with ghost
+            if (!(Level[Player.DesiredTile.X, Player.DesiredTile.Y] is Ghost))
+            {
+                BeforeReturn();
+                return;
+            }
+
+            // Remove the ghost from the Level and add him to eaten ghosts
+            for(int i = 0; i < Ghosts.Count; i++)
+            {
+                if(Ghosts[i] == Level[Player.DesiredTile.X, Player.DesiredTile.Y])
+                {
+                    EatenGhosts.Add(Ghosts[i]);
+                    Ghosts.RemoveAt(i);
+                    Level[Player.DesiredTile.X, Player.DesiredTile.Y] = new Empty(Level, Player.DesiredTile.Copy());
+                    Level[Player.DesiredTile.X, Player.DesiredTile.Y].Print(OFFSET);
+                    break;
+                }
+            }
+
+            BeforeReturn();
+
+            void BeforeReturn()
+            {
+                // Start running the game again
+                CurrentRunningState = RunningState.ChasingGhosts;
+            }
         }
 
         /// <summary>
@@ -557,11 +601,16 @@ namespace Setnicka.PacMan
             while (true)
             {
                 if (previousGamestate == CurrentRunningState)
+                {
+                    RunningStateOverwritable = true;
                     Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
+                }
                 else
                 {
                     RunningState previousGameStateCopy = previousGamestate;
                     previousGamestate = CurrentRunningState;
+
+                    RunningStateOverwritable = true;
 
                     switch (CurrentRunningState)
                     {
@@ -573,12 +622,21 @@ namespace Setnicka.PacMan
                             AbortThreads(true);
 
                             if (previousGameStateCopy == RunningState.ChasingGhosts)
-                                CollisionChasingGhosts();
+                                // TODO: Re-work
+                                CollisionNormal();
                             else
                                 CollisionNormal();
 
                             if (CurrentRunningState == RunningState.Finished)
+                            {
+                                BeforeExit();
                                 return;
+                            }
+
+                            if (previousGameStateCopy == RunningState.ChasingGhosts)
+                                CurrentRunningState = RunningState.ChasingGhosts;
+                            else
+                                CurrentRunningState = RunningState.On;
 
                             Print();
 
@@ -589,16 +647,21 @@ namespace Setnicka.PacMan
                             break;
                         case RunningState.Win:
                             AbortThreads(true);
-                            Console.SetCursorPosition(0, 0);
-                            Console.Write("Congratulations, you win!");
-                            break;
+
+                            PlayerWon();
+
+                            BeforeExit();
+                            return;
                         case RunningState.Menu:
                             AbortThreads(true);
 
                             MenuManager.Run();
 
                             if (CurrentRunningState == RunningState.Finished)
+                            {
+                                BeforeExit();
                                 return;
+                            }
 
                             Print();
 
@@ -623,7 +686,11 @@ namespace Setnicka.PacMan
                 }
             }
 
-            
+            void BeforeExit()
+            {
+                GameColors.ChasingGhosts = false;
+                GameColors.ChasingGhostsMainVersion = true;
+            }
         }
 
         /// <summary>
@@ -723,11 +790,9 @@ namespace Setnicka.PacMan
 
         private void PlayerWon()
         {
-            MessageDialog messageDialog = new MessageDialog("Congratulations, you won!");
+            MessageDialog messageDialog = new MessageDialog($"Congratulations, you won!");
 
             messageDialog.Run();
-
-            CurrentRunningState = RunningState.Finished;
         }
 
         private void PLayerLost()
@@ -743,7 +808,7 @@ namespace Setnicka.PacMan
         {
             Score += increaseBy;
 
-            ScoreMessage = $"Score: {Score}";
+            ScoreMessage = $"Score: {Score} / {AvailableCoins}";
         }
 
         /// <summary>
@@ -815,7 +880,7 @@ namespace Setnicka.PacMan
             ScoreLabel = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Custom, scoreLabelPosition, MAIN_LABEL_FOREGROUND_COLOR, MAIN_LABEL_BACKGROUND_COLOR);
 
             HealthMessage = $"Health: {Player.Health}";
-            ScoreMessage = $"Score: {Score}";
+            ScoreMessage = $"Score: {Score} / {AvailableCoins}";
         }
 
         private void GoToMenu(object sender, KeyEventArgs keyEventArgs)
