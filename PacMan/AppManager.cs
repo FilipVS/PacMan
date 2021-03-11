@@ -137,8 +137,7 @@ namespace Setnicka.PacMan
 
                 PlayGameSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, playLevel1Button, playLevel2Button, playLevel3Button, playCustomLevelButton, emptyLabel3, goToPreviousMenuButton });
                 PlayGameSubmenuManager = new MenuManager(PlayGameSubmenu);
-
-                // TODO: Add events to buttons
+                PlayGameSubmenuManager = new MenuManager(PlayGameSubmenu);
             }
 
             void InitializeOpenLevelEditorSubmenuAndManager()
@@ -170,8 +169,6 @@ namespace Setnicka.PacMan
                 List<ConsoleKey> numbers = new List<ConsoleKey>() { ConsoleKey.D0, ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.NumPad0, ConsoleKey.NumPad1, ConsoleKey.NumPad2, ConsoleKey.NumPad3, ConsoleKey.NumPad4, ConsoleKey.NumPad5, ConsoleKey.NumPad6, ConsoleKey.NumPad7, ConsoleKey.NumPad8, ConsoleKey.NumPad9 };
 
                 OpenLevelEditorSubmenuManager = new MenuManager(OpenLevelEditorSubmenu, numbers);
-
-                // TODO: Subscribe button events
             }
         }
 

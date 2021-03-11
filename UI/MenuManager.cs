@@ -54,7 +54,6 @@ namespace Setnicka.UI
         #region Methods
         public void Run()
         {
-            // TODO: Finish
             Print();
 
             CurrentMenuState = RunningState.On;
@@ -153,7 +152,10 @@ namespace Setnicka.UI
         {
             if (abortInputManager && InputManagerThread != null)
             {
-                InputManagerThread.Abort();
+                InputManager.AbortManager = true;
+
+                InputManagerThread.Join();
+
                 InputManagerThread = null;
             }
         }

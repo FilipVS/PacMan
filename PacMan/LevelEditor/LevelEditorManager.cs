@@ -44,6 +44,7 @@ namespace Setnicka.PacMan.LevelEditor
         private const string EMPTY_LABEL_TEXT = "";
 
         private const string MAIN_LABEL_TEXT = "Level Editor Menu";
+        private const string CONTINUE_BUTTON_TEXT = "Go back to level editor";
         private const string SAVE_BUTTON_TEXT = "Save level";
         private const string ESCAPE_BUTTON_TEXT = "Escape";
         #endregion
@@ -208,7 +209,9 @@ namespace Setnicka.PacMan.LevelEditor
             if (InputManagerThread == null)
                 return;
 
-            InputManagerThread.Abort();
+            InputManager.AbortManager = true;
+            InputManagerThread.Join();
+
             InputManagerThread = null;
         }
 
@@ -551,17 +554,22 @@ namespace Setnicka.PacMan.LevelEditor
 
             Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-            Button saveButton = new Button(SAVE_BUTTON_TEXT, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
-            saveButton.OnClick += SaveLevel;
-            saveButton.OnClick += Menu.DoExitMenu;
+            Button continueButton = new Button(CONTINUE_BUTTON_TEXT, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            continueButton.OnClick += Menu.DoExitMenu;
 
             Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 4, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-            Button escapeButton = new Button(ESCAPE_BUTTON_TEXT, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            Button saveButton = new Button(SAVE_BUTTON_TEXT, HorizontalAlignment.Center, 5, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            saveButton.OnClick += SaveLevel;
+            saveButton.OnClick += Menu.DoExitMenu;
+
+            Label emptyLabel4 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 6, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Button escapeButton = new Button(ESCAPE_BUTTON_TEXT, HorizontalAlignment.Center, 7, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
             escapeButton.OnClick += EscapeEditor;
             escapeButton.OnClick += Menu.DoExitMenu;
 
-            Menu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, saveButton, emptyLabel3, escapeButton });
+            Menu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, continueButton, emptyLabel3, saveButton, emptyLabel4, escapeButton });
             MenuManager = new MenuManager(Menu);
         }
 

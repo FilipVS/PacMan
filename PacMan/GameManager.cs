@@ -273,9 +273,6 @@ namespace Setnicka.PacMan
             // The update sequence itself
             while (true)
             {
-                // If any ghosts need to be respawned, respawn them
-                ReturnGhosts();
-
                 PlayerMove();
 
                 if (AbortGameThread)
@@ -774,7 +771,10 @@ namespace Setnicka.PacMan
         {
             if (abortInputManager && InputManagerThread != null)
             {
-                InputManagerThread.Abort();
+                InputManager.AbortManager = true;
+
+                InputManagerThread.Join();
+
                 InputManagerThread = null;
             }
             if(GameRunningThread != null)

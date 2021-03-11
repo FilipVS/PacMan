@@ -64,6 +64,9 @@ namespace Setnicka.AuxiliaryClasses
         private List<ConsoleKey> KeysOfInterest { get; }
 
         private bool ListenForAllInput { get; }
+
+        // Used for turning the manager off
+        public bool AbortManager { get; set; } = false;
         #endregion
 
         public void CheckForInput()
@@ -81,7 +84,14 @@ namespace Setnicka.AuxiliaryClasses
 
                     if (KeyOfInterest(keyInfo.Key) && KeyPressed != null)
                          KeyPressed(this, new KeyEventArgs(keyInfo.Key));
-                 } while (Console.KeyAvailable);        
+                 } while (Console.KeyAvailable);
+
+                // If the manager should exit
+                if (AbortManager)
+                {
+                    AbortManager = false;
+                    return;
+                }
             }
         }
 
