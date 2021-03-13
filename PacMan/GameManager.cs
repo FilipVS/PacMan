@@ -140,6 +140,9 @@ namespace Setnicka.PacMan
         // This is used to prevent overwriting of the CurrentRunningState
         private bool RunningStateOverwritable { get; set; } = true;
 
+        // Show countdown? (works only in chasing ghosts)
+        private bool ShowCountdown { get; set; } = true;
+
         private Menu Menu { get; set; }
         private MenuManager MenuManager { get; set; }
 
@@ -252,6 +255,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void Update()
         {
+            #region Setup
             GameThreadRunning = true;
 
             // This prevents countdown after we've returned from chasing ghosts
@@ -269,6 +273,7 @@ namespace Setnicka.PacMan
 
             // Set proper color scheme
             GameColors.ChasingGhosts = false;
+            #endregion
 
             // The update sequence itself
             while (true)
@@ -283,6 +288,9 @@ namespace Setnicka.PacMan
                 }
 
                 GhostsMove();
+
+                // Try to return eaten ghosts
+                ReturnGhosts();
 
                 // Thread sleeps and pereodicaly checks if it is supposed to abort
                 for (int i = 0; i < CHECK_FOR_ABORT_TIMES; i++)
@@ -320,8 +328,8 @@ namespace Setnicka.PacMan
                 {
                     CurrentRunningState = RunningState.Collision;
                     RunningStateOverwritable = false;
-                    // Maybe back to UPDATE_FREQUENCY
-                    Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
+                    // Make sure, that it waits for the Run method to evaluate
+                    Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY * 2);
                 }
                 else if (playerMove == MoveResult.Coin)
                     IncreaseScore(SCORE_FOR_COIN);
@@ -334,7 +342,8 @@ namespace Setnicka.PacMan
                     if (ghost.Move() == MoveResult.Collision)
                     {
                         CurrentRunningState = RunningState.Collision;
-                        Thread.Sleep(GAME_UPDATE_FREQUENCY);
+                        // Make sure, that it waits for the Run method to evaluate
+                        Thread.Sleep(GAME_UPDATE_FREQUENCY * 2);
                         break;
                     }
                 }
@@ -346,6 +355,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void UpdateChasingGhosts()
         {
+            #region Setup
             GameThreadRunning = true;
 
             int timeLeft;
@@ -360,6 +370,11 @@ namespace Setnicka.PacMan
 
                 // Ghosts move is skipped when eating a boost, so they are the first ones to move here
                 MoveGhosts();
+            }
+            else if (!ShowCountdown)
+            {
+                timeLeft = BoostTimeLeft;
+                ShowCountdown = true;
             }
             // In this case, the previous chasing ghosts cycle was paused and is supposed to be restarted
             else
@@ -378,6 +393,7 @@ namespace Setnicka.PacMan
             // Set proper color scheme
             GameColors.ChasingGhosts = true;
             GameColors.ChasingGhostsMainVersion = true;
+            #endregion
 
 
             // The update sequence itself
@@ -385,7 +401,16 @@ namespace Setnicka.PacMan
             {
                 MovePlayer();
 
+                if (AbortGameThread)
+                {
+                    BeforeReturn();
+                    return;
+                }
+
                 MoveGhosts();
+
+                // Try to return eaten ghosts
+                ReturnGhosts();
 
                 timeLeft -= GAME_UPDATE_FREQUENCY;
 
@@ -401,9 +426,9 @@ namespace Setnicka.PacMan
                 }
             } while (timeLeft >= 0);
 
-
-
             BeforeReturn();
+
+
 
             void MovePlayer()
             {
@@ -418,8 +443,11 @@ namespace Setnicka.PacMan
                 }
                 else if (playerMove == MoveResult.Collision)
                 {
+                    ShowCountdown = false;
                     CurrentRunningState = RunningState.Collision;
-                    Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
+                    RunningStateOverwritable = false;
+                    // Make sure, that it waits for the Run method to evaluate
+                    Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY * 2);
                 }
                 else if (playerMove == MoveResult.Coin)
                     IncreaseScore(SCORE_FOR_COIN);
@@ -448,6 +476,13 @@ namespace Setnicka.PacMan
                         break;
                     }
                     ghost.InvertedMove = false;
+
+                    // TODO: Remove?
+                    /*if (AbortGameThread)
+                    {
+                        BeforeReturn();
+                        return;
+                    }*/
                 }
             }
 
@@ -456,7 +491,8 @@ namespace Setnicka.PacMan
                 AbortGameThread = false;
                 GameThreadRunning = false;
                 BoostTimeLeft = timeLeft;
-                CurrentRunningState = RunningState.On;
+                if(timeLeft < 0)
+                    CurrentRunningState = RunningState.On;
             }
         }
 
@@ -472,7 +508,7 @@ namespace Setnicka.PacMan
 
             for(int i = 0; i < EatenGhosts.Count; i++)
             {
-                // If the ghost's spawn point is not empty, break
+                // If the ghost's spawn point is not empty, continue
                 if (!(Level[EatenGhosts[i].SpawnPoint.X, EatenGhosts[i].SpawnPoint.Y] is Empty))
                     continue;
 
@@ -480,7 +516,7 @@ namespace Setnicka.PacMan
                 Ghosts.Add(CreateNewGhost(EatenGhosts[i]));
 
                 // Put the ghost on the level
-                Level[EatenGhosts[i].SpawnPoint.X, EatenGhosts[i].SpawnPoint.Y] = EatenGhosts[i];
+                Level[EatenGhosts[i].SpawnPoint.X, EatenGhosts[i].SpawnPoint.Y] = Ghosts[Ghosts.Count - 1];
 
                 // Print the new ghost
                 Level[EatenGhosts[i].SpawnPoint.X, EatenGhosts[i].SpawnPoint.Y].Print(OFFSET);
@@ -544,7 +580,7 @@ namespace Setnicka.PacMan
             // Remove the ghost from the Level and add him to eaten ghosts
             for(int i = 0; i < Ghosts.Count; i++)
             {
-                if(Ghosts[i] == Level[Player.DesiredTile.X, Player.DesiredTile.Y])
+                if(Ghosts[i].Position.Equals(Player.DesiredTile))
                 {
                     EatenGhosts.Add(Ghosts[i]);
                     Ghosts.RemoveAt(i);
@@ -572,13 +608,13 @@ namespace Setnicka.PacMan
             Ghost newGhost;
 
             if (typeOFGhost.FullName == typeof(Blinky).ToString())
-                newGhost = new Blinky(Level, oldGhost.SpawnPoint, Player.Position);
+                newGhost = new Blinky(Level, oldGhost.SpawnPoint.Copy(), Player.Position.Copy());
             else if (typeOFGhost.FullName == typeof(Clyde).ToString())
-                newGhost = new Clyde(Level, oldGhost.SpawnPoint, Player.Position);
+                newGhost = new Clyde(Level, oldGhost.SpawnPoint.Copy(), Player.Position.Copy());
             else if (typeOFGhost.FullName == typeof(Inky).ToString())
-                newGhost = new Inky(Level, oldGhost.SpawnPoint, Player.Position);
+                newGhost = new Inky(Level, oldGhost.SpawnPoint.Copy(), Player.Position.Copy());
             else if (typeOFGhost.FullName == typeof(Pinky).ToString())
-                newGhost = new Pinky(Level, oldGhost.SpawnPoint, Player.Position);
+                newGhost = new Pinky(Level, oldGhost.SpawnPoint.Copy(), Player.Position.Copy());
             else
                 throw new ArgumentException("Unknown ghost");
 
@@ -620,7 +656,7 @@ namespace Setnicka.PacMan
 
                             if (previousGameStateCopy == RunningState.ChasingGhosts)
                                 // TODO: Re-work
-                                CollisionNormal();
+                                CollisionChasingGhosts();
                             else
                                 CollisionNormal();
 

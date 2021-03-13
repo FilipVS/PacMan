@@ -56,13 +56,13 @@ namespace Setnicka.PacMan
 
         public override MoveResult Move()
         {
-            DesiredTile = Position + (new Vector2D(Heading));
-
             // If the destination tile is outside of the level
-            if (Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), DesiredTile))
+            if (Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), (Position + new Vector2D(Heading))))
                 return MoveResult.None;
 
-            if(Level[DesiredTile.X, DesiredTile.Y] is Empty empty)
+            DesiredTile = Position + (new Vector2D(Heading));
+
+            if (Level[DesiredTile.X, DesiredTile.Y] is Empty empty)
             {
                 bool containsBoost = empty.ContainsBoost;
                 bool containsCoin = empty.ContainsCoin;

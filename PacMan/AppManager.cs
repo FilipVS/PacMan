@@ -182,7 +182,7 @@ namespace Setnicka.PacMan
         }
         private void PlayLevel2()
         {
-            string pathToLevel = GetPathToLevels() + "Level2.txt";
+            string pathToLevel = GetPathToLevels() + "CustomLevel.txt";
 
             PlayLevel(pathToLevel);
         }
@@ -200,12 +200,17 @@ namespace Setnicka.PacMan
 
             string path = dialog.DialogStringResult;
 
+            // Otherwise open the level
+            PlayLevel(path);
+        }
+        private void PlayLevel(string pathToLevel)
+        {
             bool fileOpenable = false;
 
             // Test if the file can be opened
             try
             {
-                File.Open(path, FileMode.Open).Dispose();
+                File.Open(pathToLevel, FileMode.Open).Dispose();
 
                 fileOpenable = true;
             }
@@ -227,11 +232,6 @@ namespace Setnicka.PacMan
                 return;
             }
 
-            // Otherwise open the level
-            PlayLevel(path);
-        }
-        private void PlayLevel(string pathToLevel)
-        {
             GameObject[,] level = LevelReader.ReadLevel(pathToLevel);
 
             // If the level loading did not go well

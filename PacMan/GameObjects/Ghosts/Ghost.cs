@@ -44,7 +44,7 @@ namespace Setnicka.PacMan
         public bool InvertedMove { get; set; }
 
         // Used ofr telling the ghosts about tiles he is not supposed to use
-        public Vector2D Beware {get; set;}
+        public Vector2D Beware { get; set; }
         #endregion
 
 
@@ -373,13 +373,12 @@ namespace Setnicka.PacMan
             List<GameObject> movableTilesAround = GetMovableTilesAround(Position);
             Vector2D invertedMoveTile = Position - (new Vector2D(Heading));
 
-            // TODO: Delete if proves useless
-            // Does the ghost have more options to go --> don't go on another ghost
-            //Avoid<Ghost>();
-
             // If the only available move is to go to go on player, do not move
             if (movableTilesAround.Count == 1 && Level[movableTilesAround[0].Position.X, movableTilesAround[0].Position.Y] is Player)
                 return Position.Copy();
+
+            // Don't go on player
+            Avoid<Player>();
 
             // Only way to move --> go uninverted
             if (movableTilesAround.Count == 1)
