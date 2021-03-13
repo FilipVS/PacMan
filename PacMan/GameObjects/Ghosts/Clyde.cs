@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.PacMan
@@ -36,8 +34,6 @@ namespace Setnicka.PacMan
 
             if (Position.DistanceTo(PlayerPositionThisTurn) < MINIMAL_DISTANCE_FROM_PLAYER)
                 InvertedMove = true;
-           /* else
-                InvertedMove = false;*/
         }
 
         protected override void Draw()

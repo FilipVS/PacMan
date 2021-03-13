@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.UI
@@ -41,6 +38,10 @@ namespace Setnicka.UI
         #region Methods
         public override void Run()
         {
+            // Remove any leftover key presses
+            while (Console.KeyAvailable)
+                Console.ReadKey(false);
+
             Print();
 
             Console.ReadKey(true);

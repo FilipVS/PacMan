@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.PacMan
@@ -22,7 +20,6 @@ namespace Setnicka.PacMan
         protected override void ChooseDesiredTile()
         {
             base.ChooseDesiredTile();
-
 
             // If inverted move, ghosts allways aim at player
             if (InvertedMove)

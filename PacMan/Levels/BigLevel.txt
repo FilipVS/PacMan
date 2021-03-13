@@ -1,0 +1,4 @@
+PacManSetnickaLevel
+V1
+75NEXT25
+Setnicka.PacMan.PlayerNEXT0NEXT0

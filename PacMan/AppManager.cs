@@ -4,7 +4,6 @@ using System.IO;
 using Setnicka.PacMan.LevelEditor;
 using Setnicka.UI;
 using Setnicka.AuxiliaryClasses;
-using System.Threading;
 
 namespace Setnicka.PacMan
 {
@@ -188,7 +187,7 @@ namespace Setnicka.PacMan
         }
         private void PlayLevel2()
         {
-            string pathToLevel = GetPathToLevels() + "CustomLevel.txt";
+            string pathToLevel = GetPathToLevels() + "Level2.txt";
 
             PlayLevel(pathToLevel);
         }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.PacMan
@@ -25,7 +23,7 @@ namespace Setnicka.PacMan
         #region Automatic propeties
         private PlayStyle PlayStyle { get; set; }
 
-        // How many updates before redeciding which play-style to follow
+        // How many updates before re-deciding which play-style to follow
         private int DecisionTimer { get; set; } = 0;
         #endregion
 
@@ -42,7 +40,9 @@ namespace Setnicka.PacMan
                 return;
             }
 
-            if(DecisionTimer == 0)
+            #region Deciding the PlayStyle
+            // If the ghost is supposed to re-decide its playstyle
+            if (DecisionTimer == 0)
             {
                 Random rnd = new Random(DateTime.Now.Millisecond);
 
@@ -57,7 +57,9 @@ namespace Setnicka.PacMan
 
                 DecisionTimer = COMMIT_TO_MODE_FOR;
             }
+            #endregion
 
+            // Chossing the heading
             switch (PlayStyle)
             {
                 case PlayStyle.Blinky:
@@ -71,8 +73,6 @@ namespace Setnicka.PacMan
 
                     if (Position.DistanceTo(PlayerPositionThisTurn) < MINIMAL_DISTANCE_FROM_PLAYER_CLYDE_MODE)
                         InvertedMove = true;
-                    /*else
-                        InvertedMove = false;*/
                     break;
                 default:
                     break;

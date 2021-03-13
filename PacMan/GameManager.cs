@@ -15,7 +15,7 @@ namespace Setnicka.PacMan
         // General Constants
 
         // The offset of drawn objects in relation to CursorPosition(0, 0)
-        public static readonly Vector2D OFFSET = new Vector2D(2, 1);
+        public static readonly Vector2D OFFSET = new Vector2D(2, 2);
         // Delay between individual updates of the game thread
         private const int GAME_UPDATE_FREQUENCY = 400;
         // Delay between main thread updates
