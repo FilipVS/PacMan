@@ -43,7 +43,8 @@ namespace Setnicka.PacMan
         private const string PLAY_CUSTOM_LEVEL_BUTTON_TEX_PLAY_GAME_SUBMENU = "Custom level";
 
         // Open level editor submenu
-        private const string MAIN_LABEL_TEXT_OPEN_LEVEL_EDITOR_SUBMENU = "Enter the size of the new level";
+        private const string MAIN_LABEL_TEXT_OPEN_LEVEL_EDITOR_SUBMENU = "Enter the size of the new level / load level to edit";
+        private const string LOAD_LEVEL_TO_EDITOR_BUTTON = "Load existing level to editor";
         private readonly string INPUT_LEVEL_WIDTH_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU = $"Input level width (min. {LevelEditorManager.MINIMUM_LEVEL_SIZE.X}, max. {LevelEditorManager.MAXIMUM_LEVEL_SIZE.X}): ";
         private readonly string INPUT_LEVEL_HEIGHT_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU = $"Input level height (min. {LevelEditorManager.MINIMUM_LEVEL_SIZE.Y}, max. {LevelEditorManager.MAXIMUM_LEVEL_SIZE.Y}): ";
         private const string CREATE_NEW_LEVEL_BUTTON_TEXT_LEVEL_EDITOR_SUBMENU = "Create new level";
@@ -150,20 +151,25 @@ namespace Setnicka.PacMan
 
                 Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-                EnterLevelWidthNumberField = new NumberField(INPUT_LEVEL_WIDTH_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU, LevelEditorManager.MINIMUM_LEVEL_SIZE.X, 3, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
-                EnterLevelHeightNumberField = new NumberField(INPUT_LEVEL_HEIGHT_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU, LevelEditorManager.MINIMUM_LEVEL_SIZE.Y, 2, HorizontalAlignment.Center, 4, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                Button loadExistingLevelButton = new Button(LOAD_LEVEL_TO_EDITOR_BUTTON, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, LoadLevelToEditor);
+                loadExistingLevelButton.OnClick += OpenLevelEditorSubmenu.DoPerformAction;
 
-                Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 5, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 4, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-                Button createNewLevelButton = new Button(CREATE_NEW_LEVEL_BUTTON_TEXT_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 6, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, OpenLevelEditor);
-                createNewLevelButton.OnClick += OpenLevelEditorSubmenu.DoPerformAction;
+                EnterLevelWidthNumberField = new NumberField(INPUT_LEVEL_WIDTH_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU, LevelEditorManager.MINIMUM_LEVEL_SIZE.X, 3, HorizontalAlignment.Center, 5, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                EnterLevelHeightNumberField = new NumberField(INPUT_LEVEL_HEIGHT_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU, LevelEditorManager.MINIMUM_LEVEL_SIZE.Y, 2, HorizontalAlignment.Center, 6, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
                 Label emptyLabel4 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 7, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-                Button goToPreviousMenuButton = new Button(GO_TO_PREVIOUS_MENU_BUTTON_TEXT, HorizontalAlignment.Center, 8, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                Button createNewLevelButton = new Button(CREATE_NEW_LEVEL_BUTTON_TEXT_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 8, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, OpenLevelEditor);
+                createNewLevelButton.OnClick += OpenLevelEditorSubmenu.DoPerformAction;
+
+                Label emptyLabel5 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 9, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+                Button goToPreviousMenuButton = new Button(GO_TO_PREVIOUS_MENU_BUTTON_TEXT, HorizontalAlignment.Center, 10, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
                 goToPreviousMenuButton.OnClick += OpenLevelEditorSubmenu.DoExitMenu;
 
-                OpenLevelEditorSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, EnterLevelWidthNumberField, EnterLevelHeightNumberField, emptyLabel3, createNewLevelButton, emptyLabel4, goToPreviousMenuButton });
+                OpenLevelEditorSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, loadExistingLevelButton, emptyLabel3, EnterLevelWidthNumberField, EnterLevelHeightNumberField, emptyLabel3, createNewLevelButton, emptyLabel4, goToPreviousMenuButton });
 
                 // The MenuManager needs to get a list of keys, that he needs to additionaly listen to
                 List<ConsoleKey> numbers = new List<ConsoleKey>() { ConsoleKey.D0, ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.NumPad0, ConsoleKey.NumPad1, ConsoleKey.NumPad2, ConsoleKey.NumPad3, ConsoleKey.NumPad4, ConsoleKey.NumPad5, ConsoleKey.NumPad6, ConsoleKey.NumPad7, ConsoleKey.NumPad8, ConsoleKey.NumPad9 };
@@ -194,35 +200,14 @@ namespace Setnicka.PacMan
         }
         private void PlayCustomLevel()
         {
-            TextInputDialog dialog = new TextInputDialog("Please enter path of the level", @"Example: C:\PacMan\Levels\CustomLevel.txt");
-
-            dialog.Run();
-
-            string path = dialog.DialogStringResult;
+            string path = GetPathFromUser();
 
             // Otherwise open the level
             PlayLevel(path);
         }
         private void PlayLevel(string pathToLevel)
         {
-            bool fileOpenable = false;
-
-            // Test if the file can be opened
-            try
-            {
-                File.Open(pathToLevel, FileMode.Open).Dispose();
-
-                fileOpenable = true;
-            }
-            catch (ArgumentOutOfRangeException) { }
-            catch (FileNotFoundException) { }
-            catch (ArgumentNullException) { }
-            catch (ArgumentException) { }
-            catch (PathTooLongException) { }
-            catch (DirectoryNotFoundException) { }
-            catch (IOException) { }
-            catch (UnauthorizedAccessException) { }
-            catch (NotSupportedException) { }
+            bool fileOpenable = FileOpenable(pathToLevel);
 
             // Signal the error to the user
             if (!fileOpenable)
@@ -286,6 +271,74 @@ namespace Setnicka.PacMan
 
             LevelEditorManager manager = new LevelEditorManager(new Vector2D(levelWidth, levelHeight));
             manager.Run();
+        }
+
+        private void LoadLevelToEditor()
+        {
+            string pathToLevel = GetPathFromUser();
+
+            bool fileOpenable = FileOpenable(pathToLevel);
+
+            // Signal the error to the user
+            if (!fileOpenable)
+            {
+                MessageDialog messageDialog = new MessageDialog("The file was not found.");
+                messageDialog.Run();
+                return;
+            }
+
+            GameObject[,] level = LevelReader.ReadLevel(pathToLevel);
+
+            // If the level loading did not go well
+            if (level == null)
+            {
+                MessageDialog messageDialog = new MessageDialog("The level was not loaded succesfully.");
+                messageDialog.Run();
+                return;
+            }
+
+            // Else run the manager
+            LevelEditorManager manager = new LevelEditorManager(level);
+            manager.Run();
+        }
+
+        /// <summary>
+        /// Used to get path to some level file from the user
+        /// </summary>
+        private string GetPathFromUser()
+        {
+            TextInputDialog dialog = new TextInputDialog("Please enter path of the level", @"Example: C:\PacMan\Levels\CustomLevel.txt");
+
+            dialog.Run();
+
+            return dialog.DialogStringResult;
+        }
+
+        /// <summary>
+        /// Checks, whether a given path is openable
+        /// </summary>
+        private bool FileOpenable(string path)
+        {
+            bool fileOpenable = false;
+
+            // Test if the file can be opened
+            try
+            {
+                File.Open(path, FileMode.Open).Dispose();
+
+                fileOpenable = true;
+            }
+            catch (ArgumentOutOfRangeException) { }
+            catch (FileNotFoundException) { }
+            catch (ArgumentNullException) { }
+            catch (ArgumentException) { }
+            catch (PathTooLongException) { }
+            catch (DirectoryNotFoundException) { }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+            catch (NotSupportedException) { }
+
+            return fileOpenable;
         }
 
         #endregion

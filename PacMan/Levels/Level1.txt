@@ -18,8 +18,6 @@ Setnicka.PacMan.EmptyNEXT1NEXT3NEXTTrueNEXTFalse
 Setnicka.PacMan.EmptyNEXT1NEXT4NEXTTrueNEXTFalse
 Setnicka.PacMan.EmptyNEXT1NEXT5NEXTTrueNEXTFalse
 Setnicka.PacMan.EmptyNEXT1NEXT6NEXTTrueNEXTFalse
-Setnicka.PacMan.EmptyNEXT1NEXT7NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT1NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT1NEXT9
 Setnicka.PacMan.WallNEXT2NEXT0
 Setnicka.PacMan.EmptyNEXT2NEXT1NEXTTrueNEXTFalse
@@ -29,7 +27,6 @@ Setnicka.PacMan.WallNEXT2NEXT4
 Setnicka.PacMan.WallNEXT2NEXT5
 Setnicka.PacMan.EmptyNEXT2NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT2NEXT7
-Setnicka.PacMan.EmptyNEXT2NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT2NEXT9
 Setnicka.PacMan.WallNEXT3NEXT0
 Setnicka.PacMan.EmptyNEXT3NEXT1NEXTTrueNEXTFalse
@@ -39,7 +36,6 @@ Setnicka.PacMan.WallNEXT3NEXT4
 Setnicka.PacMan.WallNEXT3NEXT5
 Setnicka.PacMan.EmptyNEXT3NEXT6NEXTFalseNEXTTrue
 Setnicka.PacMan.WallNEXT3NEXT7
-Setnicka.PacMan.EmptyNEXT3NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT3NEXT9
 Setnicka.PacMan.WallNEXT4NEXT0
 Setnicka.PacMan.PinkyNEXT4NEXT1NEXT6NEXT2
@@ -49,7 +45,6 @@ Setnicka.PacMan.EmptyNEXT4NEXT4NEXTTrueNEXTFalse
 Setnicka.PacMan.EmptyNEXT4NEXT5NEXTTrueNEXTFalse
 Setnicka.PacMan.EmptyNEXT4NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT4NEXT7
-Setnicka.PacMan.EmptyNEXT4NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT4NEXT9
 Setnicka.PacMan.WallNEXT5NEXT0
 Setnicka.PacMan.WallNEXT5NEXT1
@@ -59,17 +54,9 @@ Setnicka.PacMan.WallNEXT5NEXT4
 Setnicka.PacMan.WallNEXT5NEXT5
 Setnicka.PacMan.WallNEXT5NEXT6
 Setnicka.PacMan.WallNEXT5NEXT7
-Setnicka.PacMan.EmptyNEXT5NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT5NEXT9
 Setnicka.PacMan.WallNEXT6NEXT0
-Setnicka.PacMan.EmptyNEXT6NEXT1NEXTFalseNEXTFalse
 Setnicka.PacMan.PlayerNEXT6NEXT2
-Setnicka.PacMan.EmptyNEXT6NEXT3NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT6NEXT4NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT6NEXT5NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT6NEXT6NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT6NEXT7NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT6NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT6NEXT9
 Setnicka.PacMan.WallNEXT7NEXT0
 Setnicka.PacMan.WallNEXT7NEXT1
@@ -79,7 +66,6 @@ Setnicka.PacMan.WallNEXT7NEXT4
 Setnicka.PacMan.WallNEXT7NEXT5
 Setnicka.PacMan.WallNEXT7NEXT6
 Setnicka.PacMan.WallNEXT7NEXT7
-Setnicka.PacMan.EmptyNEXT7NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT7NEXT9
 Setnicka.PacMan.WallNEXT8NEXT0
 Setnicka.PacMan.EmptyNEXT8NEXT1NEXTFalseNEXTTrue
@@ -89,7 +75,6 @@ Setnicka.PacMan.EmptyNEXT8NEXT4NEXTTrueNEXTFalse
 Setnicka.PacMan.EmptyNEXT8NEXT5NEXTTrueNEXTFalse
 Setnicka.PacMan.EmptyNEXT8NEXT6NEXTFalseNEXTTrue
 Setnicka.PacMan.WallNEXT8NEXT7
-Setnicka.PacMan.EmptyNEXT8NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT8NEXT9
 Setnicka.PacMan.WallNEXT9NEXT0
 Setnicka.PacMan.EmptyNEXT9NEXT1NEXTTrueNEXTFalse
@@ -99,7 +84,6 @@ Setnicka.PacMan.WallNEXT9NEXT4
 Setnicka.PacMan.WallNEXT9NEXT5
 Setnicka.PacMan.EmptyNEXT9NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT9NEXT7
-Setnicka.PacMan.EmptyNEXT9NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT9NEXT9
 Setnicka.PacMan.WallNEXT10NEXT0
 Setnicka.PacMan.EmptyNEXT10NEXT1NEXTTrueNEXTFalse
@@ -109,7 +93,6 @@ Setnicka.PacMan.WallNEXT10NEXT4
 Setnicka.PacMan.WallNEXT10NEXT5
 Setnicka.PacMan.EmptyNEXT10NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT10NEXT7
-Setnicka.PacMan.EmptyNEXT10NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT10NEXT9
 Setnicka.PacMan.WallNEXT11NEXT0
 Setnicka.PacMan.EmptyNEXT11NEXT1NEXTTrueNEXTFalse
@@ -119,7 +102,6 @@ Setnicka.PacMan.WallNEXT11NEXT4
 Setnicka.PacMan.WallNEXT11NEXT5
 Setnicka.PacMan.EmptyNEXT11NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT11NEXT7
-Setnicka.PacMan.EmptyNEXT11NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT11NEXT9
 Setnicka.PacMan.WallNEXT12NEXT0
 Setnicka.PacMan.EmptyNEXT12NEXT1NEXTTrueNEXTFalse
@@ -129,7 +111,6 @@ Setnicka.PacMan.WallNEXT12NEXT4
 Setnicka.PacMan.WallNEXT12NEXT5
 Setnicka.PacMan.EmptyNEXT12NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT12NEXT7
-Setnicka.PacMan.EmptyNEXT12NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT12NEXT9
 Setnicka.PacMan.WallNEXT13NEXT0
 Setnicka.PacMan.EmptyNEXT13NEXT1NEXTTrueNEXTFalse
@@ -139,7 +120,6 @@ Setnicka.PacMan.WallNEXT13NEXT4
 Setnicka.PacMan.WallNEXT13NEXT5
 Setnicka.PacMan.EmptyNEXT13NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT13NEXT7
-Setnicka.PacMan.EmptyNEXT13NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT13NEXT9
 Setnicka.PacMan.WallNEXT14NEXT0
 Setnicka.PacMan.EmptyNEXT14NEXT1NEXTTrueNEXTFalse
@@ -149,7 +129,6 @@ Setnicka.PacMan.WallNEXT14NEXT4
 Setnicka.PacMan.WallNEXT14NEXT5
 Setnicka.PacMan.EmptyNEXT14NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT14NEXT7
-Setnicka.PacMan.EmptyNEXT14NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT14NEXT9
 Setnicka.PacMan.WallNEXT15NEXT0
 Setnicka.PacMan.EmptyNEXT15NEXT1NEXTTrueNEXTFalse
@@ -159,7 +138,6 @@ Setnicka.PacMan.WallNEXT15NEXT4
 Setnicka.PacMan.WallNEXT15NEXT5
 Setnicka.PacMan.EmptyNEXT15NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT15NEXT7
-Setnicka.PacMan.EmptyNEXT15NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT15NEXT9
 Setnicka.PacMan.WallNEXT16NEXT0
 Setnicka.PacMan.EmptyNEXT16NEXT1NEXTTrueNEXTFalse
@@ -169,7 +147,6 @@ Setnicka.PacMan.WallNEXT16NEXT4
 Setnicka.PacMan.WallNEXT16NEXT5
 Setnicka.PacMan.EmptyNEXT16NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT16NEXT7
-Setnicka.PacMan.EmptyNEXT16NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT16NEXT9
 Setnicka.PacMan.WallNEXT17NEXT0
 Setnicka.PacMan.EmptyNEXT17NEXT1NEXTTrueNEXTFalse
@@ -179,17 +156,8 @@ Setnicka.PacMan.WallNEXT17NEXT4
 Setnicka.PacMan.WallNEXT17NEXT5
 Setnicka.PacMan.EmptyNEXT17NEXT6NEXTTrueNEXTFalse
 Setnicka.PacMan.WallNEXT17NEXT7
-Setnicka.PacMan.EmptyNEXT17NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT17NEXT9
 Setnicka.PacMan.WallNEXT18NEXT0
-Setnicka.PacMan.EmptyNEXT18NEXT1NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT18NEXT2NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT18NEXT3NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT18NEXT4NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT18NEXT5NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT18NEXT6NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT18NEXT7NEXTFalseNEXTFalse
-Setnicka.PacMan.EmptyNEXT18NEXT8NEXTFalseNEXTFalse
 Setnicka.PacMan.WallNEXT18NEXT9
 Setnicka.PacMan.WallNEXT19NEXT0
 Setnicka.PacMan.WallNEXT19NEXT1

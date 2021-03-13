@@ -1,16 +1,16 @@
 # PacMan
 PacMan je projekt, který má za cíl vytvoření hry Pac-Man a level editoru k dané hře.
-Status
-	V momentální verzi je možné vyzkoušet menu systém.
-	Pomocí něj se lze dostat ke hraní hry (tlačítka všech levelů však zatím směřují k jednomu placeholder levelu).
+Stav projektu
+	Projket by měl být plnně funkční, je ve stadiu přidávání vedlejších funkcí, opravování chyb a zpřesňování kódu-
 Ovládání
 	Menu
 		Mezi jednotlivými prvky se ovládá pomocí WSAD / šipkami
-		Tlačítka se mačkají pomocí Enteru
-		Do políček, která přijímají čísla, lze čísla vložit jakýmkoliv číselnou klávesou
+		Pro zvolení tlačítka se používá Enter
+		Do políček, která přijímají čísla, lze čísla vložit jakoukoliv číselnou klávesou
 		Pokud aplikace žádá text, lze použít celou klávesnici
 	Hra
 		Postava se ovládá pomocí WSAD / šipkami
+		Pomocí klávesy Escape se uživatel může dostat do menu
 	LevelEditor
 		Pomocí WSAD lze ovládat kurzor na editované hrací ploše
 		Pomocí šipek nahoru a dolů lze vybírat mezi umísťovanými objekty
@@ -19,7 +19,7 @@ Ovládání
 		
 
 Poznámky pro hraní hry
-	Pro optimální vykreslování je nejlepší mít nastaveny barvy v konzoli na černé pozadí a bílý text
+	Pro optimální vykreslování je nejlepší mít nastaveny barvy v konzoli na černé pozadí a bílý text a hrát v nezvětšené konzoli
 
 Poznámky pro tvoření levelů
 	AI duchů funguje nejlépe v levelech, které jsou tvořeny uličkami o šířce 1

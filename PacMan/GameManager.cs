@@ -280,7 +280,7 @@ namespace Setnicka.PacMan
             {
                 PlayerMove();
 
-                if (AbortGameThread)
+                if (AbortGameThread || CurrentRunningState != RunningState.On)
                 {
                     AbortGameThread = false;
                     GameThreadRunning = false;
@@ -323,6 +323,8 @@ namespace Setnicka.PacMan
                 {
                     CurrentRunningState = RunningState.ChasingGhosts;
                     RunningStateOverwritable = false;
+                    // Make sure, that it waits for the Run method to evaluate
+                    Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY * 2);
                 }
                 else if (playerMove == MoveResult.Collision)
                 {
@@ -360,16 +362,20 @@ namespace Setnicka.PacMan
 
             int timeLeft;
 
+            // Set proper color scheme
+            GameColors.ChasingGhosts = true;
+            GameColors.ChasingGhostsMainVersion = true;
+
             // In this case, the previous chasing ghosts cycle ended
             if (BoostTimeLeft < 0)
             {
-                // Thread sleep is skipped when eating a boost, this ensures smoother transition between Update and UpdateChasingGhosts
-                Thread.Sleep(GAME_UPDATE_FREQUENCY);
-
                 timeLeft = CHASING_GHOSTS_FOR;
 
                 // Ghosts move is skipped when eating a boost, so they are the first ones to move here
                 MoveGhosts();
+
+                // Thread sleep is skipped when eating a boost, this ensures smoother transition between Update and UpdateChasingGhosts
+                Thread.Sleep(GAME_UPDATE_FREQUENCY);
             }
             else if (!ShowCountdown)
             {
@@ -389,10 +395,6 @@ namespace Setnicka.PacMan
                     return;
                 }
             }
-
-            // Set proper color scheme
-            GameColors.ChasingGhosts = true;
-            GameColors.ChasingGhostsMainVersion = true;
             #endregion
 
 
@@ -401,7 +403,7 @@ namespace Setnicka.PacMan
             {
                 MovePlayer();
 
-                if (AbortGameThread)
+                if (AbortGameThread || CurrentRunningState != RunningState.ChasingGhosts)
                 {
                     BeforeReturn();
                     return;

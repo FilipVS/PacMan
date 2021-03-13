@@ -38,7 +38,7 @@ namespace Setnicka.PacMan.LevelEditor
         private const ConsoleColor MAIN_LABEL_FOREGROUND_COLOR = ConsoleColor.Black;
         private const ConsoleColor MAIN_LABEL_BACKGROUND_COLOR = ConsoleColor.Yellow;
 
-        private const ConsoleColor MESSAGE_LABEL_FOREGROUND_COLOR = ConsoleColor.White;
+        private const ConsoleColor MESSAGE_LABEL_FOREGROUND_COLOR = ConsoleColor.Black;
         private const ConsoleColor MESSAGE_LABEL_BACKGROUND_COLOT = ConsoleColor.Red;
 
         private const string EMPTY_LABEL_TEXT = "";
@@ -66,16 +66,7 @@ namespace Setnicka.PacMan.LevelEditor
                 }
             }
 
-            // Initialize InputManager
-            List<ConsoleKey> keysOfInteresst = new List<ConsoleKey>() { LevelEditorKeyBinding.LevelPlaneDown, LevelEditorKeyBinding.LevelPlaneUp, LevelEditorKeyBinding.LevelPlaneRight, LevelEditorKeyBinding.LevelPlaneLeft, LevelEditorKeyBinding.ObjectOfChoiceUp, LevelEditorKeyBinding.ObjectOfChoiceDown, LevelEditorKeyBinding.PlaceObject, LevelEditorKeyBinding.DeleteObject, LevelEditorKeyBinding.GoToMenu, LevelEditorKeyBinding.Refresh };
-            InputManager = new InputManager(keysOfInteresst);
-            InputManager.KeyPressed += DeleteMessage;
-            InputManager.KeyPressed += ChangeHighlighted;
-            InputManager.KeyPressed += ChangeHighlightedObjectOfChoice;
-            InputManager.KeyPressed += PlaceGameObject;
-            InputManager.KeyPressed += DeleteGameObject;
-            InputManager.KeyPressed += GoToMenu;
-            InputManager.KeyPressed += Refresh;
+            InitializeInputManager();
 
             InitializeObjectsForChoice();
 
@@ -85,18 +76,46 @@ namespace Setnicka.PacMan.LevelEditor
             // Player always has to be present on the level
             LevelArray[0, 0] = new Player(LevelArray, new Vector2D(0, 0));
 
-            void InitializeObjectsForChoice()
+           
+
+            InitializeMenuAndManager();
+
+            InitializeMessageLabel();
+        }
+
+        public LevelEditorManager(GameObject[,] level)
+        {
+            // Check the level
+            if (level == null || level.GetLength(0) < MINIMUM_LEVEL_SIZE.X || level.GetLength(1) < MINIMUM_LEVEL_SIZE.Y || level.GetLength(0) > MAXIMUM_LEVEL_SIZE.X || level.GetLength(1) > MAXIMUM_LEVEL_SIZE.Y)
+                throw new ArgumentException("The level is null/too small/too big.");
+
+
+            // Initialize all tiles, that would be null to empty, check if player is present
+            bool playerPresent = false;
+            for(int x = 0; x < level.GetLength(0); x++)
             {
-                ObjectsOfChoice = new GameObject[1, 8];
-                ObjectsOfChoice[0, 0] = new Empty(ObjectsOfChoice, new Vector2D(0, 0), true);
-                ObjectsOfChoice[0, 1] = new Empty(ObjectsOfChoice, new Vector2D(0, 1), false, true);
-                ObjectsOfChoice[0, 2] = new Wall(ObjectsOfChoice, new Vector2D(0, 2));
-                ObjectsOfChoice[0, 3] = new Player(ObjectsOfChoice, new Vector2D(0, 3));
-                ObjectsOfChoice[0, 4] = new Blinky(ObjectsOfChoice, new Vector2D(0, 4), new Vector2D(0, 3));
-                ObjectsOfChoice[0, 5] = new Pinky(ObjectsOfChoice, new Vector2D(0, 5), new Vector2D(0, 3));
-                ObjectsOfChoice[0, 6] = new Inky(ObjectsOfChoice, new Vector2D(0, 6), new Vector2D(0, 3));
-                ObjectsOfChoice[0, 7] = new Clyde(ObjectsOfChoice, new Vector2D(0, 7), new Vector2D(0, 3));
+                for(int y = 0; y < level.GetLength(1); y++)
+                {
+                    if (level[x, y] == null)
+                        level[x, y] = new Empty(level, new Vector2D(x, y), false, false);
+                    else if (level[x, y] is Player)
+                        playerPresent = true;
+                }
             }
+
+            // Set level as LevelArray
+            LevelArray = level;
+
+            InitializeInputManager();
+
+            InitializeObjectsForChoice();
+
+            // Initiallizen offset of objects for choice - it needs to be next to the edited level
+            OFFSET_OBJECTS_FOR_CHOICE = Vector2D.Right * LevelArray.GetLength(0) + OFFSET + 2 * Vector2D.Right;
+
+            // Player always has to be present on the level
+            if(!playerPresent)
+                LevelArray[0, 0] = new Player(LevelArray, new Vector2D(0, 0));
 
             InitializeMenuAndManager();
 
@@ -280,6 +299,39 @@ namespace Setnicka.PacMan.LevelEditor
 
                 Console.CursorVisible = false;
             }
+        }
+
+        /// <summary>
+        /// Initializes the objects of choice array
+        /// </summary>
+        private void InitializeObjectsForChoice()
+        {
+            ObjectsOfChoice = new GameObject[1, 8];
+            ObjectsOfChoice[0, 0] = new Empty(ObjectsOfChoice, new Vector2D(0, 0), true);
+            ObjectsOfChoice[0, 1] = new Empty(ObjectsOfChoice, new Vector2D(0, 1), false, true);
+            ObjectsOfChoice[0, 2] = new Wall(ObjectsOfChoice, new Vector2D(0, 2));
+            ObjectsOfChoice[0, 3] = new Player(ObjectsOfChoice, new Vector2D(0, 3));
+            ObjectsOfChoice[0, 4] = new Blinky(ObjectsOfChoice, new Vector2D(0, 4), new Vector2D(0, 3));
+            ObjectsOfChoice[0, 5] = new Pinky(ObjectsOfChoice, new Vector2D(0, 5), new Vector2D(0, 3));
+            ObjectsOfChoice[0, 6] = new Inky(ObjectsOfChoice, new Vector2D(0, 6), new Vector2D(0, 3));
+            ObjectsOfChoice[0, 7] = new Clyde(ObjectsOfChoice, new Vector2D(0, 7), new Vector2D(0, 3));
+        }
+
+        /// <summary>
+        /// Initializes Input Manager
+        /// </summary>
+        private void InitializeInputManager()
+        {
+            // Initialize InputManager
+            List<ConsoleKey> keysOfInteresst = new List<ConsoleKey>() { LevelEditorKeyBinding.LevelPlaneDown, LevelEditorKeyBinding.LevelPlaneUp, LevelEditorKeyBinding.LevelPlaneRight, LevelEditorKeyBinding.LevelPlaneLeft, LevelEditorKeyBinding.ObjectOfChoiceUp, LevelEditorKeyBinding.ObjectOfChoiceDown, LevelEditorKeyBinding.PlaceObject, LevelEditorKeyBinding.DeleteObject, LevelEditorKeyBinding.GoToMenu, LevelEditorKeyBinding.Refresh };
+            InputManager = new InputManager(keysOfInteresst);
+            InputManager.KeyPressed += DeleteMessage;
+            InputManager.KeyPressed += ChangeHighlighted;
+            InputManager.KeyPressed += ChangeHighlightedObjectOfChoice;
+            InputManager.KeyPressed += PlaceGameObject;
+            InputManager.KeyPressed += DeleteGameObject;
+            InputManager.KeyPressed += GoToMenu;
+            InputManager.KeyPressed += Refresh;
         }
 
         /// <summary>
@@ -575,7 +627,7 @@ namespace Setnicka.PacMan.LevelEditor
 
         private void InitializeMessageLabel()
         {
-            Vector2D messageLabelPosition = (LevelArray[0, LevelArray.GetLength(1) - 1].Position + OFFSET) + Vector2D.Left + Vector2D.Down + Vector2D.Down;
+            Vector2D messageLabelPosition = (LevelArray[0, LevelArray.GetLength(1) - 1].Position + OFFSET) + Vector2D.Left + 3*Vector2D.Down;
 
             if (messageLabelPosition.Y <= (ObjectsOfChoice[0, (ObjectsOfChoice.GetLength(1) - 1)].Position + OFFSET).Y)
                 messageLabelPosition.Y =(ObjectsOfChoice[0, (ObjectsOfChoice.GetLength(1) - 1)].Position + OFFSET).Y + 2;
