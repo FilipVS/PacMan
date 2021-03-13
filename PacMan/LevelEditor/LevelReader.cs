@@ -58,6 +58,15 @@ namespace Setnicka.PacMan.LevelEditor
             string[] dimensions = reader.ReadLine().Split(new string[] { LevelWriter.DIFFERENTIATOR }, StringSplitOptions.None);
             GameObject[,] level = new GameObject[int.Parse(dimensions[0]), int.Parse(dimensions[1])];
 
+            // Initialize all tiles to be empty
+            for(int x = 0; x < level.GetLength(0); x++)
+            {
+                for(int y = 0; y < level.GetLength(1); y++)
+                {
+                    level[x, y] = new Empty(level, new Vector2D(x, y), false, false);
+                }
+            }
+
             // Read all the gameobjects
             while (true)
             {

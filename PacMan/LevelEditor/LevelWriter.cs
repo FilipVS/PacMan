@@ -87,6 +87,10 @@ namespace Setnicka.PacMan.LevelEditor
 
         private static void SaveEmtpyV1(Empty empty, StreamWriter writer)
         {
+            // Don't save completely empty tiles
+            if (!empty.ContainsBoost && !empty.ContainsCoin)
+                return;
+
             writer.WriteLine($"{empty.GetType().ToString()}{DIFFERENTIATOR}{empty.Position.X}{DIFFERENTIATOR}{empty.Position.Y}{DIFFERENTIATOR}{empty.ContainsCoin}{DIFFERENTIATOR}{empty.ContainsBoost}");
         }
 
