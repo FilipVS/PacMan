@@ -52,9 +52,8 @@ namespace Setnicka.PacMan
         {
             DetermineHeading();
 
-            // If the ghost doesn't want to go anywhere, or if there are too many ghosts around (so they don't block each other's movement)
-            // The ghost won't move
-            if (DesiredTile.Equals(Position) || (CountGhostsAround() > MAXIMUM_GHOSTS_AROUND))
+            // If the ghost doesn't want to go anywhere, skip movement
+            if (DesiredTile.Equals(Position))
             {
                 BeforeReturn();
                 return MoveResult.None;
@@ -71,20 +70,36 @@ namespace Setnicka.PacMan
 
             Level[DesiredTile.X, DesiredTile.Y].Print(GameManager.OFFSET);*/
             // TODO: Delete
-            
+
+            #region Altering movement (avoiding, inverting...)
             Vector2D moveToTile;
 
             // If movement is not inverted, add heading to our current position
             if (!InvertedMove)
-                moveToTile = Position + (new Vector2D(Heading));
+            {
+                // If there are two many ghosts around, avoid ghosts (to avoid blocking up)
+                if (CountGhostsAround() > MAXIMUM_GHOSTS_AROUND)
+                    moveToTile = AlterMove(false, false, true);
+                // Move normaly
+                else
+                    moveToTile = Position + (new Vector2D(Heading));
+            }
             // Else invert the ghost's movement
             else
-                moveToTile = InvertMove();
+            {
+                // If there are two many ghosts around, avoid ghosts (to avoid blocking up)
+                if (CountGhostsAround() > MAXIMUM_GHOSTS_AROUND)
+                    moveToTile = AlterMove(true, true, true);
+                // Just move inverted
+                else
+                    moveToTile = AlterMove(true, true, false);
+            }
+            #endregion
 
             // Turn off move inverment for the next turn
             InvertedMove = false;
 
-            // Double check tjat we are not aiming at Beware tile
+            // Double check that we are not aiming at Beware tile
             if (Beware != null && moveToTile.Equals(Beware))
             {
                 DesiredTile = Position.Copy();
@@ -175,14 +190,56 @@ namespace Setnicka.PacMan
         }
 
         /// <summary>
-        /// Makes the ghost go in the opposite direction that it would usally
+        /// Alters the movement of the ghost (makes it go inverted, or avoid certein GameObjects)
         /// </summary>
-        /// <returns>In inverted position, whcih the ghost now wants to achieve</returns>
-        private Vector2D InvertMove()
+        /// <returns>The altered position, whcih the ghost now wants to achieve</returns>
+        private Vector2D AlterMove(bool invertMove = false, bool avoidPlayer = false, bool avoidGhosts = false)
         {
-            // Get all the movableTilesAround our position and the invertedMove
-            List<GameObject> movableTilesAround = GetMovableTilesAround(Position);
-            Vector2D invertedMoveTile = Position - (new Vector2D(Heading));
+            // Get all the movableTilesAround from our position
+            List<GameObject> movableTilesAround = GetMovableTilesAround(Position);      
+
+            // Avoid given types
+            if (avoidPlayer)
+                Avoid<Player>();
+            if (avoidGhosts)
+                Avoid<Ghost>();
+
+            // If there is no legal move according to the rules, don't go anywhere
+            if (movableTilesAround.Count < 1)
+                return Position.Copy();
+
+            // Transform the list of movableTilesAround into a list of the tile's positions
+            List<Vector2D> movableTilesAroundPositions = new List<Vector2D>();
+            foreach (GameObject tile in movableTilesAround)
+                movableTilesAroundPositions.Add(tile.Position);
+
+            // If invertedMove, try to invert the move
+            if (InvertedMove)
+            {
+                Vector2D invertedMoveTile = Position - (new Vector2D(Heading));
+
+                // If there are more than one options to move, don't go to the original DesiredTile
+                if(movableTilesAround.Count > 1)
+                    movableTilesAround.Remove(Level[(Position + new Vector2D(Heading)).X, (Position + new Vector2D(Heading)).Y]);
+
+                // If the invertedMoveTile is part of the legal moves, go there
+                if (movableTilesAroundPositions.Contains(invertedMoveTile))
+                    return invertedMoveTile;
+            }
+            // If the ghost can move normaly, let it
+            else
+            {
+                Vector2D desiredMove = Position + new Vector2D(Heading);
+
+                if (movableTilesAroundPositions.Contains(desiredMove))
+                    return desiredMove;
+            }
+
+            // If movemenet was not supposed to be inverted, or the invertedMoveTile was illegal, or the desired move was illefal, move to the first legal tile
+            return movableTilesAround[0].Position;
+
+            // TODO: Delte, if proves useless
+            /*Vector2D invertedMoveTile = Position - (new Vector2D(Heading));
 
             // If the only available move is to go to go on player, do not move
             if (movableTilesAround.Count == 1 && Level[movableTilesAround[0].Position.X, movableTilesAround[0].Position.Y] is Player)
@@ -203,7 +260,7 @@ namespace Setnicka.PacMan
                 return invertedMoveTile;
             // Else return first tile that fit the previous conditions
             else
-                return movableTilesAround[0].Position;
+                return movableTilesAround[0].Position;*/
 
             // Removes certein type of object from movableTilesAround
             void Avoid<T>()
