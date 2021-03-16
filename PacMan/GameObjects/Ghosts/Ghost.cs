@@ -42,8 +42,11 @@ namespace Setnicka.PacMan
 
         public bool InvertedMove { get; set; }
 
+        // Used for telling the ghost to skip the next move cycle
+        public bool SkipMove { get; set; } = false;
+
         // Used ofr telling the ghosts about tiles he is not supposed to use
-        public Vector2D Beware { get; set; }
+        public Vector2D Beaware { get; set; }
         #endregion
 
 
@@ -99,11 +102,16 @@ namespace Setnicka.PacMan
             // Turn off move inverment for the next turn
             InvertedMove = false;
 
+            // TODO: Delete?
             // Double check that we are not aiming at Beware tile
-            if (Beware != null && moveToTile.Equals(Beware))
+            /*if (Beware != null && moveToTile.Equals(Beware))
             {
                 DesiredTile = Position.Copy();
-            }
+            }*/
+
+            // If the ghost is supposed to skip move, skip it...
+            if (SkipMove)
+                DesiredTile = Position.Copy();
 
             // If the ghost doesn't want to go anywhere
             if (DesiredTile.Equals(Position))
@@ -172,8 +180,8 @@ namespace Setnicka.PacMan
                 ghost.Print(GameManager.OFFSET);
                 this.Print(GameManager.OFFSET);
 
-                // Tell the other ghost not to undo this move
-                ghost.Beware = Position.Copy();
+                // Tell the other ghost not to move this cycle
+                ghost.SkipMove = true;
             }
 
             // Redraw the ghost
@@ -185,7 +193,10 @@ namespace Setnicka.PacMan
 
             void BeforeReturn()
             {
-                Beware = null;
+                SkipMove = false;
+
+                // TODO: Delete?
+                // Beware = null;
             }
         }
 
@@ -502,7 +513,7 @@ namespace Setnicka.PacMan
                     foreach (GameObject tile2 in GetMovableTilesAround(tile.Position))
                     {
                         // If we haven't put order on the tile yet and the tile isn't the ghost's position or a tile we should not go on...
-                        if (MazeMap[tile2.Position.X, tile2.Position.Y] == 0 && !tile2.Position.Equals(Position) && !tile2.Position.Equals(Beware))
+                        if (MazeMap[tile2.Position.X, tile2.Position.Y] == 0 && !tile2.Position.Equals(Position))
                             nextOrderTiles.Add(tile2);
                     }
                 }
