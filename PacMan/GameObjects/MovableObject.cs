@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Setnicka.AuxiliaryClasses;
+﻿using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.PacMan
 {
@@ -14,39 +11,13 @@ namespace Setnicka.PacMan
         /// <param name="startingPosition">The starting position of the GameObject in the level</param>
         public MovableObject(GameObject[,] level, Vector2D startingPosition) : base(level, startingPosition)
         {
-            spawnPoint = startingPosition.Copy();
+            SpawnPoint = startingPosition.Copy();
         }
-
-
-        #region Fields
-        /// <summary>
-        /// Determines which way the objects intends to go on the next update
-        /// </summary>
-        private Direction heading;
-
-        private Vector2D spawnPoint;
-        #endregion
 
         #region Properties
-        public Direction Heading
-        {
-            get
-            {
-                return heading;
-            }
-            protected set
-            {
-                heading = value;
-            }
-        }
+        public Direction Heading { get; protected set; }
 
-        protected Vector2D SpawnPoint
-        {
-            get
-            {
-                return spawnPoint;
-            }
-        }
+        public Vector2D SpawnPoint { get; }
         #endregion
 
         #region Methods
@@ -61,6 +32,7 @@ namespace Setnicka.PacMan
     {
         None,
         Boost,
+        Coin,
         Collision
     }
 }

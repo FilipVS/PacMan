@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Setnicka.PacMan.LevelEditor
 {
-    static class LevelEditorKeyBinding
+    internal static class LevelEditorKeyBinding
     {
-        // TODO: Finish (make into IEnumerable?)
-
         public const ConsoleKey LevelPlaneUp = ConsoleKey.W;
         public const ConsoleKey LevelPlaneDown = ConsoleKey.S;
         public const ConsoleKey LevelPlaneLeft = ConsoleKey.A;
@@ -22,5 +15,9 @@ namespace Setnicka.PacMan.LevelEditor
         public const ConsoleKey PlaceObject = ConsoleKey.Enter;
 
         public const ConsoleKey DeleteObject = ConsoleKey.Delete;
+
+        public const ConsoleKey GoToMenu = ConsoleKey.Escape;
+
+        public const ConsoleKey Refresh = ConsoleKey.R;
     }
 }

@@ -2,16 +2,23 @@
 using System.Collections.Generic;
 using System.Threading;
 using Setnicka.AuxiliaryClasses;
+using Setnicka.UI;
+using System.IO;
 
 namespace Setnicka.PacMan.LevelEditor
 {
     /// <summary>
-    /// This class is used for creation of levels (everything connected to it - checking for input through InputManager, validating input)
+    /// This class contains functionality to allow player to create levels (everything connected to it - checking for input through InputManager, validating input...)
     /// </summary>
-    internal class LevelCreator
+    internal class LevelEditorManager
     {
-        // TODO: Set proper maximum level size
-        public static readonly Vector2D MAXIMUM_LEVEL_SIZE = new Vector2D(50, 30);
+        #region Constants
+        // General constants
+
+        // Minimal size of a level
+        public static readonly Vector2D MINIMUM_LEVEL_SIZE = new Vector2D(2, 2);
+        // Maximal size of a level
+        public static readonly Vector2D MAXIMUM_LEVEL_SIZE = new Vector2D(75, 25);
         // Delay between main thread updates
         private const int MAIN_THREAD_UPDATE_FREQUENCY = 20;
         // The offset of drawn level objects in relation to CursorPosition(0, 0)
@@ -20,54 +27,111 @@ namespace Setnicka.PacMan.LevelEditor
         private readonly Vector2D OFFSET_OBJECTS_FOR_CHOICE;
 
 
-        public LevelCreator(Vector2D levelSize)
+        // Menu constants
+
+        private const ConsoleColor UNHIGHLIGHTED_FOREGROUND_COLOR = ConsoleColor.White;
+        private const ConsoleColor UNHIGHLIGHTED_BACKGROUND_COLOR = ConsoleColor.Black;
+
+        private const ConsoleColor HIGHLIGHTED_FOREGROUND_COLOR = ConsoleColor.Black;
+        private const ConsoleColor HIGHLIGHTED_BACKGROUND_COLOR = ConsoleColor.Red;
+
+        private const ConsoleColor MAIN_LABEL_FOREGROUND_COLOR = ConsoleColor.Black;
+        private const ConsoleColor MAIN_LABEL_BACKGROUND_COLOR = ConsoleColor.Yellow;
+
+        private const ConsoleColor MESSAGE_LABEL_FOREGROUND_COLOR = ConsoleColor.Black;
+        private const ConsoleColor MESSAGE_LABEL_BACKGROUND_COLOT = ConsoleColor.Red;
+
+        private const string EMPTY_LABEL_TEXT = "";
+
+        private const string MAIN_LABEL_TEXT = "Level Editor Menu";
+        private const string CONTINUE_BUTTON_TEXT = "Go back to level editor";
+        private const string SAVE_BUTTON_TEXT = "Save level";
+        private const string ESCAPE_BUTTON_TEXT = "Escape";
+        #endregion
+
+        #region Constructors
+        /// <summary>
+        /// Creates new LevelEditorManager instance with the Level created empty only with the Player
+        /// </summary>
+        public LevelEditorManager(Vector2D levelSize)
         {
             // Check for valid levelSize and initialize LevelArray
             if (levelSize.X < 1 || levelSize.Y < 1 || levelSize.X > MAXIMUM_LEVEL_SIZE.X || levelSize.Y > MAXIMUM_LEVEL_SIZE.Y)
-                throw new ArgumentException("levelSize is not proper number!");
+                throw new ArgumentException("levelSize is not valid!");
             LevelArray = new GameObject[levelSize.X, levelSize.Y];
             // Create new Empty GameObject on each tile of the LevelArray
-            for(int x = 0; x < LevelArray.GetLength(0); x++)
+            for (int x = 0; x < LevelArray.GetLength(0); x++)
             {
-                for(int y = 0; y < LevelArray.GetLength(1); y++)
+                for (int y = 0; y < LevelArray.GetLength(1); y++)
                 {
                     LevelArray[x, y] = new Empty(LevelArray, new Vector2D(x, y));
                 }
             }
 
-            // Initialize InputManager
-            List<ConsoleKey> keysOfInteresst = new List<ConsoleKey>() { LevelEditorKeyBinding.LevelPlaneDown, LevelEditorKeyBinding.LevelPlaneUp, LevelEditorKeyBinding.LevelPlaneRight, LevelEditorKeyBinding.LevelPlaneLeft, LevelEditorKeyBinding.ObjectOfChoiceUp, LevelEditorKeyBinding.ObjectOfChoiceDown, LevelEditorKeyBinding.PlaceObject, LevelEditorKeyBinding.DeleteObject };
-            InputManager = new InputManager(keysOfInteresst);
-            InputManager.KeyPressed += ChangeHighlighted;
-            InputManager.KeyPressed += ChangeHighlightedObjectOfChoice;
-            InputManager.KeyPressed += PlaceGameObject;
-            InputManager.KeyPressed += DeleteGameObject;
-            // TODO: Subsribe event handlers
+            InitializeInputManager();
 
             InitializeObjectsForChoice();
 
-            // Initiallizen offset of objects for choice - it needs to be next to the edited level
-            OFFSET_OBJECTS_FOR_CHOICE = Vector2D.Right * levelSize.X + OFFSET + 2*Vector2D.Right;
+            // Initialize offset of objects for choice - it needs to be next to the edited level
+            OFFSET_OBJECTS_FOR_CHOICE = Vector2D.Right * levelSize.X + OFFSET + 2 * Vector2D.Right;
 
-            // Player always has to be present on the level
+            // Player always has to be present in the level
             LevelArray[0, 0] = new Player(LevelArray, new Vector2D(0, 0));
 
-            void InitializeObjectsForChoice()
-            {
-                ObjectsOfChoice = new GameObject[1, 8];
-                ObjectsOfChoice[0, 0] = new Empty(ObjectsOfChoice, new Vector2D(0, 0), true);
-                ObjectsOfChoice[0, 1] = new Empty(ObjectsOfChoice, new Vector2D(0, 1), false, true);
-                ObjectsOfChoice[0, 2] = new Wall(ObjectsOfChoice, new Vector2D(0, 2));
-                ObjectsOfChoice[0, 3] = new Player(ObjectsOfChoice, new Vector2D(0, 3));
-                ObjectsOfChoice[0, 4] = new Blinky(ObjectsOfChoice, new Vector2D(0, 4), new Vector2D(0, 3));
-                ObjectsOfChoice[0, 5] = new Pinky(ObjectsOfChoice, new Vector2D(0, 5), new Vector2D(0, 3));
-                ObjectsOfChoice[0, 6] = new Inky(ObjectsOfChoice, new Vector2D(0, 6), new Vector2D(0, 3));
-                ObjectsOfChoice[0, 7] = new Clyde(ObjectsOfChoice, new Vector2D(0, 7), new Vector2D(0, 3));
-            }
+           
+
+            InitializeMenuAndManager();
+
+            InitializeMessageLabel();
         }
 
+        /// <summary>
+        /// Creates new LevelEditorManager instance with the Level to be edited based on the level passed as argument
+        /// </summary>
+        public LevelEditorManager(GameObject[,] level)
+        {
+            // Check the level
+            if (level == null || level.GetLength(0) < MINIMUM_LEVEL_SIZE.X || level.GetLength(1) < MINIMUM_LEVEL_SIZE.Y || level.GetLength(0) > MAXIMUM_LEVEL_SIZE.X || level.GetLength(1) > MAXIMUM_LEVEL_SIZE.Y)
+                throw new ArgumentException("The level is null/too small/too big.");
 
-        #region Automatic properties
+            // Initialize all tiles, that would be null to empty, check if player is present
+            bool playerPresent = false;
+            for(int x = 0; x < level.GetLength(0); x++)
+            {
+                for(int y = 0; y < level.GetLength(1); y++)
+                {
+                    if (level[x, y] == null)
+                        level[x, y] = new Empty(level, new Vector2D(x, y), false, false);
+                    else if (level[x, y] is Player)
+                        playerPresent = true;
+                }
+            }
+
+            // Set level as LevelArray
+            LevelArray = level;
+
+            InitializeInputManager();
+
+            InitializeObjectsForChoice();
+
+            // Initialize offset of objects for choice - it needs to be next to the edited level
+            OFFSET_OBJECTS_FOR_CHOICE = Vector2D.Right * LevelArray.GetLength(0) + OFFSET + 2 * Vector2D.Right;
+
+            // Player always has to be present in the level
+            if(!playerPresent)
+                LevelArray[0, 0] = new Player(LevelArray, new Vector2D(0, 0));
+
+            InitializeMenuAndManager();
+
+            InitializeMessageLabel();
+        }
+        #endregion
+
+        #region Fields
+        string message = EMPTY_LABEL_TEXT;
+        #endregion
+
+        #region Properties
         InputManager InputManager { get; set; }
 
         Thread InputManagerThread { get; set; }
@@ -82,17 +146,77 @@ namespace Setnicka.PacMan.LevelEditor
 
         // Player chooses which GameObject he wants to place with these
         GameObject[,] ObjectsOfChoice;
+
+        Menu Menu;
+        MenuManager MenuManager;
+
+        // For dispalying messages to the user
+        string Message
+        {
+            get
+            {
+                return message;
+            }
+            set
+            {
+                string newMessage = value;
+
+                if (value == null)
+                    newMessage = "";
+
+                // Delete previous message
+                MessageLabel.Delete();
+                
+                // Print new one
+                MessageLabel.Text = newMessage;
+                MessageLabel.Print();
+
+                message = newMessage;
+            }
+        }
+        Label MessageLabel { get; set; }
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Initializes the objects of choice array
+        /// </summary>
+        private void InitializeObjectsForChoice()
+        {
+            ObjectsOfChoice = new GameObject[1, 8];
+            ObjectsOfChoice[0, 0] = new Empty(ObjectsOfChoice, new Vector2D(0, 0), true);
+            ObjectsOfChoice[0, 1] = new Empty(ObjectsOfChoice, new Vector2D(0, 1), false, true);
+            ObjectsOfChoice[0, 2] = new Wall(ObjectsOfChoice, new Vector2D(0, 2));
+            ObjectsOfChoice[0, 3] = new Player(ObjectsOfChoice, new Vector2D(0, 3));
+            ObjectsOfChoice[0, 4] = new Blinky(ObjectsOfChoice, new Vector2D(0, 4), new Vector2D(0, 3));
+            ObjectsOfChoice[0, 5] = new Pinky(ObjectsOfChoice, new Vector2D(0, 5), new Vector2D(0, 3));
+            ObjectsOfChoice[0, 6] = new Inky(ObjectsOfChoice, new Vector2D(0, 6), new Vector2D(0, 3));
+            ObjectsOfChoice[0, 7] = new Clyde(ObjectsOfChoice, new Vector2D(0, 7), new Vector2D(0, 3));
+        }
+
+        /// <summary>
+        /// Initializes Input Manager
+        /// </summary>
+        private void InitializeInputManager()
+        {
+            // Initialize InputManager
+            List<ConsoleKey> keysOfInteresst = new List<ConsoleKey>() { LevelEditorKeyBinding.LevelPlaneDown, LevelEditorKeyBinding.LevelPlaneUp, LevelEditorKeyBinding.LevelPlaneRight, LevelEditorKeyBinding.LevelPlaneLeft, LevelEditorKeyBinding.ObjectOfChoiceUp, LevelEditorKeyBinding.ObjectOfChoiceDown, LevelEditorKeyBinding.PlaceObject, LevelEditorKeyBinding.DeleteObject, LevelEditorKeyBinding.GoToMenu, LevelEditorKeyBinding.Refresh };
+            InputManager = new InputManager(keysOfInteresst);
+            InputManager.KeyPressed += DeleteMessage;
+            InputManager.KeyPressed += ChangeHighlighted;
+            InputManager.KeyPressed += ChangeHighlightedObjectOfChoice;
+            InputManager.KeyPressed += PlaceGameObject;
+            InputManager.KeyPressed += DeleteGameObject;
+            InputManager.KeyPressed += GoToMenu;
+            InputManager.KeyPressed += Refresh;
+        }
+
         /// <summary>
         /// Main method that controls the creation of a level
         /// </summary>
         public void Run()
         {
-            // Print all the elements
-            Print();
-
             // Highlight first position
             ChangeHighlighted(this, new KeyEventArgs(LevelEditorKeyBinding.LevelPlaneUp));
 
@@ -113,11 +237,22 @@ namespace Setnicka.PacMan.LevelEditor
                     switch (CurrentRunningState)
                     {
                         case RunningState.On:
+                            Print();
                             AbortThread();
                             StartThread(InputManager.CheckForInput);
                             break;
                         case RunningState.Finished:
                             AbortThread();
+                            break;
+                        case RunningState.Menu:
+                            AbortThread();
+
+                            MenuManager.Run();
+
+                            if (CurrentRunningState == RunningState.Finished)
+                                return;
+
+                            CurrentRunningState = RunningState.On;
                             break;
                         default:
                             break;
@@ -131,7 +266,9 @@ namespace Setnicka.PacMan.LevelEditor
             if (InputManagerThread == null)
                 return;
 
-            InputManagerThread.Abort();
+            InputManager.AbortManager = true;
+            InputManagerThread.Join();
+
             InputManagerThread = null;
         }
 
@@ -148,15 +285,17 @@ namespace Setnicka.PacMan.LevelEditor
         {
             Console.Clear();
 
+            // Print Level
             foreach (GameObject gameObject in LevelArray)
                 gameObject.Print(OFFSET);
 
+            // Print ObjecsOfChoice
             foreach (GameObject gameObject1 in ObjectsOfChoice)
                 gameObject1.Print(OFFSET_OBJECTS_FOR_CHOICE);
 
             PrintBorder();
 
-            // TODO: Finish (user interface elements...)
+            InitialHighlight();
         }
 
         /// <summary>
@@ -164,19 +303,32 @@ namespace Setnicka.PacMan.LevelEditor
         /// </summary>
         private void PrintBorder()
         {
+            // Figure out the corners of the border
             Vector2D topLeftCorner = (LevelArray[0, 0].Position + OFFSET) + Vector2D.Left + Vector2D.Up;
             Vector2D topRightCorner = (LevelArray[LevelArray.GetLength(0) - 1, 0].Position + OFFSET) + Vector2D.Right + Vector2D.Up;
             Vector2D bottomLeftCorner = (LevelArray[0, LevelArray.GetLength(1) - 1].Position + OFFSET) + Vector2D.Left + Vector2D.Down;
             Vector2D bottomRightCorner = (LevelArray[LevelArray.GetLength(0) - 1, LevelArray.GetLength(1) - 1].Position + OFFSET) + Vector2D.Right + Vector2D.Down;
 
+            // Save original Console setting, so it can be set back later
+            ConsoleColor originalForeground = Console.ForegroundColor;
+            ConsoleColor originalBackground = Console.BackgroundColor;
+
+            // Print top line
             for (int x = topLeftCorner.X; x <= topRightCorner.X; x++)
                 PrintTile(x, topLeftCorner.Y);
+            // Print left line
             for (int y = topLeftCorner.Y; y <= bottomLeftCorner.Y; y++)
                 PrintTile(topLeftCorner.X, y);
+            // Print bottom line
             for (int x = bottomLeftCorner.X; x <= bottomRightCorner.X; x++)
                 PrintTile(x, bottomRightCorner.Y);
+            // Print right line
             for (int y = topRightCorner.Y; y <= bottomRightCorner.Y; y++)
                 PrintTile(topRightCorner.X, y);
+
+            // Set back the original Console setting
+            Console.ForegroundColor = originalForeground;
+            Console.BackgroundColor = originalBackground;
 
             // Prints one border tile
             void PrintTile(int x, int y)
@@ -185,9 +337,6 @@ namespace Setnicka.PacMan.LevelEditor
                 if (x < 0 || y < 0)
                     return;
 
-                ConsoleColor originalForeground = Console.ForegroundColor;
-                ConsoleColor originalBackground = Console.BackgroundColor;
-
                 Console.SetCursorPosition(x, y);
 
                 Console.ForegroundColor = LevelEditorColors.LevelBorderColor;
@@ -195,11 +344,21 @@ namespace Setnicka.PacMan.LevelEditor
 
                 Console.Write(" ");
 
-                Console.ForegroundColor = originalForeground;
-                Console.BackgroundColor = originalBackground;
-
                 Console.CursorVisible = false;
             }
+        }
+
+        /// <summary>
+        /// Hihglights the initial objects at the beginning
+        /// </summary>
+        private void InitialHighlight()
+        {
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { GameColors.EmptyColor, GameColors.WallColor }; // The original Pacman.Colors setting
+
+            SetColorsHighlight(true, unhighlightedColors);
+            LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
+            ObjectsOfChoice[HighlightedObjectOfChoice.X, HighlightedObjectOfChoice.Y].Print(OFFSET_OBJECTS_FOR_CHOICE);
+            SetColorsHighlight(false, unhighlightedColors);
         }
 
         /// <summary>
@@ -237,7 +396,7 @@ namespace Setnicka.PacMan.LevelEditor
             // Reset previously highlighted position
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
             // Highlight new position
-            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { Colors.EmptyColor, Colors.WallColor }; // The original Pacman.Colors setting
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { GameColors.EmptyColor, GameColors.WallColor }; // The original Pacman.Colors setting
             HighlightedPosition += highlightChange;
             SetColorsHighlight(true, unhighlightedColors);
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
@@ -245,6 +404,9 @@ namespace Setnicka.PacMan.LevelEditor
             SetColorsHighlight(false, unhighlightedColors);
         }
 
+        /// <summary>
+        /// Allows player to switch between objects he wants to place
+        /// </summary>
         private void ChangeHighlightedObjectOfChoice(object sender, KeyEventArgs keyArgs)
         {
             if (keyArgs.keyPressed != ConsoleKey.UpArrow && keyArgs.keyPressed != ConsoleKey.DownArrow)
@@ -267,14 +429,11 @@ namespace Setnicka.PacMan.LevelEditor
                     HighlightedObjectOfChoice += Vector2D.Down;
             }
 
-            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { Colors.EmptyColor, Colors.WallColor };
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { GameColors.EmptyColor, GameColors.WallColor };
             SetColorsHighlight(true, unhighlightedColors);
             ObjectsOfChoice[HighlightedObjectOfChoice.X, HighlightedObjectOfChoice.Y].Print(OFFSET_OBJECTS_FOR_CHOICE);
             SetColorsHighlight(false, unhighlightedColors);
             ObjectsOfChoice[previouslyHighlighted.X, previouslyHighlighted.Y].Print(OFFSET_OBJECTS_FOR_CHOICE);
-
-
-            
         }
 
         private void PlaceGameObject(object sender, KeyEventArgs keyArgs)
@@ -284,7 +443,10 @@ namespace Setnicka.PacMan.LevelEditor
 
             // You can't overwrite a player (player has to be present all the time)
             if (LevelArray[HighlightedPosition.X, HighlightedPosition.Y] is Player)
-                return; // TODO: Add message - can't overwrite a player, playe him elsewhere
+            {
+                Message = "You cannot overwrite the player, try to move the player first.";
+                return;
+            }
 
             Vector2D startingPosition = HighlightedPosition.Copy();
 
@@ -296,9 +458,6 @@ namespace Setnicka.PacMan.LevelEditor
 
                     // Ghosts need to know about the new Player staring position
                     UpdateGhostInformation();
-
-                    // TODO: This is only for testing, remove afterwards
-                    LevelWriter.SaveLevel(LevelArray, @"C:\Users\Filip\Desktop\PacMan\TestLevel.txt");
 
                     break;
                 case Type wallType when wallType == typeof(Wall):
@@ -321,7 +480,7 @@ namespace Setnicka.PacMan.LevelEditor
             }
 
             // Highlight the newly placed tile
-            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { Colors.EmptyColor, Colors.WallColor };
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { GameColors.EmptyColor, GameColors.WallColor };
             SetColorsHighlight(true, unhighlightedColors);
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
             SetColorsHighlight(false, unhighlightedColors);
@@ -359,21 +518,6 @@ namespace Setnicka.PacMan.LevelEditor
                         throw new ArgumentException("The type isn't a valid ghost!");
                 }
             }
-
-            // TODO: Delete if proves useless
-            /*// When player gets moved, the ghosts need to get his new starting position
-            void SetNewPlayerPositionToGhosts(Vector2D newPlayerPosition)
-            {
-                for(int x = 0; x < LevelArray.GetLength(0); x++)
-                {
-                    for(int y = 0; y < LevelArray.GetLength(1); y++)
-                    {
-                        if (LevelArray[x, y] is Ghost)
-                            LevelArray[x, y] = CreateNewGhost(LevelArray[x, y].GetType(), new Vector2D(x, y), GetPlayerPosition());
-                    }
-                }
-            }
-            */
 
             // Updates the ghost's setting of PlayerStartingPosition
             void UpdateGhostInformation()
@@ -417,7 +561,7 @@ namespace Setnicka.PacMan.LevelEditor
             // Player cannot be deleted from the level
             if (LevelArray[HighlightedPosition.X, HighlightedPosition.Y] is Player)
             {
-                // TODO: Add message - player cannot be deleted, move him away
+                Message = "Player cannot be deleted, you can only move him.";
                 return;
             }
 
@@ -425,10 +569,21 @@ namespace Setnicka.PacMan.LevelEditor
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y] = new Empty(LevelArray, new Vector2D(HighlightedPosition.X, HighlightedPosition.Y));
 
             // Print the changes
-            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { Colors.EmptyColor, Colors.WallColor };
+            ConsoleColor[] unhighlightedColors = new ConsoleColor[] { GameColors.EmptyColor, GameColors.WallColor };
             SetColorsHighlight(true, unhighlightedColors);
             LevelArray[HighlightedPosition.X, HighlightedPosition.Y].Print(OFFSET);
             SetColorsHighlight(false, unhighlightedColors);
+        }
+
+        /// <summary>
+        /// Allows the player to refresh the screen
+        /// </summary>
+        private void Refresh(object sender, KeyEventArgs keyEventArgs)
+        {
+            if (keyEventArgs.keyPressed != LevelEditorKeyBinding.Refresh)
+                return;
+
+            Print();
         }
 
         /// <summary>
@@ -443,14 +598,116 @@ namespace Setnicka.PacMan.LevelEditor
 
             if (setHighlighted)
             {
-                Colors.EmptyColor = LevelEditorColors.HighlightedEmptyColor;
-                Colors.WallColor = LevelEditorColors.HighlightedWallColor;
+                GameColors.EmptyColor = LevelEditorColors.HighlightedEmptyColor;
+                GameColors.WallColor = LevelEditorColors.HighlightedWallColor;
             }
             else
             {
-                Colors.EmptyColor = unhighlightedColors[0];
-                Colors.WallColor = unhighlightedColors[1];
+                GameColors.EmptyColor = unhighlightedColors[0];
+                GameColors.WallColor = unhighlightedColors[1];
             }
+        }
+        #endregion
+
+        #region UI Methods
+        private void InitializeMenuAndManager()
+        {
+            Menu = new Menu();
+
+            Label emptyLabel1 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Label mainLabel = new Label(MAIN_LABEL_TEXT, HorizontalAlignment.Center, 1, MAIN_LABEL_FOREGROUND_COLOR, MAIN_LABEL_BACKGROUND_COLOR);
+
+            Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Button continueButton = new Button(CONTINUE_BUTTON_TEXT, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            continueButton.OnClick += Menu.DoExitMenu;
+
+            Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 4, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Button saveButton = new Button(SAVE_BUTTON_TEXT, HorizontalAlignment.Center, 5, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            saveButton.OnClick += SaveLevel;
+            saveButton.OnClick += Menu.DoExitMenu;
+
+            Label emptyLabel4 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 6, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Button escapeButton = new Button(ESCAPE_BUTTON_TEXT, HorizontalAlignment.Center, 7, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            escapeButton.OnClick += EscapeEditor;
+            escapeButton.OnClick += Menu.DoExitMenu;
+
+            Menu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, continueButton, emptyLabel3, saveButton, emptyLabel4, escapeButton });
+            MenuManager = new MenuManager(Menu);
+        }
+
+        private void InitializeMessageLabel()
+        {
+            Vector2D messageLabelPosition = (LevelArray[0, LevelArray.GetLength(1) - 1].Position + OFFSET) + Vector2D.Left + 3*Vector2D.Down;
+
+            if (messageLabelPosition.Y <= (ObjectsOfChoice[0, (ObjectsOfChoice.GetLength(1) - 1)].Position + OFFSET).Y)
+                messageLabelPosition.Y =(ObjectsOfChoice[0, (ObjectsOfChoice.GetLength(1) - 1)].Position + OFFSET).Y + 2;
+
+            MessageLabel = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Custom, messageLabelPosition, MESSAGE_LABEL_FOREGROUND_COLOR, MESSAGE_LABEL_BACKGROUND_COLOT);
+        }
+
+        private void GoToMenu(object sender, KeyEventArgs args)
+        {
+            if (args.keyPressed != LevelEditorKeyBinding.GoToMenu)
+                return;
+
+            CurrentRunningState = RunningState.Menu;
+        }
+
+        private void SaveLevel(object sender, EventArgs args)
+        {
+            TextInputDialog dialog = new TextInputDialog("Please enter path to save your level", "Include the file name, path should not contain special characters or spaces, ex.: 'C:\\level.txt'");
+
+            dialog.Run();
+
+            string path = dialog.DialogStringResult;
+
+            // Try to save find/create the file
+            try
+            {
+                if (!File.Exists(path))
+                    File.Create(path).Dispose();
+            }
+            catch (UnauthorizedAccessException) { }
+            catch (ArgumentNullException) { }
+            catch (ArgumentException) { }
+            catch (PathTooLongException) { }
+            catch (DirectoryNotFoundException) { }
+            catch (NotSupportedException) { }
+            catch (IOException) { }
+
+            // If the file was not created, signal error to the user
+            if (!File.Exists(path))
+            {
+                MessageDialog messageDialog = new MessageDialog("The program was not capable of finding/creating that file");
+                messageDialog.Run();
+                return;
+            }
+
+            // If the error did not occur, save the level
+            LevelWriter.SaveLevel(LevelArray, path);
+        }
+
+        private void EscapeEditor(object sender, EventArgs args)
+        {
+            ConfirmationDialog dialog = new ConfirmationDialog(ConfirmationOptions.YesNo, "Do you really want to escape (did you save the level/want it to be discarded)?");
+
+            dialog.Run();
+
+            if(dialog.DialogResult == DialogResult.Yes)
+                CurrentRunningState = RunningState.Finished;
+        }
+
+
+        /// <summary>
+        /// The message gets deleted every time, the user presses some button (that the input handler is listening to)
+        /// </summary>
+        private void DeleteMessage(object sender, KeyEventArgs keyEventArgs)
+        {
+            Message = "";
         }
         #endregion
 
@@ -458,6 +715,7 @@ namespace Setnicka.PacMan.LevelEditor
         {
             Off,
             On,
+            Menu,
             Finished
         }
     }

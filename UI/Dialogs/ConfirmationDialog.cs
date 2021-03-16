@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using Setnicka.AuxiliaryClasses;
 
@@ -14,7 +12,7 @@ namespace Setnicka.UI
     public class ConfirmationDialog : UserDialog
     {
         private readonly Vector2D PROMPT_POSITION = new Vector2D(1, 1);
-        private readonly ConsoleColor PROMPT_FOREGROUND_COLOR = ConsoleColor.White;
+        private readonly ConsoleColor PROMPT_FOREGROUND_COLOR = ConsoleColor.Black;
         private readonly ConsoleColor PROMPT_BACKGROUND_COLOR = ConsoleColor.Red;
 
 

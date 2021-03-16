@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using Setnicka.AuxiliaryClasses;
 
@@ -12,12 +9,19 @@ namespace Setnicka.PacMan.LevelEditor
     /// </summary>
     static class LevelReader
     {
+        /// <summary>
+        /// Reads the level and returns it in an GameObject array
+        /// </summary>
+        /// <param name="path">Path to the level</param>
+        /// <returns>The level as GameObject array, in case of problem, it returns null</returns>
         public static GameObject[,] ReadLevel(string path)
         {
             if (String.IsNullOrEmpty(path))
-                throw new ArgumentNullException("path", "path argument cannot be null or empty!");
+                return null;
+                //throw new ArgumentNullException("path", "path argument cannot be null or empty!");
             if (!File.Exists(path))
-                throw new ArgumentException("path", "The path argument doesn't lead to any file!");
+                return null;
+               //throw new ArgumentException("path", "The path argument doesn't lead to any file!");
 
             GameObject[,] level;
 
@@ -25,7 +29,7 @@ namespace Setnicka.PacMan.LevelEditor
             {
                 // Confirm that the header text is present
                 if (reader.ReadLine() != LevelWriter.HEADER_TEXT)
-                    throw new ArgumentException("path", "The file doesn't cointain proper level information!");
+                    return null;
 
                 // Read the version number and use appropriate reader for it
                 string version = reader.ReadLine();
@@ -35,14 +39,11 @@ namespace Setnicka.PacMan.LevelEditor
                         level = ReadLevelV1(reader);
                         break;
                     default:
-                        throw new ArgumentException("path", "Unknown version!");
+                        return null;
                 }
             }
 
-            if (level != null)
-                return level;
-            else
-                throw new Exception("No level found!");
+            return level;
         }
 
         #region ReaderV1
@@ -51,6 +52,15 @@ namespace Setnicka.PacMan.LevelEditor
             // Read the dimensions and create the level array
             string[] dimensions = reader.ReadLine().Split(new string[] { LevelWriter.DIFFERENTIATOR }, StringSplitOptions.None);
             GameObject[,] level = new GameObject[int.Parse(dimensions[0]), int.Parse(dimensions[1])];
+
+            // Initialize all tiles to be empty
+            for(int x = 0; x < level.GetLength(0); x++)
+            {
+                for(int y = 0; y < level.GetLength(1); y++)
+                {
+                    level[x, y] = new Empty(level, new Vector2D(x, y), false, false);
+                }
+            }
 
             // Read all the gameobjects
             while (true)
@@ -66,6 +76,7 @@ namespace Setnicka.PacMan.LevelEditor
 
             void ReadGameObject(string dataLine)
             {
+                // The data line contains all the information needed to create new GameObject, so we split it from a line of text into chunks of valid informations
                 string[] informationArray = dataLine.Split(new string[] { LevelWriter.DIFFERENTIATOR }, StringSplitOptions.None);
                 Vector2D gameObjectPosition = new Vector2D(int.Parse(informationArray[1]), int.Parse(informationArray[2]));
 

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Setnicka.AuxiliaryClasses
 {
@@ -64,6 +61,9 @@ namespace Setnicka.AuxiliaryClasses
         private List<ConsoleKey> KeysOfInterest { get; }
 
         private bool ListenForAllInput { get; }
+
+        // Used for turning the manager off
+        public bool AbortManager { get; set; } = false;
         #endregion
 
         public void CheckForInput()
@@ -73,12 +73,22 @@ namespace Setnicka.AuxiliaryClasses
             while (true)
             {
                 do
-                {
-                    keyInfo = Console.ReadKey(true);
+                 {
+                    if (Console.KeyAvailable)
+                        keyInfo = Console.ReadKey(true);
+                    else
+                        continue;
 
                     if (KeyOfInterest(keyInfo.Key) && KeyPressed != null)
-                        KeyPressed(this, new KeyEventArgs(keyInfo.Key));
-                } while (Console.KeyAvailable);
+                         KeyPressed(this, new KeyEventArgs(keyInfo.Key));
+                 } while (Console.KeyAvailable);
+
+                // If the manager should exit
+                if (AbortManager)
+                {
+                    AbortManager = false;
+                    return;
+                }
             }
         }
 

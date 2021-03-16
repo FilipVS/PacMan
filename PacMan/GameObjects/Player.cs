@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.PacMan
@@ -15,19 +13,17 @@ namespace Setnicka.PacMan
         public Player(GameObject[,] level, Vector2D startingPosition) : base(level, startingPosition)
         {
             Health = STARTING_HEALTH;
+
+            DesiredTile = startingPosition.Copy();
         }
 
-        #region Event
-        public event EventHandler GameWon;
-        #endregion
+        public Player(GameObject[,] level, Vector2D startingPosition, int health) : this(level, startingPosition)
+        {
+            Health = health;
+        }
 
         #region Fields
         private int health;
-
-        private int score;
-
-        // -1 means that coins weren't counted yet
-        private int availableCoins = -1;
         #endregion
 
         #region Properties
@@ -37,80 +33,55 @@ namespace Setnicka.PacMan
             {
                 return health;
             }
-            private set
+            set
             {
                 health = value;
             }
         }
 
-        public int Score
-        {
-            get
-            {
-                return score;
-            }
-            private set
-            {
-                score = value;
-            }
-        }
-
-        private int AvailableCoins
-        {
-            get
-            {
-                // If coins weren't counted yet, count them
-                if (availableCoins == -1)
-                    CountAvailableCoins();
-
-                return availableCoins;
-            }
-            set
-            {
-                availableCoins = value;
-            }
-        }
+        // Where did the player want to go previously
+        public Vector2D DesiredTile { get; private set; }
         #endregion
 
         #region Methods
         protected override void Draw()
         {
-            Console.ForegroundColor = Colors.PlayerColor;
-            Console.BackgroundColor = Colors.EmptyColor;
+            Console.ForegroundColor = GameColors.PlayerColor;
+            Console.BackgroundColor = GameColors.EmptyColor;
 
             Console.Write(APPEARANCE);
         }
 
+        /// <summary>
+        /// Used for moving the player in the level
+        /// </summary>
+        /// <returns></returns>
         public override MoveResult Move()
         {
-            Vector2D moveToTile = Position + (new Vector2D(Heading));
-
             // If the destination tile is outside of the level
-            if (Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), moveToTile))
+            if (Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), (Position + new Vector2D(Heading))))
                 return MoveResult.None;
 
-            if(Level[moveToTile.X, moveToTile.Y] is Empty empty)
-            {
-                if (empty.ContainsCoin)
-                {
-                    Score++;
-                    if (Score == AvailableCoins)
-                        GameWon(this, EventArgs.Empty);
-                }
+            DesiredTile = Position + (new Vector2D(Heading));
 
+            if (Level[DesiredTile.X, DesiredTile.Y] is Empty empty)
+            {
                 bool containsBoost = empty.ContainsBoost;
+                bool containsCoin = empty.ContainsCoin;
 
                 // Move the player and redraw the tiles
                 Level[Position.X, Position.Y] = new Empty(Level, Position);
-                Level[Position.X, Position.Y].Print(Game.OFFSET);
-                Position = moveToTile;
+                Level[Position.X, Position.Y].Print(GameManager.OFFSET);
+                Position = DesiredTile;
                 Level[Position.X, Position.Y] = this;
-                Level[Position.X, Position.Y].Print(Game.OFFSET);
+                Level[Position.X, Position.Y].Print(GameManager.OFFSET);
 
                 if (containsBoost)
                     return MoveResult.Boost;
+                else if (containsCoin)
+                    return MoveResult.Coin;
             }
-            else if(Level[moveToTile.X, moveToTile.Y] is Ghost ghost)
+            else if(Level[DesiredTile.X, DesiredTile.Y] is Ghost ghost)
             {
                 return MoveResult.Collision;
             }
@@ -118,6 +89,9 @@ namespace Setnicka.PacMan
             return MoveResult.None;
         }
 
+        /// <summary>
+        /// This method can be subscribed to InputManager event and handles Heading changes by the player
+        /// </summary>
         public void ChangeHeading(object sender, KeyEventArgs keyEventArgs)
         {
             Direction originalHeading = Heading;
@@ -154,17 +128,6 @@ namespace Setnicka.PacMan
             catch (IndexOutOfRangeException)
             {
                 Heading = originalHeading;
-            }
-        }
-
-        private void CountAvailableCoins()
-        {
-            AvailableCoins = 0;
-
-            foreach (GameObject gameObject in Level)
-            {
-                if (gameObject is Empty empty && empty.ContainsCoin)
-                    AvailableCoins++;
             }
         }
         #endregion

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.PacMan
 {
     /// <summary>
-    /// Type of ghost that tries to directly follow Pac-Man
+    /// Type of ghost that tries to directly follow Pac-Man from behind
     /// </summary>
     internal class Blinky : Ghost
     {
@@ -23,18 +21,20 @@ namespace Setnicka.PacMan
         {
             base.ChooseDesiredTile();
 
-            // In order to follow player from behind he aims initially to the tile that player came from and
-            // switches directly to the tile with player when close
-            if (Position.DistanceTo(PlayerPositionThisTurn) > 1)
-                DesiredTile = PlayerPositionLastTurn;
-            else
-                DesiredTile = PlayerPositionThisTurn;
+            // If inverted move, ghosts allways aim at player
+            if (InvertedMove)
+            {
+                AimAtPlayer();
+                return;
+            }
+
+            AimBehindPlayer();
         }
 
         protected override void Draw()
         {
-            Console.ForegroundColor = Colors.BlinkyColor;
-            Console.BackgroundColor = Colors.EmptyColor;
+            Console.ForegroundColor = GameColors.BlinkyColor;
+            Console.BackgroundColor = GameColors.EmptyColor;
 
             Console.Write(APPEARANCE);
         }

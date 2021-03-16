@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Setnicka.PacMan.LevelEditor
 {
-    public class LevelEditorColors
+    internal class LevelEditorColors
     {
         public static ConsoleColor HighlightedEmptyColor { get; } = ConsoleColor.DarkGray;
 

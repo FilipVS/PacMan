@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="PacMan.exe" version="1.0.0.12" publicKeyToken="febe91f0eb60750c" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="PacMan" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="PacMan.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC Manifest Options
+          If you want to change the Windows User Account Control level replace the
+          requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         If you want to utilize File and Registry Virtualization for backward
+         compatibility then delete the requestedExecutionLevel node.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AuxiliaryClasses.dll" size="8704">
+      <assemblyIdentity name="AuxiliaryClasses" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>bcA9Pe0PsYSfwIqTBgiN0FgIivdKcSgPVY4j8C8tUiQ=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PacMan.exe" size="56760">
+      <assemblyIdentity name="PacMan" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>GgwGP42WHFEH7TriInYcwK5oMHAL7nDRM7UASAijSU8=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="UI.dll" size="28160">
+      <assemblyIdentity name="UI" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>e6uiqYL55h0U7yGlOxef1y2bs1rHoftYF8Ju8W9sLFk=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="Levels\CustomLevel.txt" size="1770">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>RjAGr3x+Fbrklga993/9ZogQDwoAlGeU184fqjuy/tI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Levels\Level1.txt" size="6348">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>ZmBw0ZsKZOAFVyGxiR8q/IdipgYMfVOOPyOXbvCXpd4=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Levels\Level2.txt" size="12359">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>jROkAjUp8mBLX9npUGZHViJ43ltakVGBce1efna2uKg=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Levels\Level3.txt" size="14334">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>6D2qILdCGNyTL0tH3ZiIfxL9SpZVSqI7T09L6Rq+EDg=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="PacMan.exe.config" size="189">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>R+Wg8QGvQVHX8T0ta/qbhH1bXkqY0fRnS3wBV3J0bN8=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=FILIP-PC\Filip" issuerKeyHash="c94020d4f879ce09b56561790e95ecc7eced14a6" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>NABnsaqmt+X/K0dZkHl/bgQS7zB1KGdTh+t0igyhUSk=</DigestValue></Reference></SignedInfo><SignatureValue>IGumr4hpvnM2Pxvh+LqNM3/+PURtq6XwFVrEwZcMptlTHoxzXMBGnka+CCB+71HhdDatvuXhzVZAoTgjTB3bkM7SZVBOLRIwTHDnTbBHcaEtMpUe5+m7GCvkQ05SAXUEuaUGdDbkc6w8z/jISMw5UIwz1KvCs+0W7NsoyBRfPGs=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>xGhw8x4G2q4h95g4ZT4ePN3n2XI6ieUNVP0z/EOMQFzd04AvMIn2s9C1ffgk7NQTR6HoTzgiJxmuABms2ozt1s07o2ozK4D73293hPv5Sw1/hl2Ecdyx3DhfPaHnXUUR2Br+oee3LlZBs93MHEN0elS9Qg9gw8SIv0sQ6DGxyfE=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="2951a10c8a74eb875367287530ef12046e7f799059472bffe5b7a6aab1670034" Description="" Url=""><as:assemblyIdentity name="PacMan.exe" version="1.0.0.12" publicKeyToken="febe91f0eb60750c" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=FILIP-PC\Filip</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>wWq6L/wMW1CayKXc9BYacqsDtIJp7lvvQZF8XwBMRvM=</DigestValue></Reference></SignedInfo><SignatureValue>YGtPM0Fv+LDRbaDYhY6x3BNSVpf15FCnabn51zF3z77jYR4sMSg8N/aM6lmEVrbB2OsCH7+hrVNCBTONPiKLWtO5XlwI6l9bIOQ6vygLnUqAA0+4QFv4VkDl9TXJQrmYXovEyXNq++P+TXiFpoxC5j4gPP/3x5HUwXR4hDFK14w=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xGhw8x4G2q4h95g4ZT4ePN3n2XI6ieUNVP0z/EOMQFzd04AvMIn2s9C1ffgk7NQTR6HoTzgiJxmuABms2ozt1s07o2ozK4D73293hPv5Sw1/hl2Ecdyx3DhfPaHnXUUR2Br+oee3LlZBs93MHEN0elS9Qg9gw8SIv0sQ6DGxyfE=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB0TCCATqgAwIBAgIQbeA/k8c/ebNGdbMX3weH6zANBgkqhkiG9w0BAQsFADAnMSUwIwYDVQQDHhwARgBJAEwASQBQAC0AUABDAFwARgBpAGwAaQBwMB4XDTIxMDMwNTE0NTM1N1oXDTIyMDMwNTIwNTM1N1owJzElMCMGA1UEAx4cAEYASQBMAEkAUAAtAFAAQwBcAEYAaQBsAGkAcDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAxGhw8x4G2q4h95g4ZT4ePN3n2XI6ieUNVP0z/EOMQFzd04AvMIn2s9C1ffgk7NQTR6HoTzgiJxmuABms2ozt1s07o2ozK4D73293hPv5Sw1/hl2Ecdyx3DhfPaHnXUUR2Br+oee3LlZBs93MHEN0elS9Qg9gw8SIv0sQ6DGxyfECAwEAATANBgkqhkiG9w0BAQsFAAOBgQDA6HyU54ozAj1sRnSvMCzI6UThPqbKYHdYXTVRgXSxRUDQG0EZ4CQoPpr0qOxdD18XfXmOqFdI4371bPfHAN3AP+ox1wqlQnXfdPNsagLo/EP8fL+EHzuxhWbdqaD5R6B7Odbg0EiYa5ZXf4fdWKkJDj3MQGeN6JvClAdMSSgT0g==</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

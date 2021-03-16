@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.UI
@@ -74,7 +70,7 @@ namespace Setnicka.UI
 
         public Vector2D RenderPosition { get; set; }
 
-        public string Text { get; }
+        public string Text { get; set; }
 
         public ConsoleColor TextColor { get; }
         public ConsoleColor BackgroundColor { get; }
@@ -84,6 +80,14 @@ namespace Setnicka.UI
         public void Print()
         {
             TextAligner.RenderText(Text, HorizontalAlignment, TextColor, BackgroundColor, RenderPosition.Y, RenderPosition.X);
+        }
+
+        /// <summary>
+        /// Deletes the Lable's text from the screen
+        /// </summary>
+        public void Delete()
+        {
+            TextAligner.RenderText(Text, HorizontalAlignment, Console.BackgroundColor, Console.BackgroundColor, RenderPosition.Y, RenderPosition.X);
         }
         #endregion
     }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.PacMan
@@ -68,21 +66,21 @@ namespace Setnicka.PacMan
         #region Methods
         protected override void Draw()
         {
-            Console.BackgroundColor = Colors.EmptyColor;
+            Console.BackgroundColor = GameColors.EmptyColor;
 
             if (ContainsBoost)
             {
-                Console.ForegroundColor = Colors.BoostColor;
+                Console.ForegroundColor = GameColors.BoostColor;
                 Console.Write(APPEARANCE_WITH_BOOST);
             }
             else if (ContainsCoin)
             {
-                Console.ForegroundColor = Colors.CoinColor;
+                Console.ForegroundColor = GameColors.CoinColor;
                 Console.Write(APPEARANCE_WITH_COIN);
             }
             else
             {
-                Console.ForegroundColor = Colors.EmptyColor;
+                Console.ForegroundColor = GameColors.EmptyColor;
                 Console.Write(APPEARANCE_EMPTY);
             }
         }

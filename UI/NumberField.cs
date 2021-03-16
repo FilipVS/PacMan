@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.UI
@@ -24,7 +20,7 @@ namespace Setnicka.UI
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
         /// <param name="lineNumber">On which line should be the element rendered</param>
         /// <param name="numberOfDigitsToEnter">How many digits will the user be able to enter (has to be between 0 and MAXIMUM_DIGITS)</param>
-        public NumberField(string text, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor)
+        public NumberField(string text, int startingDigit, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor)
         {
             Text = text;
             HorizontalAlignment = horizontalAlignment;
@@ -42,8 +38,7 @@ namespace Setnicka.UI
             NumberOfDigits = numberOfDigitsToEnter;
             NumberCharArray = new char[NumberOfDigits];
             CursorAt = 1;
-            NumberCharArray[0] = '1';
-
+            NumberCharArray[0] = startingDigit.ToString().ToCharArray()[0];
         }
         /// <summary>
         /// Initializes new instance of Button class with full information about its position and unhighlighted colors set to current Console colors
@@ -54,7 +49,7 @@ namespace Setnicka.UI
         /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
         /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
         /// <param name="action">An action should be performed under ceratin circumstances</param>
-        public NumberField(string text, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor) : this(text, numberOfDigitsToEnter, horizontalAlignment, -1, highlightedTextColor, highlightedBackgroundColor)
+        public NumberField(string text, int startingDigit, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor) : this(text, startingDigit, numberOfDigitsToEnter, horizontalAlignment, -1, highlightedTextColor, highlightedBackgroundColor)
         {
             RenderPosition = customRenderPosition;
         }
@@ -69,7 +64,7 @@ namespace Setnicka.UI
         /// <param name="textColor">The text color, when the element is not highlighted</param>
         /// <param name="backgroundColor">The background color, when the element is not highlighted</param>
         /// <param name="action">An action should be performed under ceratin circumstances</param>
-        public NumberField(string text, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor) : this(text,numberOfDigitsToEnter, horizontalAlignment, lineNumber, highlightedTextColor, highlightedBackgroundColor)
+        public NumberField(string text, int startingDigit, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor) : this(text, startingDigit, numberOfDigitsToEnter, horizontalAlignment, lineNumber, highlightedTextColor, highlightedBackgroundColor)
         {
             TextColor = textColor;
             BackgroundColor = backgroundColor;
@@ -85,7 +80,7 @@ namespace Setnicka.UI
         /// <param name="textColor">The text color, when the element is not highlighted</param>
         /// <param name="backgroundColor">The background color, when the element is not highlighted</param>
         /// <param name="action">An action should be performed under ceratin circumstances</param>
-        public NumberField(string text, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor) : this(text, numberOfDigitsToEnter, horizontalAlignment, -1, highlightedTextColor, highlightedBackgroundColor)
+        public NumberField(string text, int startingDigit, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor) : this(text, startingDigit, numberOfDigitsToEnter, horizontalAlignment, -1, highlightedTextColor, highlightedBackgroundColor)
         {
             RenderPosition = customRenderPosition;
 

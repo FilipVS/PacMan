@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Setnicka.AuxiliaryClasses;
 
 namespace Setnicka.UI
@@ -25,11 +23,12 @@ namespace Setnicka.UI
             Menu = menu;
 
             // Initializing the inputManager and subscribing individual event handlers
-            List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { MenuKeyBindings.CursorUp, MenuKeyBindings.CursorUpSecondary, MenuKeyBindings.CursorDown, MenuKeyBindings.CursorDownSecondary, MenuKeyBindings.ClickKey };
+            List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { MenuKeyBindings.CursorUp, MenuKeyBindings.CursorUpSecondary, MenuKeyBindings.CursorDown, MenuKeyBindings.CursorDownSecondary, MenuKeyBindings.ClickKey, MenuKeyBindings.RefreshKey };
             if(inputToHandle != null)
                 keysOfInterest.AddRange(inputToHandle);
             InputManager = new InputManager(keysOfInterest);
             InputManager.KeyPressed += Menu.KeyInteraction;
+            InputManager.KeyPressed += Refresh;
 
             // Subscribe menu controlling events
             menu.PerformAction += PerformAction;
@@ -40,7 +39,7 @@ namespace Setnicka.UI
         #region Properties
         private Menu Menu { get; set; }
 
-        private MenuState CurrentMenuState { get; set; }
+        private RunningState CurrentMenuState { get; set; }
 
         private InputManager InputManager { get; set; } 
 
@@ -53,11 +52,10 @@ namespace Setnicka.UI
         #region Methods
         public void Run()
         {
-            // TODO: Finish
             Print();
 
-            CurrentMenuState = MenuState.On;
-            MenuState previousState = MenuState.Off;
+            CurrentMenuState = RunningState.On;
+            RunningState previousState = RunningState.Off;
 
             while (true)
             {
@@ -69,22 +67,22 @@ namespace Setnicka.UI
 
                     switch (previousState)
                     {
-                        case MenuState.On:
+                        case RunningState.On:
                             AbortThreads(false);
                             StartThreads(InputManager.CheckForInput, false);
                             break;
-                        case MenuState.PerformAction:
+                        case RunningState.PerformAction:
                             AbortThreads(true);
 
                             if (ScheduledAction != null)
                                 ScheduledAction();
                             Print();
 
-                            CurrentMenuState = previousState = MenuState.On;
+                            CurrentMenuState = previousState = RunningState.On;
 
                             StartThreads(InputManager.CheckForInput, true);
                             break;
-                        case MenuState.Escaping:
+                        case RunningState.Escaping:
                             AbortThreads(true);
                             return;
                         default:
@@ -101,7 +99,7 @@ namespace Setnicka.UI
         {
             ScheduledAction = eventArgs.Action;
 
-            CurrentMenuState = MenuState.PerformAction;   
+            CurrentMenuState = RunningState.PerformAction;   
         }
 
         /// <summary>
@@ -109,7 +107,18 @@ namespace Setnicka.UI
         /// </summary>
         private void ExitMenu(object sender, EventArgs eventArgs)
         {
-            CurrentMenuState = MenuState.Escaping;
+            CurrentMenuState = RunningState.Escaping;
+        }
+
+        /// <summary>
+        /// Used for refreshing (when the menu glitches...)
+        /// </summary>
+        private void Refresh(object sender, KeyEventArgs keyEventArgs)
+        {
+            if (keyEventArgs.keyPressed != MenuKeyBindings.RefreshKey)
+                return;
+
+            Print();
         }
 
         /// <summary>
@@ -120,8 +129,6 @@ namespace Setnicka.UI
             Console.Clear();
 
             Menu.PrintMenu();
-
-            // TODO: Finish (user interface elements...)
         }
 
         /// <summary>
@@ -143,14 +150,17 @@ namespace Setnicka.UI
         {
             if (abortInputManager && InputManagerThread != null)
             {
-                InputManagerThread.Abort();
+                InputManager.AbortManager = true;
+
+                InputManagerThread.Join();
+
                 InputManagerThread = null;
             }
         }
         #endregion
 
 
-        private enum MenuState
+        private enum RunningState
         {
             Off,
             On,
