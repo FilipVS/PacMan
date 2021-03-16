@@ -30,7 +30,6 @@ namespace Setnicka.PacMan.LevelEditor
                 // Confirm that the header text is present
                 if (reader.ReadLine() != LevelWriter.HEADER_TEXT)
                     return null;
-                    //throw new ArgumentException("path", "The file doesn't cointain proper level information!");
 
                 // Read the version number and use appropriate reader for it
                 string version = reader.ReadLine();
@@ -41,7 +40,6 @@ namespace Setnicka.PacMan.LevelEditor
                         break;
                     default:
                         return null;
-                        //throw new ArgumentException("path", "Unknown version!");
                 }
             }
 
@@ -78,6 +76,7 @@ namespace Setnicka.PacMan.LevelEditor
 
             void ReadGameObject(string dataLine)
             {
+                // The data line contains all the information needed to create new GameObject, so we split it from a line of text into chunks of valid informations
                 string[] informationArray = dataLine.Split(new string[] { LevelWriter.DIFFERENTIATOR }, StringSplitOptions.None);
                 Vector2D gameObjectPosition = new Vector2D(int.Parse(informationArray[1]), int.Parse(informationArray[2]));
 

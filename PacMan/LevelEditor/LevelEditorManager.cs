@@ -8,7 +8,7 @@ using System.IO;
 namespace Setnicka.PacMan.LevelEditor
 {
     /// <summary>
-    /// This class is used for creation of levels (everything connected to it - checking for input through InputManager, validating input)
+    /// This class contains functionality to allow player to create levels (everything connected to it - checking for input through InputManager, validating input...)
     /// </summary>
     internal class LevelEditorManager
     {
@@ -50,12 +50,14 @@ namespace Setnicka.PacMan.LevelEditor
         #endregion
 
         #region Constructors
-
+        /// <summary>
+        /// Creates new LevelEditorManager instance with the Level created empty only with the Player
+        /// </summary>
         public LevelEditorManager(Vector2D levelSize)
         {
             // Check for valid levelSize and initialize LevelArray
             if (levelSize.X < 1 || levelSize.Y < 1 || levelSize.X > MAXIMUM_LEVEL_SIZE.X || levelSize.Y > MAXIMUM_LEVEL_SIZE.Y)
-                throw new ArgumentException("levelSize is not proper number!");
+                throw new ArgumentException("levelSize is not valid!");
             LevelArray = new GameObject[levelSize.X, levelSize.Y];
             // Create new Empty GameObject on each tile of the LevelArray
             for (int x = 0; x < LevelArray.GetLength(0); x++)
@@ -70,10 +72,10 @@ namespace Setnicka.PacMan.LevelEditor
 
             InitializeObjectsForChoice();
 
-            // Initiallizen offset of objects for choice - it needs to be next to the edited level
+            // Initialize offset of objects for choice - it needs to be next to the edited level
             OFFSET_OBJECTS_FOR_CHOICE = Vector2D.Right * levelSize.X + OFFSET + 2 * Vector2D.Right;
 
-            // Player always has to be present on the level
+            // Player always has to be present in the level
             LevelArray[0, 0] = new Player(LevelArray, new Vector2D(0, 0));
 
            
@@ -83,12 +85,14 @@ namespace Setnicka.PacMan.LevelEditor
             InitializeMessageLabel();
         }
 
+        /// <summary>
+        /// Creates new LevelEditorManager instance with the Level to be edited based on the level passed as argument
+        /// </summary>
         public LevelEditorManager(GameObject[,] level)
         {
             // Check the level
             if (level == null || level.GetLength(0) < MINIMUM_LEVEL_SIZE.X || level.GetLength(1) < MINIMUM_LEVEL_SIZE.Y || level.GetLength(0) > MAXIMUM_LEVEL_SIZE.X || level.GetLength(1) > MAXIMUM_LEVEL_SIZE.Y)
                 throw new ArgumentException("The level is null/too small/too big.");
-
 
             // Initialize all tiles, that would be null to empty, check if player is present
             bool playerPresent = false;
@@ -110,10 +114,10 @@ namespace Setnicka.PacMan.LevelEditor
 
             InitializeObjectsForChoice();
 
-            // Initiallizen offset of objects for choice - it needs to be next to the edited level
+            // Initialize offset of objects for choice - it needs to be next to the edited level
             OFFSET_OBJECTS_FOR_CHOICE = Vector2D.Right * LevelArray.GetLength(0) + OFFSET + 2 * Vector2D.Right;
 
-            // Player always has to be present on the level
+            // Player always has to be present in the level
             if(!playerPresent)
                 LevelArray[0, 0] = new Player(LevelArray, new Vector2D(0, 0));
 
@@ -174,6 +178,40 @@ namespace Setnicka.PacMan.LevelEditor
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Initializes the objects of choice array
+        /// </summary>
+        private void InitializeObjectsForChoice()
+        {
+            ObjectsOfChoice = new GameObject[1, 8];
+            ObjectsOfChoice[0, 0] = new Empty(ObjectsOfChoice, new Vector2D(0, 0), true);
+            ObjectsOfChoice[0, 1] = new Empty(ObjectsOfChoice, new Vector2D(0, 1), false, true);
+            ObjectsOfChoice[0, 2] = new Wall(ObjectsOfChoice, new Vector2D(0, 2));
+            ObjectsOfChoice[0, 3] = new Player(ObjectsOfChoice, new Vector2D(0, 3));
+            ObjectsOfChoice[0, 4] = new Blinky(ObjectsOfChoice, new Vector2D(0, 4), new Vector2D(0, 3));
+            ObjectsOfChoice[0, 5] = new Pinky(ObjectsOfChoice, new Vector2D(0, 5), new Vector2D(0, 3));
+            ObjectsOfChoice[0, 6] = new Inky(ObjectsOfChoice, new Vector2D(0, 6), new Vector2D(0, 3));
+            ObjectsOfChoice[0, 7] = new Clyde(ObjectsOfChoice, new Vector2D(0, 7), new Vector2D(0, 3));
+        }
+
+        /// <summary>
+        /// Initializes Input Manager
+        /// </summary>
+        private void InitializeInputManager()
+        {
+            // Initialize InputManager
+            List<ConsoleKey> keysOfInteresst = new List<ConsoleKey>() { LevelEditorKeyBinding.LevelPlaneDown, LevelEditorKeyBinding.LevelPlaneUp, LevelEditorKeyBinding.LevelPlaneRight, LevelEditorKeyBinding.LevelPlaneLeft, LevelEditorKeyBinding.ObjectOfChoiceUp, LevelEditorKeyBinding.ObjectOfChoiceDown, LevelEditorKeyBinding.PlaceObject, LevelEditorKeyBinding.DeleteObject, LevelEditorKeyBinding.GoToMenu, LevelEditorKeyBinding.Refresh };
+            InputManager = new InputManager(keysOfInteresst);
+            InputManager.KeyPressed += DeleteMessage;
+            InputManager.KeyPressed += ChangeHighlighted;
+            InputManager.KeyPressed += ChangeHighlightedObjectOfChoice;
+            InputManager.KeyPressed += PlaceGameObject;
+            InputManager.KeyPressed += DeleteGameObject;
+            InputManager.KeyPressed += GoToMenu;
+            InputManager.KeyPressed += Refresh;
+        }
+
         /// <summary>
         /// Main method that controls the creation of a level
         /// </summary>
@@ -247,9 +285,11 @@ namespace Setnicka.PacMan.LevelEditor
         {
             Console.Clear();
 
+            // Print Level
             foreach (GameObject gameObject in LevelArray)
                 gameObject.Print(OFFSET);
 
+            // Print ObjecsOfChoice
             foreach (GameObject gameObject1 in ObjectsOfChoice)
                 gameObject1.Print(OFFSET_OBJECTS_FOR_CHOICE);
 
@@ -263,19 +303,32 @@ namespace Setnicka.PacMan.LevelEditor
         /// </summary>
         private void PrintBorder()
         {
+            // Figure out the corners of the border
             Vector2D topLeftCorner = (LevelArray[0, 0].Position + OFFSET) + Vector2D.Left + Vector2D.Up;
             Vector2D topRightCorner = (LevelArray[LevelArray.GetLength(0) - 1, 0].Position + OFFSET) + Vector2D.Right + Vector2D.Up;
             Vector2D bottomLeftCorner = (LevelArray[0, LevelArray.GetLength(1) - 1].Position + OFFSET) + Vector2D.Left + Vector2D.Down;
             Vector2D bottomRightCorner = (LevelArray[LevelArray.GetLength(0) - 1, LevelArray.GetLength(1) - 1].Position + OFFSET) + Vector2D.Right + Vector2D.Down;
 
+            // Save original Console setting, so it can be set back later
+            ConsoleColor originalForeground = Console.ForegroundColor;
+            ConsoleColor originalBackground = Console.BackgroundColor;
+
+            // Print top line
             for (int x = topLeftCorner.X; x <= topRightCorner.X; x++)
                 PrintTile(x, topLeftCorner.Y);
+            // Print left line
             for (int y = topLeftCorner.Y; y <= bottomLeftCorner.Y; y++)
                 PrintTile(topLeftCorner.X, y);
+            // Print bottom line
             for (int x = bottomLeftCorner.X; x <= bottomRightCorner.X; x++)
                 PrintTile(x, bottomRightCorner.Y);
+            // Print right line
             for (int y = topRightCorner.Y; y <= bottomRightCorner.Y; y++)
                 PrintTile(topRightCorner.X, y);
+
+            // Set back the original Console setting
+            Console.ForegroundColor = originalForeground;
+            Console.BackgroundColor = originalBackground;
 
             // Prints one border tile
             void PrintTile(int x, int y)
@@ -284,9 +337,6 @@ namespace Setnicka.PacMan.LevelEditor
                 if (x < 0 || y < 0)
                     return;
 
-                ConsoleColor originalForeground = Console.ForegroundColor;
-                ConsoleColor originalBackground = Console.BackgroundColor;
-
                 Console.SetCursorPosition(x, y);
 
                 Console.ForegroundColor = LevelEditorColors.LevelBorderColor;
@@ -294,44 +344,8 @@ namespace Setnicka.PacMan.LevelEditor
 
                 Console.Write(" ");
 
-                Console.ForegroundColor = originalForeground;
-                Console.BackgroundColor = originalBackground;
-
                 Console.CursorVisible = false;
             }
-        }
-
-        /// <summary>
-        /// Initializes the objects of choice array
-        /// </summary>
-        private void InitializeObjectsForChoice()
-        {
-            ObjectsOfChoice = new GameObject[1, 8];
-            ObjectsOfChoice[0, 0] = new Empty(ObjectsOfChoice, new Vector2D(0, 0), true);
-            ObjectsOfChoice[0, 1] = new Empty(ObjectsOfChoice, new Vector2D(0, 1), false, true);
-            ObjectsOfChoice[0, 2] = new Wall(ObjectsOfChoice, new Vector2D(0, 2));
-            ObjectsOfChoice[0, 3] = new Player(ObjectsOfChoice, new Vector2D(0, 3));
-            ObjectsOfChoice[0, 4] = new Blinky(ObjectsOfChoice, new Vector2D(0, 4), new Vector2D(0, 3));
-            ObjectsOfChoice[0, 5] = new Pinky(ObjectsOfChoice, new Vector2D(0, 5), new Vector2D(0, 3));
-            ObjectsOfChoice[0, 6] = new Inky(ObjectsOfChoice, new Vector2D(0, 6), new Vector2D(0, 3));
-            ObjectsOfChoice[0, 7] = new Clyde(ObjectsOfChoice, new Vector2D(0, 7), new Vector2D(0, 3));
-        }
-
-        /// <summary>
-        /// Initializes Input Manager
-        /// </summary>
-        private void InitializeInputManager()
-        {
-            // Initialize InputManager
-            List<ConsoleKey> keysOfInteresst = new List<ConsoleKey>() { LevelEditorKeyBinding.LevelPlaneDown, LevelEditorKeyBinding.LevelPlaneUp, LevelEditorKeyBinding.LevelPlaneRight, LevelEditorKeyBinding.LevelPlaneLeft, LevelEditorKeyBinding.ObjectOfChoiceUp, LevelEditorKeyBinding.ObjectOfChoiceDown, LevelEditorKeyBinding.PlaceObject, LevelEditorKeyBinding.DeleteObject, LevelEditorKeyBinding.GoToMenu, LevelEditorKeyBinding.Refresh };
-            InputManager = new InputManager(keysOfInteresst);
-            InputManager.KeyPressed += DeleteMessage;
-            InputManager.KeyPressed += ChangeHighlighted;
-            InputManager.KeyPressed += ChangeHighlightedObjectOfChoice;
-            InputManager.KeyPressed += PlaceGameObject;
-            InputManager.KeyPressed += DeleteGameObject;
-            InputManager.KeyPressed += GoToMenu;
-            InputManager.KeyPressed += Refresh;
         }
 
         /// <summary>
@@ -390,6 +404,9 @@ namespace Setnicka.PacMan.LevelEditor
             SetColorsHighlight(false, unhighlightedColors);
         }
 
+        /// <summary>
+        /// Allows player to switch between objects he wants to place
+        /// </summary>
         private void ChangeHighlightedObjectOfChoice(object sender, KeyEventArgs keyArgs)
         {
             if (keyArgs.keyPressed != ConsoleKey.UpArrow && keyArgs.keyPressed != ConsoleKey.DownArrow)
@@ -417,9 +434,6 @@ namespace Setnicka.PacMan.LevelEditor
             ObjectsOfChoice[HighlightedObjectOfChoice.X, HighlightedObjectOfChoice.Y].Print(OFFSET_OBJECTS_FOR_CHOICE);
             SetColorsHighlight(false, unhighlightedColors);
             ObjectsOfChoice[previouslyHighlighted.X, previouslyHighlighted.Y].Print(OFFSET_OBJECTS_FOR_CHOICE);
-
-
-            
         }
 
         private void PlaceGameObject(object sender, KeyEventArgs keyArgs)
@@ -562,7 +576,7 @@ namespace Setnicka.PacMan.LevelEditor
         }
 
         /// <summary>
-        /// Allows the user to refresh the screen
+        /// Allows the player to refresh the screen
         /// </summary>
         private void Refresh(object sender, KeyEventArgs keyEventArgs)
         {

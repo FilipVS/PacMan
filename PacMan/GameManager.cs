@@ -691,9 +691,17 @@ namespace Setnicka.PacMan
             {
                 if(Ghosts[i].Position.Equals(Player.DesiredTile))
                 {
+                    // Try to return the ghosts's TileStanding, or fill the empty position with new tile
+                    if (Ghosts[i].TileStanding != null)
+                        Level[Ghosts[i].Position.X, Ghosts[i].Position.Y] = Ghosts[i].TileStanding;
+                    else
+                        Level[Player.DesiredTile.X, Player.DesiredTile.Y] = new Empty(Level, Player.DesiredTile.Copy());
+
+                    // Remove the ghost from the list and add him to eaten ghosts
                     EatenGhosts.Add(Ghosts[i]);
                     Ghosts.RemoveAt(i);
-                    Level[Player.DesiredTile.X, Player.DesiredTile.Y] = new Empty(Level, Player.DesiredTile.Copy());
+
+                    // Reprint the tile that the ghost stood on
                     Level[Player.DesiredTile.X, Player.DesiredTile.Y].Print(OFFSET);
                     break;
                 }

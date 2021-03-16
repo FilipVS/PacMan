@@ -110,7 +110,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Levels\CustomLevel.txt" />
     <Content Include="Levels\Level1.txt" />
     <Content Include="Levels\Level2.txt" />
     <Content Include="Levels\Level3.txt" />

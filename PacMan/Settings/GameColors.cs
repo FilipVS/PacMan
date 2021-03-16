@@ -7,6 +7,7 @@ namespace Setnicka.PacMan
     /// </summary>
     internal static class GameColors
     {
+        // ChasingGhosts and ChasingGhostsMainVersion are used to alter the colors, that are returned for individual ghosts
         // Return normal ghost colors or their chasing ghosts version
         public static bool ChasingGhosts { get; set; } = false;
         // Return chasing ghost main version color or alternate?

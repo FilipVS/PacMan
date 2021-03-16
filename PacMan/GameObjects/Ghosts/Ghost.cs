@@ -358,17 +358,17 @@ namespace Setnicka.PacMan
                 if (positionDifference.Y == 0)
                     Heading = Direction.Right;
                 else
-                    DoNotMove();
-                // TODO: Delete throws
-                //throw new ArgumentException("Incorrect result!");
+                    //DoNotMove();
+                    // TODO: Delete throws, uncomment DoNotMove()s
+                    throw new ArgumentException("Incorrect result!");
             }
             else if (positionDifference.X == -1)
             {
                 if (positionDifference.Y == 0)
                     Heading = Direction.Left;
                 else
-                    DoNotMove();
-                //throw new ArgumentException("Incorrect result!");
+                   // DoNotMove();
+                    throw new ArgumentException("Incorrect result!");
             }
             else if (positionDifference.X == 0)
             {
@@ -377,12 +377,12 @@ namespace Setnicka.PacMan
                 else if (positionDifference.Y == -1)
                     Heading = Direction.Up;
                 else
-                    DoNotMove();
-                //throw new ArgumentException("Incorrect result!");
+                    //DoNotMove();
+                    throw new ArgumentException("Incorrect result!");
             }
             else
-                DoNotMove();
-            //throw new ArgumentException("Incorrect result!");
+                //DoNotMove();
+                throw new ArgumentException("Incorrect result!");
             #endregion
 
             // Sets the desired tile to be the same as current tile, so the ghost won't move
