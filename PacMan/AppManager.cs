@@ -15,7 +15,7 @@ namespace Setnicka.PacMan
         #region Constants
 
         #region MenuDesign
-        // General
+        // General constants
         private const ConsoleColor UNHIGHLIGHTED_FOREGROUND_COLOR = ConsoleColor.White;
         private const ConsoleColor UNHIGHLIGHTED_BACKGROUND_COLOR = ConsoleColor.Black;
 
@@ -25,6 +25,7 @@ namespace Setnicka.PacMan
         private const ConsoleColor MAIN_LABEL_FOREGROUND_COLOR = ConsoleColor.Black;
         private const ConsoleColor MAIN_LABEL_BACKGROUND_COLOR = ConsoleColor.Yellow;
 
+        // UI constants
         private const string EMPTY_LABEL_TEXT = "";
         private const string GO_TO_PREVIOUS_MENU_BUTTON_TEXT = "Go to previous menu";
 

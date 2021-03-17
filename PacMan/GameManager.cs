@@ -48,6 +48,8 @@ namespace Setnicka.PacMan
 
         private const string EMPTY_LABEL_TEXT = "";
 
+        private readonly string HOW_TO_GET_TO_MENU_LABEL_TEXT = $"Press {GameKeyBinding.GoToMenu} to get to the menu (pause/escape...)";
+
         private const string MAIN_LABEL_TEXT = "Game menu";
         private const string CONTINUE_BUTTON_TEXT = "Continue";
         private const string ESCAPE_BUTTON_TEXT = "Escape";
@@ -255,6 +257,9 @@ namespace Setnicka.PacMan
                 scoreMessage = newScore;
             }
         }
+
+        // For informing the player how to get to the menu
+        Label HowToGetToMenuLabel { get; set; }
         #endregion
 
 
@@ -789,6 +794,8 @@ namespace Setnicka.PacMan
             HealthLabel.Print();
             ScoreLabel.Print();
 
+            HowToGetToMenuLabel.Print();
+
             Console.CursorVisible = false;
         }
 
@@ -967,6 +974,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void InitializeLabels()
         {
+            // Initialize message, health and score labels
             Vector2D messageLabelPosition = (Level[Level.GetLength(0) - 1, 0].Position + OFFSET) + Vector2D.Right * 3;
             Vector2D healthLabelPosition = messageLabelPosition + Vector2D.Down * 2;
             Vector2D scoreLabelPosition = healthLabelPosition + Vector2D.Down * 2;
@@ -979,6 +987,10 @@ namespace Setnicka.PacMan
 
             HealthMessage = $"Health: {Player.Health}";
             ScoreMessage = $"Score: {Score} / {AvailableCoins}";
+
+
+            // Initialize HowToGetToMenuLabel
+            HowToGetToMenuLabel = new Label(HOW_TO_GET_TO_MENU_LABEL_TEXT, HorizontalAlignment.Right, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
         }
 
         /// <summary>

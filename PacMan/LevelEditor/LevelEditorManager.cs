@@ -43,6 +43,8 @@ namespace Setnicka.PacMan.LevelEditor
 
         private const string EMPTY_LABEL_TEXT = "";
 
+        private readonly string HOW_TO_GET_TO_MENU_LABLE_TEXT = $"Press {LevelEditorKeyBinding.GoToMenu} to enter menu (exit/save level...)";
+
         private const string MAIN_LABEL_TEXT = "Level Editor Menu";
         private const string CONTINUE_BUTTON_TEXT = "Go back to level editor";
         private const string SAVE_BUTTON_TEXT = "Save level";
@@ -83,6 +85,8 @@ namespace Setnicka.PacMan.LevelEditor
             InitializeMenuAndManager();
 
             InitializeMessageLabel();
+
+            InitializeHowToGetToMenuLabel();
         }
 
         /// <summary>
@@ -124,6 +128,8 @@ namespace Setnicka.PacMan.LevelEditor
             InitializeMenuAndManager();
 
             InitializeMessageLabel();
+
+            InitializeHowToGetToMenuLabel();
         }
         #endregion
 
@@ -175,6 +181,9 @@ namespace Setnicka.PacMan.LevelEditor
             }
         }
         Label MessageLabel { get; set; }
+
+        // Lable that informs the player how to get to the menu
+        Label HowToGetToMenuLabel { get; set; }
         #endregion
 
         #region Methods
@@ -292,6 +301,8 @@ namespace Setnicka.PacMan.LevelEditor
             // Print ObjecsOfChoice
             foreach (GameObject gameObject1 in ObjectsOfChoice)
                 gameObject1.Print(OFFSET_OBJECTS_FOR_CHOICE);
+
+            HowToGetToMenuLabel.Print();
 
             PrintBorder();
 
@@ -647,6 +658,11 @@ namespace Setnicka.PacMan.LevelEditor
                 messageLabelPosition.Y =(ObjectsOfChoice[0, (ObjectsOfChoice.GetLength(1) - 1)].Position + OFFSET).Y + 2;
 
             MessageLabel = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Custom, messageLabelPosition, MESSAGE_LABEL_FOREGROUND_COLOR, MESSAGE_LABEL_BACKGROUND_COLOT);
+        }
+
+        private void InitializeHowToGetToMenuLabel()
+        {
+            HowToGetToMenuLabel = new Label(HOW_TO_GET_TO_MENU_LABLE_TEXT, HorizontalAlignment.Right, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
         }
 
         private void GoToMenu(object sender, KeyEventArgs args)
