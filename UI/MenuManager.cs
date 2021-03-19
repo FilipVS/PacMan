@@ -6,7 +6,7 @@ using Setnicka.AuxiliaryClasses;
 namespace Setnicka.UI
 {
     /// <summary>
-    /// This class is used to manage menus - turn input into action...
+    /// This class is used to manage Menus - turn input into action...
     /// </summary>
     public class MenuManager
     {
@@ -45,7 +45,7 @@ namespace Setnicka.UI
 
         private Thread InputManagerThread { get; set; }
 
-        // An action taht the menu should perform
+        // An action that the menu should perform
         private Action ScheduledAction { get; set; }
         #endregion
 
@@ -93,7 +93,7 @@ namespace Setnicka.UI
         }
 
         /// <summary>
-        /// Used for moving into the next submenu when the event in Menu is fired
+        /// Used for moving into the next submenu/performing other actions when the event in Menu is fired
         /// </summary>
         private void PerformAction(object sender, ActionEventArgs eventArgs)
         {
@@ -111,7 +111,7 @@ namespace Setnicka.UI
         }
 
         /// <summary>
-        /// Used for refreshing (when the menu glitches...)
+        /// Used for refreshing
         /// </summary>
         private void Refresh(object sender, KeyEventArgs keyEventArgs)
         {

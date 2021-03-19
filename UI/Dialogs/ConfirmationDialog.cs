@@ -6,15 +6,15 @@ using Setnicka.AuxiliaryClasses;
 namespace Setnicka.UI
 {
     /// <summary>
-    /// Dialog used for getting confirmation from the user (whikle saving changes...)
+    /// Dialog used for getting confirmation from the user (while saving changes...)
     /// Returns an enum DialogResult
     /// </summary>
     public class ConfirmationDialog : UserDialog
     {
+        #region Constants
         private readonly Vector2D PROMPT_POSITION = new Vector2D(1, 1);
         private readonly ConsoleColor PROMPT_FOREGROUND_COLOR = ConsoleColor.Black;
         private readonly ConsoleColor PROMPT_BACKGROUND_COLOR = ConsoleColor.Red;
-
 
         private readonly Vector2D BUTTON_YES_POSITION = new Vector2D(1, 2);
         private readonly Vector2D BUTTON_NO_POSITION = new Vector2D(1, 3);
@@ -22,6 +22,7 @@ namespace Setnicka.UI
 
         private const ConsoleColor BUTTON_HIGHLIGHTED_FOREGROUND = ConsoleColor.Black;
         private const ConsoleColor BUTTON_HIGHLIGHTED_BACKGROUND = ConsoleColor.Cyan;
+        #endregion
 
         #region Constructors
         public ConfirmationDialog(ConfirmationOptions options, string prompt) : base(new List<ConsoleKey>() {MenuKeyBindings.CursorUp, MenuKeyBindings.CursorUpSecondary, MenuKeyBindings.CursorDown, MenuKeyBindings.CursorDownSecondary, MenuKeyBindings.ClickKey })
@@ -189,6 +190,7 @@ namespace Setnicka.UI
         }
     }
 
+    // Allows the programmer to choose, which options will the dialog offer
     public enum ConfirmationOptions
     {
         YesNo,

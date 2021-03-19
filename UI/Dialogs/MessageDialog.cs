@@ -44,6 +44,7 @@ namespace Setnicka.UI
 
             Print();
 
+            // Wait for the user to acknowledge the message
             Console.ReadKey(true);
         }
 

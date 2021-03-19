@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Setnicka.AuxiliaryClasses
 {
     /// <summary>
-    /// Triggers and event when certain keys are pressed
+    /// Allows to run a method that will be listening for input and will trigger ann event when certain keys are pressed
     /// </summary>
     public class InputManager
     {
@@ -20,13 +20,15 @@ namespace Setnicka.AuxiliaryClasses
         /// <summary>
         /// Initializes enw instance of InputManager that will listen for specified input
         /// </summary>
-        /// <param name="keysOfInterest">Keys that the input manager should react to</param>
+        /// <param name="keysOfInterest">Keys that the InputManager should react to</param>
         public InputManager(IEnumerable<ConsoleKey> keysOfInterest)
         {
+            // Turn the IEnumerable into a list
             List<ConsoleKey> keysOfInterestList = new List<ConsoleKey>();
             foreach (ConsoleKey key in keysOfInterest)
                 keysOfInterestList.Add(key);
 
+            // If there are no keys, the InputManager will just listen for all input
             if(keysOfInterestList.Count < 1)
             {
                 ListenForAllInput = true;
@@ -46,16 +48,16 @@ namespace Setnicka.AuxiliaryClasses
                 }
             }
 
+            // Set the properties
             this.KeysOfInterest = keysOfInterestList;
             ListenForAllInput = false;
         }
         #endregion
 
-        public delegate void KeyPressedEventHandler(object sender, KeyEventArgs eventArgs);
         /// <summary>
         /// Event that is triggered when a key of interest is pressed
         /// </summary>
-        public event KeyPressedEventHandler KeyPressed;
+        public event EventHandler<KeyEventArgs> KeyPressed;
 
         #region Properties
         private List<ConsoleKey> KeysOfInterest { get; }
@@ -93,7 +95,7 @@ namespace Setnicka.AuxiliaryClasses
         }
 
         /// <summary>
-        /// Chekcs whether the key is of interest (only some keys are further proccessed)
+        /// Chekcs whether the key is of interest (only some keys are further processed)
         /// </summary>
         private bool KeyOfInterest(ConsoleKey key)
         {

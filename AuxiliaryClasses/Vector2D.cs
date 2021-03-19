@@ -8,7 +8,7 @@ namespace Setnicka.AuxiliaryClasses
     /// </summary>
     public class Vector2D
     {
-        // Made to work with array indexing and printing on the screen (so one move up on the screen means -1 in the int[].GetLength(1) direction)
+        // Made to work with array indexing and printing on the screen (so one move up on the screen means -1 in the array[].GetLength(1) direction etc.)
         public static readonly Vector2D Up = new Vector2D(0, -1);
         public static readonly Vector2D Down = new Vector2D(0, 1);
         public static readonly Vector2D Right = new Vector2D(1, 0);
@@ -29,7 +29,6 @@ namespace Setnicka.AuxiliaryClasses
         /// <summary>
         /// Creates new Vector2D with magnitude 1 and values responding to the direction
         /// </summary>
-        /// <param name="direction"></param>
         public Vector2D(Direction direction)
         {
             switch (direction)
@@ -68,36 +67,10 @@ namespace Setnicka.AuxiliaryClasses
         }
         #endregion
 
-        #region Fields
-        private int x;
-
-        private int y;
-        #endregion
-
         #region Properties
-        public int X
-        {
-            get
-            {
-                return x;
-            }
-            set
-            {
-                x = value;
-            }
-        }
+        public int X { get; set; }
 
-        public int Y
-        {
-            get
-            {
-                return y;
-            }
-            set
-            {
-                y = value;
-            }
-        }
+        public int Y { get; set; }
 
         public double Magnitude
         {
@@ -110,7 +83,7 @@ namespace Setnicka.AuxiliaryClasses
 
         #region Methods
         /// <summary>
-        /// Checks whether a vector coordinates are out of bounds of a two dimensional array
+        /// Checks whether a vector coordinates are out of bounds of a two-dimensional array
         /// </summary>
         /// <param name="arrayWidth">GetLength(0) of the 2D array</param>
         /// <param name="arrayHeight">GetLength(1) of the 2D array</param>
@@ -123,6 +96,9 @@ namespace Setnicka.AuxiliaryClasses
             return false;
         }
 
+        /// <summary>
+        /// Two Vector2Ds are equl when they have the same X and Y coordinates
+        /// </summary>
         public override bool Equals(object obj)
         {
             if (obj is Vector2D vector)
@@ -136,6 +112,9 @@ namespace Setnicka.AuxiliaryClasses
                 return false;
         }
 
+        /// <summary>
+        /// Make the GetHashCode work on the same principle as Equals - objects that return Equals true return the same hash
+        /// </summary>
         public override int GetHashCode()
         {
             return int.Parse($"{X}{Y}");
@@ -165,6 +144,8 @@ namespace Setnicka.AuxiliaryClasses
         #endregion
 
         #region OperatorOverrides
+        // Definition of basic operations on Vector2Ds
+
         public static Vector2D operator +(Vector2D a, Vector2D b)
         {
             return new Vector2D((a.X + b.X), (a.Y + b.Y));

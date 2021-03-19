@@ -8,7 +8,11 @@ namespace Setnicka.UI
     /// </summary>
     public class Button : IClickableUIElement, IActionable
     {
+        #region Events
         public event EventHandler ElementUnhighlighted;
+
+        public event EventHandler OnClick;
+        #endregion
 
         #region Constructors
         /// <summary>
@@ -83,8 +87,6 @@ namespace Setnicka.UI
             BackgroundColor = backgroundColor;
         }
         #endregion
-
-        public event EventHandler OnClick;
 
         #region Properties
         public HorizontalAlignment HorizontalAlignment { get; set; }

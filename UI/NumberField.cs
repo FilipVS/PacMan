@@ -8,7 +8,8 @@ namespace Setnicka.UI
     /// </summary>
     public class NumberField : IInputtableUIElement
     {
-        public const int MAXIMUM_DIGITS = 5;
+        // How many digits can the NumberField handle
+        public const int MAXIMUM_DIGITS = 10;
 
         public event EventHandler ElementUnhighlighted;
 

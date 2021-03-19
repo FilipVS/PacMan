@@ -6,7 +6,7 @@ using Setnicka.AuxiliaryClasses;
 namespace Setnicka.UI
 {
     /// <summary>
-    /// Abstract class for user dialogs (dialog for confirmation...)
+    /// Abstract class for user dialogs (dialog for confirmationm getting string input...)
     /// </summary>
     public abstract class UserDialog
     {
@@ -25,7 +25,7 @@ namespace Setnicka.UI
 
         protected Thread InputManagerThread;
 
-        public DialogResult DialogResult { get; protected set; }
+        public DialogResult DialogResult { get; protected set; } = DialogResult.Unknown;
         #endregion
 
         #region Methods

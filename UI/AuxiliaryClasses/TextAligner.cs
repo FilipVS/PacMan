@@ -15,7 +15,7 @@ namespace Setnicka.UI
         /// <param name="textColor">The color to render the text with</param>
         /// <param name="backgroundColor">The color to render behind the text</param>
         /// <param name="textStartY">The y coordinate on screen, where to render the text</param>
-        /// <param name="textStartX">The x coordinate on screen, where to render the text, only necessary with allignment=custom</param>
+        /// <param name="textStartX">The x coordinate on screen, where to render the text, only necessary with allignment='Custom'</param>
         public static void RenderText(string text, HorizontalAlignment alignment, ConsoleColor textColor, ConsoleColor backgroundColor, int textStartY, int textStartX = -1)
         {
             if (textStartY < 0)
@@ -99,6 +99,7 @@ namespace Setnicka.UI
             if (textLength == 0)
                 return;
 
+            // Set the cursor, so the text just fits into the windown from the right
             Console.SetCursorPosition(Console.BufferWidth - textLength, textStartY);
 
             WriteText(text, textColor, backgroundColor);
@@ -142,6 +143,9 @@ namespace Setnicka.UI
             WriteText(text, textColor, backgroundColor);
         }
 
+        /// <summary>
+        /// Method that performs the writing intself
+        /// </summary>
         private static void WriteText(string text, ConsoleColor textColor, ConsoleColor backgroundColor)
         {
             ConsoleColor previousForegroundColor = Console.ForegroundColor;

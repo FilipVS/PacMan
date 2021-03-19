@@ -7,7 +7,7 @@ namespace Setnicka.UI
 {
     /// <summary>
     /// This is the base class for all menus
-    /// It is basically a collection of UI elements
+    /// It is a collection of UI elements
     /// Items can be added, they can't be removed or shifted
     /// When drawn, each item will be printed on a separate line starting at the top of the screen   
     /// </summary>
@@ -73,7 +73,7 @@ namespace Setnicka.UI
         }
 
         /// <summary>
-        /// Used for exiting the menu, using an elemt like button
+        /// Used for exiting the menu using an elemnt like a Button
         /// </summary>
         public void DoExitMenu(object sender, EventArgs eventArgs)
         {
@@ -81,7 +81,7 @@ namespace Setnicka.UI
         }
 
         /// <summary>
-        /// Used for moving to submenu, using an elemt like button
+        /// Used for moving to submenu/performing other actions using an elemt like a Button
         /// </summary>
         public void DoPerformAction(object sender, EventArgs eventArgs)
         {
@@ -90,6 +90,9 @@ namespace Setnicka.UI
                     PerformAction(sender, new ActionEventArgs(actionable.Action));
         }
 
+        /// <summary>
+        /// Used for handling input
+        /// </summary>
         internal void KeyInteraction(object sender, KeyEventArgs keyEventArgs)
         {
             if (keyEventArgs.keyPressed == MenuKeyBindings.CursorUp || keyEventArgs.keyPressed == MenuKeyBindings.CursorUpSecondary)
