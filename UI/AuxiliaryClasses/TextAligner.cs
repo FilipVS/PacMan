@@ -5,7 +5,7 @@ namespace Setnicka.UI
     /// <summary>
     /// This class contains methods to align text on different parts of the screen (right, left, middle...)
     /// </summary>
-    public static class TextAligner
+    internal static class TextAligner
     {
         /// <summary>
         /// Renders text on specified part of the screen

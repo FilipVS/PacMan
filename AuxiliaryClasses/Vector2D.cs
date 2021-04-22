@@ -132,12 +132,12 @@ namespace Setnicka.AuxiliaryClasses
         /// <summary>
         /// Calculates distance from coordinates of this Vector2D to coordinates of another Vector2D
         /// </summary>
-        /// <param name="distanceFrom">Calculate distance to this point</param>
+        /// <param name="distanceTo">Calculate distance to this point</param>
         /// <returns>Distance from coordinates of this Vector2D to coordinates of another Vector2D</returns>
-        public double DistanceTo(Vector2D distanceFrom)
+        public double DistanceTo(Vector2D distanceTo)
         {
-            double x = (X - distanceFrom.X);
-            double y = (Y - distanceFrom.Y);
+            double x = (X - distanceTo.X);
+            double y = (Y - distanceTo.Y);
 
             return Math.Sqrt(x * x + y * y);
         }

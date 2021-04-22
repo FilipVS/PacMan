@@ -6,7 +6,7 @@ namespace Setnicka.UI
     /// <summary>
     /// This class allows the user to input numbers
     /// </summary>
-    public class NumberField : IInputtableUIElement
+    public class NumberField : IInputableUIElement
     {
         // How many digits can the NumberField handle
         public const int MAXIMUM_DIGITS = 10;
@@ -128,7 +128,7 @@ namespace Setnicka.UI
         }
 
         // This property returns the number stored in the char array as int (if it fails, it returns -1)
-        public int Number
+        public int NumberInt
         {
             get
             {

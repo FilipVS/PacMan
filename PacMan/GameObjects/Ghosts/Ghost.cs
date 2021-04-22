@@ -61,18 +61,6 @@ namespace Setnicka.PacMan
                 BeforeReturn();
                 return MoveResult.None;
             }
-            /*
-            // TODO: Delete once finishes testing
-            Vector2D testPos = DesiredTile + GameManager.OFFSET;
-
-            Console.SetCursorPosition(testPos.X, testPos.Y);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("X");
-
-            System.Threading.Thread.Sleep(1000);
-
-            Level[DesiredTile.X, DesiredTile.Y].Print(GameManager.OFFSET);*/
-            // TODO: Delete
 
             #region Altering movement (avoiding, inverting...)
             Vector2D moveToTile;
@@ -102,13 +90,6 @@ namespace Setnicka.PacMan
             // Turn off move inverment for the next turn
             InvertedMove = false;
 
-            // TODO: Delete?
-            // Double check that we are not aiming at Beware tile
-            /*if (Beware != null && moveToTile.Equals(Beware))
-            {
-                DesiredTile = Position.Copy();
-            }*/
-
             // If the ghost is supposed to skip move, skip it...
             if (SkipMove)
                 DesiredTile = Position.Copy();
@@ -119,24 +100,6 @@ namespace Setnicka.PacMan
                 BeforeReturn();
                 return MoveResult.None;
             }
-
-            // TODO: Delete
-            /*Vector2D pos = moveToTile + GameManager.OFFSET;
-            Console.SetCursorPosition(pos.X, pos.Y);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("X");
-
-            Console.ReadKey(true);
-
-            try
-            {
-                Level[pos.X, pos.Y].Print(GameManager.OFFSET);
-            }
-            catch (Exception)
-            {
-
-            }*/
-            // TODO: Delete
 
             #region Movement itself
             if (Level[moveToTile.X, moveToTile.Y] is Empty empty)
@@ -508,6 +471,7 @@ namespace Setnicka.PacMan
                     // If we found our desired tile, the path is done, we can return
                     if (tile.Position.X == DesiredTile.X && tile.Position.Y == DesiredTile.Y)
                         return;
+                
 
                     // We find any movable tiles around (which would be 'order++' moves away) and add them to nextOrderTiles
                     foreach (GameObject tile2 in GetMovableTilesAround(tile.Position))

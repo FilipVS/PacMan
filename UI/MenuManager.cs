@@ -22,7 +22,7 @@ namespace Setnicka.UI
         {
             Menu = menu;
 
-            // Initializing the inputManager and subscribing individual event handlers
+            // Initializing the InputManager and subscribing individual event handlers
             List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { MenuKeyBindings.CursorUp, MenuKeyBindings.CursorUpSecondary, MenuKeyBindings.CursorDown, MenuKeyBindings.CursorDownSecondary, MenuKeyBindings.ClickKey, MenuKeyBindings.RefreshKey };
             if(inputToHandle != null)
                 keysOfInterest.AddRange(inputToHandle);
@@ -65,14 +65,14 @@ namespace Setnicka.UI
                 {
                     previousState = CurrentMenuState;
 
-                    switch (previousState)
+                    switch (CurrentMenuState)
                     {
                         case RunningState.On:
-                            AbortThreads(false);
-                            StartThreads(InputManager.CheckForInput, false);
+                            AbortThread(false);
+                            StartThread(InputManager.CheckForInput, false);
                             break;
                         case RunningState.PerformAction:
-                            AbortThreads(true);
+                            AbortThread(true);
 
                             if (ScheduledAction != null)
                                 ScheduledAction();
@@ -80,10 +80,10 @@ namespace Setnicka.UI
 
                             CurrentMenuState = previousState = RunningState.On;
 
-                            StartThreads(InputManager.CheckForInput, true);
+                            StartThread(InputManager.CheckForInput, true);
                             break;
                         case RunningState.Escaping:
-                            AbortThreads(true);
+                            AbortThread(true);
                             return;
                         default:
                             break;
@@ -132,9 +132,9 @@ namespace Setnicka.UI
         }
 
         /// <summary>
-        /// Sets up the thread to run the input manager and starts it
+        /// Sets up the thread to run the InputManager and starts it
         /// </summary>
-        private void StartThreads(ThreadStart inputThreadStart, bool startNewInputManager = true)
+        private void StartThread(ThreadStart inputThreadStart, bool startNewInputManager = true)
         {
             if (InputManagerThread == null || startNewInputManager)
             {
@@ -144,9 +144,9 @@ namespace Setnicka.UI
         }
 
         /// <summary>
-        /// Aborts the thread that runs the input manager
+        /// Aborts the thread that runs the InputManager
         /// </summary>
-        private void AbortThreads(bool abortInputManager = true)
+        private void AbortThread(bool abortInputManager = true)
         {
             if (abortInputManager && InputManagerThread != null)
             {

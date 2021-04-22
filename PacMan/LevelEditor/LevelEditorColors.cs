@@ -2,7 +2,7 @@
 
 namespace Setnicka.PacMan.LevelEditor
 {
-    internal class LevelEditorColors
+    static internal class LevelEditorColors
     {
         public static ConsoleColor HighlightedEmptyColor { get; } = ConsoleColor.DarkGray;
 

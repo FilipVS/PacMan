@@ -2,7 +2,7 @@
 
 namespace Setnicka.PacMan.LevelEditor
 {
-    internal static class LevelEditorKeyBinding
+    static internal class LevelEditorKeyBinding
     {
         public const ConsoleKey LevelPlaneUp = ConsoleKey.W;
         public const ConsoleKey LevelPlaneDown = ConsoleKey.S;

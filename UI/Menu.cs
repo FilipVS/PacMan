@@ -60,6 +60,10 @@ namespace Setnicka.UI
             // The new element is set to be rendered at the end of the current menu
             element.RenderPosition = new Vector2D(-1, MenuList.Count);
 
+            // Don't add duplicate elements
+            if (MenuList.Contains(element))
+                return;
+
             if (element is IHighlightableUIElement)
                 ContainsHighlightableElement = true;
 
@@ -95,11 +99,15 @@ namespace Setnicka.UI
         /// </summary>
         internal void KeyInteraction(object sender, KeyEventArgs keyEventArgs)
         {
+            // TODO: I deleted else if's from the other two ifs (might cause some trouble)
+
             if (keyEventArgs.keyPressed == MenuKeyBindings.CursorUp || keyEventArgs.keyPressed == MenuKeyBindings.CursorUpSecondary)
                 MoveHighlightUp();
-            else if (keyEventArgs.keyPressed == MenuKeyBindings.CursorDown || keyEventArgs.keyPressed == MenuKeyBindings.CursorDownSecondary)
+
+            if (keyEventArgs.keyPressed == MenuKeyBindings.CursorDown || keyEventArgs.keyPressed == MenuKeyBindings.CursorDownSecondary)
                 MoveHighlightDown();
-            else if (keyEventArgs.keyPressed == MenuKeyBindings.ClickKey)
+
+            if (keyEventArgs.keyPressed == MenuKeyBindings.ClickKey)
                 ClickOnHighlightedElement(sender, keyEventArgs);
 
             SendInputToHighlightedElement(sender, keyEventArgs);
@@ -204,7 +212,7 @@ namespace Setnicka.UI
         {
             if(CurrentlyHighlighted > -1 && CurrentlyHighlighted < MenuList.Count)
             {
-                if (MenuList[CurrentlyHighlighted] is IInputtableUIElement inputtableUI)
+                if (MenuList[CurrentlyHighlighted] is IInputableUIElement inputtableUI)
                     inputtableUI.HandleInput(sender, eventArgs, true);
             }
         }

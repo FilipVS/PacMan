@@ -143,7 +143,6 @@ namespace Setnicka.PacMan
         private int BoostTimeLeft { get; set; } = -1;
         #endregion
 
-
         #region Controlling the state of the game
         private InputManager InputManager { get; set; }
 
@@ -261,7 +260,6 @@ namespace Setnicka.PacMan
         // For informing the player how to get to the menu
         Label HowToGetToMenuLabel { get; set; }
         #endregion
-
 
         #endregion
 
@@ -1017,18 +1015,17 @@ namespace Setnicka.PacMan
                 CurrentRunningState = RunningState.Finished;
         }
         #endregion
-    }
 
-
-    public enum RunningState
-    {
-        Off,
-        On,
-        ChasingGhosts,
-        Collision,
-        Menu,
-        Win,
-        Refresh,
-        Finished
+        private enum RunningState
+        {
+            Off,
+            On,
+            ChasingGhosts,
+            Collision,
+            Menu,
+            Win,
+            Refresh,
+            Finished
+        }
     }
 }
