@@ -238,16 +238,16 @@ namespace Setnicka.PacMan
         private string GetPathToLevels()
         {
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string[] pathParts = baseDirectory.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] pathParts = baseDirectory.Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
 
             string levelsDerectory = String.Empty;
 
             // If the app is running from debug
             if (pathParts[pathParts.Length - 1] == "Debug" && pathParts[pathParts.Length - 2] == "bin")
-                levelsDerectory = (baseDirectory.Remove((baseDirectory.Length - "bin\\Debug\\".Length))) + "Levels\\";
+                levelsDerectory = (baseDirectory.Remove((baseDirectory.Length - $"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}".Length))) + $"Levels{Path.DirectorySeparatorChar}";
             // The app is published
             else
-                levelsDerectory = baseDirectory + "Levels\\";
+                levelsDerectory = baseDirectory + $"Levels{Path.DirectorySeparatorChar}";
 
             return levelsDerectory;
         }

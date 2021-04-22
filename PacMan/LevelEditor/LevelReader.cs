@@ -18,10 +18,8 @@ namespace Setnicka.PacMan.LevelEditor
         {
             if (String.IsNullOrEmpty(path))
                 return null;
-                //throw new ArgumentNullException("path", "path argument cannot be null or empty!");
             if (!File.Exists(path))
                 return null;
-               //throw new ArgumentException("path", "The path argument doesn't lead to any file!");
 
             GameObject[,] level;
 

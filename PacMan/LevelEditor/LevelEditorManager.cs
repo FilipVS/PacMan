@@ -18,7 +18,7 @@ namespace Setnicka.PacMan.LevelEditor
         // Minimal size of a level
         public static readonly Vector2D MINIMUM_LEVEL_SIZE = new Vector2D(2, 2);
         // Maximal size of a level
-        public static readonly Vector2D MAXIMUM_LEVEL_SIZE = new Vector2D(75, 25);
+        public static readonly Vector2D MAXIMUM_LEVEL_SIZE = new Vector2D(70, 25);
         // Delay between main thread updates
         private const int MAIN_THREAD_UPDATE_FREQUENCY = 20;
         // The offset of drawn level objects in relation to CursorPosition(0, 0)
@@ -44,6 +44,10 @@ namespace Setnicka.PacMan.LevelEditor
         private const string EMPTY_LABEL_TEXT = "";
 
         private readonly string HOW_TO_GET_TO_MENU_LABLE_TEXT = $"Press {LevelEditorKeyBinding.GoToMenu} to enter menu (exit/save level...)";
+        private readonly string HOW_TO_CHOOSE_TILE_TEXT = $"Use {LevelEditorKeyBinding.LevelPlaneUp}/{LevelEditorKeyBinding.LevelPlaneDown}/{LevelEditorKeyBinding.LevelPlaneLeft}/{LevelEditorKeyBinding.LevelPlaneRight} to choose tile ";
+        private readonly string HOW_TO_CHOOSE_OBJECT_TEXT = $"Press {LevelEditorKeyBinding.ObjectOfChoiceUp}/{LevelEditorKeyBinding.ObjectOfChoiceDown} to choose object ";
+        private readonly string HOW_TO_PLACE_OBJECT_TEXT = $"Press {LevelEditorKeyBinding.PlaceObject} to place object ";
+        private readonly string HOW_TO_DELETE_OBJECT_TEXT = $"Press {LevelEditorKeyBinding.DeleteObject} to delete object ";
 
         private const string MAIN_LABEL_TEXT = "Level Editor Menu";
         private const string CONTINUE_BUTTON_TEXT = "Go back to level editor";
@@ -86,7 +90,7 @@ namespace Setnicka.PacMan.LevelEditor
 
             InitializeMessageLabel();
 
-            InitializeHowToGetToMenuLabel();
+            InitializeControlInformationLabels();
         }
 
         /// <summary>
@@ -129,7 +133,7 @@ namespace Setnicka.PacMan.LevelEditor
 
             InitializeMessageLabel();
 
-            InitializeHowToGetToMenuLabel();
+            InitializeControlInformationLabels();
         }
         #endregion
 
@@ -184,6 +188,12 @@ namespace Setnicka.PacMan.LevelEditor
 
         // Lable that informs the player how to get to the menu
         Label HowToGetToMenuLabel { get; set; }
+
+        // Labels, informing the user on controlling the level editor
+        Label HowToChooseTileLabel { get; set; }
+        Label HowToChooseObjectLabel { get; set; }
+        Label HowToPlaceObjectLabel { get; set; }
+        Label HowToDeleteObjectLabel { get; set; }
         #endregion
 
         #region Methods
@@ -303,6 +313,11 @@ namespace Setnicka.PacMan.LevelEditor
                 gameObject1.Print(OFFSET_OBJECTS_FOR_CHOICE);
 
             HowToGetToMenuLabel.Print();
+
+            HowToChooseTileLabel.Print();
+            HowToChooseObjectLabel.Print();
+            HowToPlaceObjectLabel.Print();
+            HowToDeleteObjectLabel.Print();
 
             PrintBorder();
 
@@ -660,9 +675,17 @@ namespace Setnicka.PacMan.LevelEditor
             MessageLabel = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Custom, messageLabelPosition, MESSAGE_LABEL_FOREGROUND_COLOR, MESSAGE_LABEL_BACKGROUND_COLOT);
         }
 
-        private void InitializeHowToGetToMenuLabel()
+        private void InitializeControlInformationLabels()
         {
             HowToGetToMenuLabel = new Label(HOW_TO_GET_TO_MENU_LABLE_TEXT, HorizontalAlignment.Right, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+        
+            HowToChooseTileLabel = new Label(HOW_TO_CHOOSE_TILE_TEXT, HorizontalAlignment.Right, 3, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            
+            HowToChooseObjectLabel = new Label(HOW_TO_CHOOSE_OBJECT_TEXT, HorizontalAlignment.Right, 5, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            
+            HowToPlaceObjectLabel = new Label(HOW_TO_PLACE_OBJECT_TEXT, HorizontalAlignment.Right, 7, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            
+            HowToDeleteObjectLabel = new Label(HOW_TO_DELETE_OBJECT_TEXT, HorizontalAlignment.Right, 9, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
         }
 
         private void GoToMenu(object sender, KeyEventArgs args)
