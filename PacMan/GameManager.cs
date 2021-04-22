@@ -49,6 +49,7 @@ namespace Setnicka.PacMan
         private const string EMPTY_LABEL_TEXT = "";
 
         private readonly string HOW_TO_GET_TO_MENU_LABEL_TEXT = $"Press {GameKeyBinding.GoToMenu} to get to the menu (pause/escape...)";
+        private readonly string HOW_TO_CHANGE_HEADING_TEXT = $"Press {GameKeyBinding.MoveUp}/{GameKeyBinding.MoveDown}/{GameKeyBinding.MoveLeft}/{GameKeyBinding.MoveRight}/arrows to change heading...";
 
         private const string MAIN_LABEL_TEXT = "Game menu";
         private const string CONTINUE_BUTTON_TEXT = "Continue";
@@ -259,6 +260,9 @@ namespace Setnicka.PacMan
 
         // For informing the player how to get to the menu
         Label HowToGetToMenuLabel { get; set; }
+
+        // For informing the player how to change heading
+        Label HowToChangeHeadingMenuLabel { get; set; }
         #endregion
 
         #endregion
@@ -793,6 +797,7 @@ namespace Setnicka.PacMan
             ScoreLabel.Print();
 
             HowToGetToMenuLabel.Print();
+            HowToChangeHeadingMenuLabel.Print();
 
             Console.CursorVisible = false;
         }
@@ -989,6 +994,9 @@ namespace Setnicka.PacMan
 
             // Initialize HowToGetToMenuLabel
             HowToGetToMenuLabel = new Label(HOW_TO_GET_TO_MENU_LABEL_TEXT, HorizontalAlignment.Right, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            // Initialize HowToChangeHadingMenuLabel
+            HowToChangeHeadingMenuLabel = new Label(HOW_TO_CHANGE_HEADING_TEXT, HorizontalAlignment.Right, 1, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
         }
 
         /// <summary>
