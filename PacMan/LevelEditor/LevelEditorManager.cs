@@ -698,11 +698,20 @@ namespace Setnicka.PacMan.LevelEditor
 
         private void SaveLevel(object sender, EventArgs args)
         {
-            TextInputDialog dialog = new TextInputDialog("Please enter path to save your level", "Include the file name, path should not contain special characters or spaces, ex.: 'C:\\level.txt'");
+            TextInputDialog dialog = new TextInputDialog("Please enter the name of the file to store the level", "Do not add extensions, write only the name. For example: 'Level5'");
 
             dialog.Run();
 
-            string path = dialog.DialogStringResult;
+            string path = LevelWriter.GetPathToLevels() + dialog.DialogStringResult + ".txt";
+
+            // If file exists, make sure that user wants to overwrite it
+            if (File.Exists(path))
+            {
+                ConfirmationDialog confirmationDialog = new ConfirmationDialog(ConfirmationOptions.YesNo, "File like that already exists, do you want to overwrite it?");
+                confirmationDialog.Run();
+                if (confirmationDialog.DialogResult != DialogResult.Yes)
+                    return;
+            }
 
             // Try to save find/create the file
             try

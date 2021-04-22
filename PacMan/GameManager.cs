@@ -174,6 +174,9 @@ namespace Setnicka.PacMan
 
         // Show countdown? (works only in chasing ghosts)
         private bool ShowCountdown { get; set; } = true;
+
+        // Is the application switching from UpdateChasingGhosts() to Update() ?
+        private bool ReturningFromChasingGhosts { get; set; } = false;
         #endregion
 
         #region UI
@@ -391,7 +394,7 @@ namespace Setnicka.PacMan
             GameThreadRunning = true;
 
             // This prevents countdown after we've returned from chasing ghosts
-            if (!GameColors.ChasingGhosts)
+            if (!ReturningFromChasingGhosts)
             {
                 // Countdown, so the player can get ready and check, if the player wanted to go back in the meantime
                 Countdown();
@@ -402,6 +405,8 @@ namespace Setnicka.PacMan
                     return;
                 }
             }
+
+            ReturningFromChasingGhosts = false;
 
             // Set proper color scheme and re-color the ghosts
             GameColors.ChasingGhosts = false;
@@ -640,6 +645,7 @@ namespace Setnicka.PacMan
                 BoostTimeLeft = timeLeft;
                 if(timeLeft < 0)
                     CurrentRunningState = RunningState.On;
+                ReturningFromChasingGhosts = true;
             }
         }
 

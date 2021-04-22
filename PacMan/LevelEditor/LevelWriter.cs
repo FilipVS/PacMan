@@ -96,5 +96,27 @@ namespace Setnicka.PacMan.LevelEditor
             writer.WriteLine($"{ghostType.ToString()}{DIFFERENTIATOR}{ghost.Position.X}{DIFFERENTIATOR}{ghost.Position.Y}{DIFFERENTIATOR}{ghost.PlayerPositionThisTurn.X}{DIFFERENTIATOR}{ghost.PlayerPositionThisTurn.Y}");
         }
         #endregion
+
+
+        /// <summary>
+        /// Returns the directory, where the levels are located
+        /// </summary>
+        /// <returns></returns>
+        public static string GetPathToLevels()
+        {
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string[] pathParts = baseDirectory.Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+
+            string levelsDerectory = String.Empty;
+
+            // If the app is running from debug
+            if (pathParts[pathParts.Length - 1] == "Debug" && pathParts[pathParts.Length - 2] == "bin")
+                levelsDerectory = (baseDirectory.Remove((baseDirectory.Length - $"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}".Length))) + $"Levels{Path.DirectorySeparatorChar}";
+            // The app is published
+            else
+                levelsDerectory = baseDirectory + $"Levels{Path.DirectorySeparatorChar}";
+
+            return levelsDerectory;
+        }
     }
 }
