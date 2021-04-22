@@ -33,7 +33,12 @@ namespace Setnicka.PacMan
 
         protected override void Draw()
         {
-            Console.ForegroundColor = GameColors.BlinkyColor;
+            if (Style == DrawStyle.ChasingGhosts)
+                Console.ForegroundColor = GameColors.ChasingGhostMainColor;
+            else if (Style == DrawStyle.ChasingGhostsAlternate)
+                Console.ForegroundColor = GameColors.ChasingGhostAlternateColor;
+            else
+                Console.ForegroundColor = GameColors.BlinkyColor;
             Console.BackgroundColor = GameColors.EmptyColor;
 
             Console.Write(APPEARANCE);

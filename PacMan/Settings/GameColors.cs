@@ -7,13 +7,6 @@ namespace Setnicka.PacMan
     /// </summary>
     internal static class GameColors
     {
-        // ChasingGhosts and ChasingGhostsMainVersion are used to alter the colors, that are returned for individual ghosts
-        // Return normal ghost colors or their chasing ghosts version
-        public static bool ChasingGhosts { get; set; } = false;
-        // Return chasing ghost main version color or alternate?
-        public static bool ChasingGhostsMainVersion { get; set; } = true;
-
-
         public static ConsoleColor EmptyColor { get; set; } = ConsoleColor.Black;
         public static ConsoleColor CoinColor { get; } = ConsoleColor.Green;
         public static ConsoleColor BoostColor { get; } = ConsoleColor.Green;
@@ -26,12 +19,6 @@ namespace Setnicka.PacMan
         {
             get
             {
-                if(ChasingGhosts)
-                {
-                    if (ChasingGhostsMainVersion)
-                        return ChasingGhostMainColor;
-                    return ChasingGhostAlternateColor;
-                }
                 return ConsoleColor.Red;
             }
         }
@@ -39,12 +26,6 @@ namespace Setnicka.PacMan
         {
             get
             {
-                if (ChasingGhosts)
-                {
-                    if (ChasingGhostsMainVersion)
-                        return ChasingGhostMainColor;
-                    return ChasingGhostAlternateColor;
-                }
                 return ConsoleColor.Magenta;
             }
         }
@@ -52,12 +33,6 @@ namespace Setnicka.PacMan
         {
             get
             {
-                if (ChasingGhosts)
-                {
-                    if (ChasingGhostsMainVersion)
-                        return ChasingGhostMainColor;
-                    return ChasingGhostAlternateColor;
-                }
                 return ConsoleColor.Cyan;
             }
         }
@@ -65,12 +40,6 @@ namespace Setnicka.PacMan
         {
             get
             {
-                if (ChasingGhosts)
-                {
-                    if (ChasingGhostsMainVersion)
-                        return ChasingGhostMainColor;
-                    return ChasingGhostAlternateColor;
-                }
                 return ConsoleColor.White;
             }
         }

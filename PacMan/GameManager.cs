@@ -316,7 +316,6 @@ namespace Setnicka.PacMan
                             // If player lost all lives
                             if (CurrentRunningState == RunningState.Finished)
                             {
-                                BeforeExit();
                                 return;
                             }
 
@@ -339,7 +338,6 @@ namespace Setnicka.PacMan
 
                             PlayerWon();
 
-                            BeforeExit();
                             return;
                         // Going to menu
                         case RunningState.Menu:
@@ -350,7 +348,6 @@ namespace Setnicka.PacMan
                             // If player chose to exit the game in the menu
                             if (CurrentRunningState == RunningState.Finished)
                             {
-                                BeforeExit();
                                 return;
                             }
 
@@ -377,12 +374,6 @@ namespace Setnicka.PacMan
                     }
                 }
             }
-
-            void BeforeExit()
-            {
-                GameColors.ChasingGhosts = false;
-                GameColors.ChasingGhostsMainVersion = true;
-            }
         }
 
         /// <summary>
@@ -408,10 +399,15 @@ namespace Setnicka.PacMan
 
             ReturningFromChasingGhosts = false;
 
-            // Set proper color scheme and re-color the ghosts
-            GameColors.ChasingGhosts = false;
-            foreach (Ghost ghost in Ghosts)
+            // Re-color the ghosts
+            foreach (Ghost ghost in Ghosts) 
+            {
+                // Reset the drawing style
+                ghost.Style = Ghost.DrawStyle.Normal;
+
                 ghost.Print(OFFSET);
+            }
+                
             #endregion
 
             #region Update sequence itself
@@ -498,14 +494,13 @@ namespace Setnicka.PacMan
         /// </summary>
         private void UpdateChasingGhosts()
         {
+            // Shoudl ghosts go alternate color
+            bool ghostsGoAlternate = false;
+
             #region Setup
             GameThreadRunning = true;
 
             int timeLeft;
-
-            // Set proper color scheme
-            GameColors.ChasingGhosts = true;
-            GameColors.ChasingGhostsMainVersion = true;
 
             // In this case, the previous chasing ghosts cycle ended
             if (BoostTimeLeft < 0)
@@ -537,8 +532,16 @@ namespace Setnicka.PacMan
                     return;
                 }
             }
-            #endregion
 
+            // Re-color the ghosts
+            foreach (Ghost ghost in Ghosts)
+            {
+                // Reset the drawing style
+                ghost.Style = Ghost.DrawStyle.ChasingGhosts;
+
+                ghost.Print(OFFSET);
+            }
+            #endregion
 
             #region Update sequence itself
             do
@@ -584,10 +587,6 @@ namespace Setnicka.PacMan
                 {
                     // Restart the timer
                     timeLeft = CHASING_GHOSTS_FOR;
-
-                    // Set proper color scheme
-                    GameColors.ChasingGhosts = true;
-                    GameColors.ChasingGhostsMainVersion = true;
                 }
                 else if (playerMove == MoveResult.Collision)
                 {
@@ -609,16 +608,24 @@ namespace Setnicka.PacMan
                 if (timeLeft < (CHASING_GHOSTS_FOR * CHASING_GHOSTS_BLINKING))
                 {
                     // If they are currently in theair main version, go alternate, else go main
-                    if (GameColors.ChasingGhostsMainVersion)
-                        GameColors.ChasingGhostsMainVersion = false;
+                    if (ghostsGoAlternate)
+                        ghostsGoAlternate = false;
                     else
-                        GameColors.ChasingGhostsMainVersion = true;
+                        ghostsGoAlternate = true;
                 }
 
                 foreach (Ghost ghost in Ghosts)
                 {
+                    // Set up the colors
+                    if (ghostsGoAlternate)
+                        ghost.Style = Ghost.DrawStyle.ChasingGhostsAlternate;
+                    else
+                        ghost.Style = Ghost.DrawStyle.ChasingGhosts;
+
                     ghost.InvertedMove = true;
                     ghost.Move();
+                    ghost.InvertedMove = false;
+
                     // TODO: Delete?
                     /*if (ghost.Move() == MoveResult.Collision)
                     {
@@ -627,7 +634,7 @@ namespace Setnicka.PacMan
                         Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
                         break;
                     }*/
-                    ghost.InvertedMove = false;
+
 
                     // TODO: Remove?
                     /*if (AbortGameThread)

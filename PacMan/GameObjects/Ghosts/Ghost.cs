@@ -47,6 +47,9 @@ namespace Setnicka.PacMan
 
         // Used ofr telling the ghosts about tiles he is not supposed to use
         public Vector2D Beaware { get; set; }
+
+        // How will be the ghost printed
+        public DrawStyle Style { get; set; }
         #endregion
 
 
@@ -547,5 +550,12 @@ namespace Setnicka.PacMan
             return numOfGhosts;
         }
         #endregion
+
+        public enum DrawStyle
+        {
+            Normal,
+            ChasingGhosts,
+            ChasingGhostsAlternate
+        }
     }
 }
