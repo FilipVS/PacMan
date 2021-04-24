@@ -698,7 +698,7 @@ namespace Setnicka.PacMan.LevelEditor
 
         private void SaveLevel(object sender, EventArgs args)
         {
-            TextInputDialog dialog = new TextInputDialog("Please enter the name of the file to store the level", "Do not add extensions, write only the name. For example: 'Level5'");
+            TextInputDialog dialog = new TextInputDialog("Please enter the name of the file to store the level", "Do not add extensions Write only the name. For example: 'Level5'");
 
             dialog.Run();
 
@@ -713,22 +713,10 @@ namespace Setnicka.PacMan.LevelEditor
                     return;
             }
 
-            // Try to save find/create the file
-            try
-            {
-                if (!File.Exists(path))
-                    File.Create(path).Dispose();
-            }
-            catch (UnauthorizedAccessException) { }
-            catch (ArgumentNullException) { }
-            catch (ArgumentException) { }
-            catch (PathTooLongException) { }
-            catch (DirectoryNotFoundException) { }
-            catch (NotSupportedException) { }
-            catch (IOException) { }
+            bool fileCreatable = LevelWriter.FileCreatable(path);
 
-            // If the file was not created, signal error to the user
-            if (!File.Exists(path))
+            // If the file is not creatable, signal error to the user
+            if (!fileCreatable)
             {
                 MessageDialog messageDialog = new MessageDialog("The program was not capable of finding/creating that file");
                 messageDialog.Run();
@@ -737,6 +725,11 @@ namespace Setnicka.PacMan.LevelEditor
 
             // If the error did not occur, save the level
             LevelWriter.SaveLevel(LevelArray, path);
+
+            // Infrom the user about the successful save
+            MessageDialog successfulSave = new MessageDialog("The level was saved successfully");
+            successfulSave.Run();
+
         }
 
         private void EscapeEditor(object sender, EventArgs args)

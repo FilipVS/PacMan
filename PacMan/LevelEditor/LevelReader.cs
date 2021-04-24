@@ -111,5 +111,33 @@ namespace Setnicka.PacMan.LevelEditor
         }
         #endregion
 
+
+        /// <summary>
+        /// Checks, whether a given path is openable
+        /// </summary>
+        public static bool FileOpenable(string path)
+        {
+            bool fileOpenable = false;
+
+            // Test if the file can be opened
+            try
+            {
+                File.Open(path, FileMode.Open).Dispose();
+
+                fileOpenable = true;
+            }
+            catch (ArgumentOutOfRangeException) { }
+            catch (FileNotFoundException) { }
+            catch (ArgumentNullException) { }
+            catch (ArgumentException) { }
+            catch (PathTooLongException) { }
+            catch (DirectoryNotFoundException) { }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+            catch (NotSupportedException) { }
+
+            return fileOpenable;
+        }
+
     }
 }

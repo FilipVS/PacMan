@@ -118,5 +118,30 @@ namespace Setnicka.PacMan.LevelEditor
 
             return levelsDerectory;
         }
+
+        /// <summary>
+        /// Checks whether a file can be created at a certain path
+        /// </summary>
+        public static bool FileCreatable(string path)
+        {
+            bool fileCreatable = false;
+
+            // Try to save find/create the file
+            try
+            {
+                File.Create(path).Dispose();
+                File.Delete(path);
+                fileCreatable = true;
+            }
+            catch (UnauthorizedAccessException) { }
+            catch (ArgumentNullException) { }
+            catch (ArgumentException) { }
+            catch (PathTooLongException) { }
+            catch (DirectoryNotFoundException) { }
+            catch (NotSupportedException) { }
+            catch (IOException) { }
+
+            return fileCreatable;
+        }
     }
 }

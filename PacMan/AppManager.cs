@@ -25,6 +25,9 @@ namespace Setnicka.PacMan
         private const ConsoleColor MAIN_LABEL_FOREGROUND_COLOR = ConsoleColor.Black;
         private const ConsoleColor MAIN_LABEL_BACKGROUND_COLOR = ConsoleColor.Yellow;
 
+        private const ConsoleColor SECONDARY_LABEL_FOREGROUND_COLOR = ConsoleColor.Cyan;
+        private const ConsoleColor SECONDARY_LABEL_BACKGROUND_COLOR = ConsoleColor.Black;
+
         // UI constants
         private const string EMPTY_LABEL_TEXT = "";
         private const string GO_TO_PREVIOUS_MENU_BUTTON_TEXT = "Go to previous menu";
@@ -37,20 +40,31 @@ namespace Setnicka.PacMan
 
         // Play game submenu
         private const string MAIN_LABEL_TEXT_PLAYGAME_SUBMENU = "Play game submenu";
+        private const string LEVELS_LABEL_TEXT_PLAYGAME_SUBMENU = "Levels";
 
         // Open level editor submenu
         private const string MAIN_LABEL_TEXT_OPEN_LEVEL_EDITOR_SUBMENU = "Enter the size of the new level / load level to edit";
-        private const string LOAD_LEVEL_TO_EDITOR_BUTTON = "Load existing level to editor";
-        private const string DELETE_EXISTING_LEVEL_BUTTON = "Delete existing level";
+        private const string LOAD_LEVEL_TO_EDITOR_BUTTON_LEVEL_EDITOR_SUBMENU = "Load existing level to editor";
+        private const string DELETE_EXISTING_LEVEL_BUTTON_LEVEL_EDITOR_SUBMENU = "Delete existing level";
+        private const string CREATE_NEW_LEVEL_LABEL_TEXT_LEVEL_EDITOR_SUBMENU = "Create new level";
         private readonly string INPUT_LEVEL_WIDTH_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU = $"Input level width (min. {LevelEditorManager.MINIMUM_LEVEL_SIZE.X}, max. {LevelEditorManager.MAXIMUM_LEVEL_SIZE.X}): ";
         private readonly string INPUT_LEVEL_HEIGHT_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU = $"Input level height (min. {LevelEditorManager.MINIMUM_LEVEL_SIZE.Y}, max. {LevelEditorManager.MAXIMUM_LEVEL_SIZE.Y}): ";
         private const string CREATE_NEW_LEVEL_BUTTON_TEXT_LEVEL_EDITOR_SUBMENU = "Create new level";
+        private const string IMPORT_EXPORT_LABEL_TEXT_LEVEL_EDITOR_SUBMENU = "Import/Export level";
+        private const string IMPORT_LEVEL_BUTTON_TEXT_LEVEL_EDITOR_SUBMENU = "Import existing level";
+        private const string EXPORT_LEVEL_BUTTON_TEXT_LEVEL_EDITOR_SUBMENU = "Export existing level";
 
         // Load level to editor submenu
         private const string MAIN_LABEL_TEXT_LOAD_LEVEL_TO_EDITOR_SUBMENU = "Load existing level to editor";
+        private const string LEVELS_LABEL_TEXT_LOAD_LEVEL_TO_EDITOR_SUBMENU = "Levels";
 
         // Delete level submenu
         private const string MAIN_LABEL_TEXT_DELETE_LEVEL_SUBMENU = "Choose level to be deleted (there is no way to revert)";
+        private const string LEVELS_LABEL_TEXT_DELETE_LEVEL_SUBMENU = "Levels";
+
+        // Export level submenu
+        private const string MAIN_LABEL_TEXT_EXPORT_LEVEL_SUBMENU = "Choose level to be exported";
+        private const string LEVELS_LABEL_TEXT_EXPORT_LEVEL_SUBMENU = "Levels";
         #endregion
 
         #endregion
@@ -121,30 +135,39 @@ namespace Setnicka.PacMan
 
                 Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-                Button loadExistingLevelButton = new Button(LOAD_LEVEL_TO_EDITOR_BUTTON, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, InitializeOpenLevelToEditorSubmenuAndManagerAndRun);
+                Button loadExistingLevelButton = new Button(LOAD_LEVEL_TO_EDITOR_BUTTON_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 3, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, InitializeOpenLevelToEditorSubmenuAndManagerAndRun);
                 loadExistingLevelButton.OnClick += OpenLevelEditorSubmenu.DoPerformAction;
 
                 Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 4, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-                Button deleteExistingLevelButton = new Button(DELETE_EXISTING_LEVEL_BUTTON, HorizontalAlignment.Center, 5, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, InitializeDeleteLevelSubmenuAndManagerAndRun);
+                Button deleteExistingLevelButton = new Button(DELETE_EXISTING_LEVEL_BUTTON_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 5, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, InitializeDeleteLevelSubmenuAndManagerAndRun);
                 deleteExistingLevelButton.OnClick += OpenLevelEditorSubmenu.DoPerformAction;
 
                 Label emptyLabel4 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 6, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-                EnterLevelWidthNumberField = new NumberField(INPUT_LEVEL_WIDTH_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU, LevelEditorManager.MINIMUM_LEVEL_SIZE.X, 2, HorizontalAlignment.Center, 7, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
-                EnterLevelHeightNumberField = new NumberField(INPUT_LEVEL_HEIGHT_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU, LevelEditorManager.MINIMUM_LEVEL_SIZE.Y, 2, HorizontalAlignment.Center, 8, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                Label createNewLevelLabel = new Label(CREATE_NEW_LEVEL_LABEL_TEXT_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 7, SECONDARY_LABEL_FOREGROUND_COLOR, SECONDARY_LABEL_BACKGROUND_COLOR);
 
-                Label emptyLabel5 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 7, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                EnterLevelWidthNumberField = new NumberField(INPUT_LEVEL_WIDTH_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU, LevelEditorManager.MINIMUM_LEVEL_SIZE.X, 2, HorizontalAlignment.Center, 8, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                EnterLevelHeightNumberField = new NumberField(INPUT_LEVEL_HEIGHT_NUMBERFIELD_TEXT_OPEN_LEVEL_EDITOR_SUBMENU, LevelEditorManager.MINIMUM_LEVEL_SIZE.Y, 2, HorizontalAlignment.Center, 9, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-                Button createNewLevelButton = new Button(CREATE_NEW_LEVEL_BUTTON_TEXT_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 9, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, OpenLevelEditor);
+                Button createNewLevelButton = new Button(CREATE_NEW_LEVEL_BUTTON_TEXT_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 10, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, OpenLevelEditor);
                 createNewLevelButton.OnClick += OpenLevelEditorSubmenu.DoPerformAction;
 
-                Label emptyLabel6 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 10, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                Label emptyLabel5 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 11, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-                Button goToPreviousMenuButton = new Button(GO_TO_PREVIOUS_MENU_BUTTON_TEXT, HorizontalAlignment.Center, 11, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                Label importExportLabel = new Label(IMPORT_EXPORT_LABEL_TEXT_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 12, SECONDARY_LABEL_FOREGROUND_COLOR, SECONDARY_LABEL_BACKGROUND_COLOR);
+
+                Button importLevelButton = new Button(IMPORT_LEVEL_BUTTON_TEXT_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 13, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, ImportLevel);
+                importLevelButton.OnClick += OpenLevelEditorSubmenu.DoPerformAction;
+                Button exportLevelButton = new Button(EXPORT_LEVEL_BUTTON_TEXT_LEVEL_EDITOR_SUBMENU, HorizontalAlignment.Center, 14, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, InitializeExportLevelSubmenuAndManagerAndRun);
+                exportLevelButton.OnClick += OpenLevelEditorSubmenu.DoPerformAction;
+
+                Label emptyLabel6 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 15, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+                Button goToPreviousMenuButton = new Button(GO_TO_PREVIOUS_MENU_BUTTON_TEXT, HorizontalAlignment.Center, 16, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
                 goToPreviousMenuButton.OnClick += OpenLevelEditorSubmenu.DoExitMenu;
 
-                OpenLevelEditorSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, loadExistingLevelButton, emptyLabel3, deleteExistingLevelButton, emptyLabel4, EnterLevelWidthNumberField, EnterLevelHeightNumberField, emptyLabel5, createNewLevelButton, emptyLabel6, goToPreviousMenuButton });
+                OpenLevelEditorSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, loadExistingLevelButton, emptyLabel3, deleteExistingLevelButton, emptyLabel4, createNewLevelLabel, EnterLevelWidthNumberField, EnterLevelHeightNumberField, createNewLevelButton, emptyLabel5, importExportLabel, importLevelButton, exportLevelButton, emptyLabel6, goToPreviousMenuButton });
 
                 // The MenuManager needs to get a list of keys, that he needs to additionaly listen to
                 List<ConsoleKey> numbers = new List<ConsoleKey>() { ConsoleKey.D0, ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.NumPad0, ConsoleKey.NumPad1, ConsoleKey.NumPad2, ConsoleKey.NumPad3, ConsoleKey.NumPad4, ConsoleKey.NumPad5, ConsoleKey.NumPad6, ConsoleKey.NumPad7, ConsoleKey.NumPad8, ConsoleKey.NumPad9 };
@@ -166,7 +189,9 @@ namespace Setnicka.PacMan
 
             Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-            playGameSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2 });
+            Label levelsLabel = new Label(LEVELS_LABEL_TEXT_PLAYGAME_SUBMENU, HorizontalAlignment.Center, 3, SECONDARY_LABEL_FOREGROUND_COLOR, SECONDARY_LABEL_BACKGROUND_COLOR);
+
+            playGameSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, levelsLabel });
 
             // Add buttons according to the number of levels
             // Get potential levels
@@ -176,7 +201,7 @@ namespace Setnicka.PacMan
             for(int i = 0; i < potentialLevels.Length; i++)
             {
                 // Check if the file is openable
-                if (!FileOpenable(potentialLevels[i]))
+                if (!LevelReader.FileOpenable(potentialLevels[i]))
                     continue;
 
                 // Check if the file stores level
@@ -185,7 +210,7 @@ namespace Setnicka.PacMan
 
                 // Else add button, that aims at this file
                 string strCopy = String.Copy(potentialLevels[i]);
-                Button btn = new Button(Path.GetFileNameWithoutExtension(potentialLevels[i]), HorizontalAlignment.Center, (3 + i), HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, new Action(() => { PlayLevel(strCopy); }));
+                Button btn = new Button(Path.GetFileNameWithoutExtension(potentialLevels[i]), HorizontalAlignment.Center, (4 + i), HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, new Action(() => { PlayLevel(strCopy); }));
                 btn.OnClick += playGameSubmenu.DoPerformAction;
                 playGameSubmenu.AddUIElement(btn);
             }
@@ -209,7 +234,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void InitializeOpenLevelToEditorSubmenuAndManagerAndRun()
         {
-            Menu openLevelToEditorMenu = new Menu();
+            Menu openLevelToEditorSubmenu = new Menu();
 
             Label emptyLabel1 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
@@ -217,7 +242,9 @@ namespace Setnicka.PacMan
 
             Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-            openLevelToEditorMenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2 });
+            Label levelsLabel = new Label(LEVELS_LABEL_TEXT_LOAD_LEVEL_TO_EDITOR_SUBMENU, HorizontalAlignment.Center, 3, SECONDARY_LABEL_FOREGROUND_COLOR, SECONDARY_LABEL_BACKGROUND_COLOR);
+
+            openLevelToEditorSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, levelsLabel });
 
             // Add buttons according to the number of levels
             // Get potential levels
@@ -227,7 +254,7 @@ namespace Setnicka.PacMan
             for (int i = 0; i < potentialLevels.Length; i++)
             {
                 // Check if the file is openable
-                if (!FileOpenable(potentialLevels[i]))
+                if (!LevelReader.FileOpenable(potentialLevels[i]))
                     continue;
 
                 // Check if the file stores level
@@ -236,22 +263,22 @@ namespace Setnicka.PacMan
 
                 // Else add button, that aims at this file
                 string strCopy = String.Copy(potentialLevels[i]);
-                Button btn = new Button(Path.GetFileNameWithoutExtension(potentialLevels[i]), HorizontalAlignment.Center, (3 + i), HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, new Action(() => { LoadLevelToEditor(strCopy); }));
-                btn.OnClick += openLevelToEditorMenu.DoPerformAction;
-                openLevelToEditorMenu.AddUIElement(btn);
+                Button btn = new Button(Path.GetFileNameWithoutExtension(potentialLevels[i]), HorizontalAlignment.Center, (4 + i), HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR, new Action(() => { LoadLevelToEditor(strCopy); }));
+                btn.OnClick += openLevelToEditorSubmenu.DoPerformAction;
+                openLevelToEditorSubmenu.AddUIElement(btn);
             }
 
             Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 7, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
             Button goToPreviousMenuButton = new Button(GO_TO_PREVIOUS_MENU_BUTTON_TEXT, HorizontalAlignment.Center, 8, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
-            goToPreviousMenuButton.OnClick += openLevelToEditorMenu.DoExitMenu;
+            goToPreviousMenuButton.OnClick += openLevelToEditorSubmenu.DoExitMenu;
 
-            openLevelToEditorMenu.AddUIElementRange(new List<IUIElement>() { emptyLabel3, goToPreviousMenuButton });
-            MenuManager openLevelToEditorManager = new MenuManager(openLevelToEditorMenu);
-            openLevelToEditorManager = new MenuManager(openLevelToEditorMenu);
+            openLevelToEditorSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel3, goToPreviousMenuButton });
+            MenuManager openLevelToEditorSubmenuManager = new MenuManager(openLevelToEditorSubmenu);
+            openLevelToEditorSubmenuManager = new MenuManager(openLevelToEditorSubmenu);
 
             // Run the submenu
-            openLevelToEditorManager.Run();
+            openLevelToEditorSubmenuManager.Run();
         }
 
         /// <summary>
@@ -259,7 +286,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void InitializeDeleteLevelSubmenuAndManagerAndRun()
         {
-            Menu deleteLevelMenu = new Menu();
+            Menu deleteLevelSubmenu = new Menu();
 
             Label emptyLabel1 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
@@ -267,7 +294,9 @@ namespace Setnicka.PacMan
 
             Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-            deleteLevelMenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2 });
+            Label levelsLabel = new Label(LEVELS_LABEL_TEXT_DELETE_LEVEL_SUBMENU, HorizontalAlignment.Center, 3, SECONDARY_LABEL_FOREGROUND_COLOR, SECONDARY_LABEL_BACKGROUND_COLOR);
+
+            deleteLevelSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, levelsLabel });
 
             // Add buttons according to the number of levels
             // Get potential levels
@@ -277,7 +306,7 @@ namespace Setnicka.PacMan
             for (int i = 0; i < potentialLevels.Length; i++)
             {
                 // Check if the file is openable
-                if (!FileOpenable(potentialLevels[i]))
+                if (!LevelReader.FileOpenable(potentialLevels[i]))
                     continue;
 
                 // Check if the file stores level
@@ -286,33 +315,85 @@ namespace Setnicka.PacMan
 
                 // Else add button, that aims at this file
                 string strCopy = String.Copy(potentialLevels[i]);
-                Button btn = new Button(Path.GetFileNameWithoutExtension(potentialLevels[i]), HorizontalAlignment.Center, (3 + i), HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                Button btn = new Button(Path.GetFileNameWithoutExtension(potentialLevels[i]), HorizontalAlignment.Center, (4 + i), HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
                 btn.OnClick += new EventHandler((object sender, EventArgs args) => { File.Delete(strCopy); });
-                btn.OnClick += deleteLevelMenu.DoExitMenu;
-                deleteLevelMenu.AddUIElement(btn);
+                btn.OnClick += deleteLevelSubmenu.DoExitMenu;
+                deleteLevelSubmenu.AddUIElement(btn);
             }
 
             Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 7, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
             Button goToPreviousMenuButton = new Button(GO_TO_PREVIOUS_MENU_BUTTON_TEXT, HorizontalAlignment.Center, 8, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
-            goToPreviousMenuButton.OnClick += deleteLevelMenu.DoExitMenu;
+            goToPreviousMenuButton.OnClick += deleteLevelSubmenu.DoExitMenu;
 
-            deleteLevelMenu.AddUIElementRange(new List<IUIElement>() { emptyLabel3, goToPreviousMenuButton });
-            MenuManager deleteLevelMenuManager = new MenuManager(deleteLevelMenu);
-            deleteLevelMenuManager = new MenuManager(deleteLevelMenu);
+            deleteLevelSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel3, goToPreviousMenuButton });
+            MenuManager deleteLevelSubmenuManager = new MenuManager(deleteLevelSubmenu);
+            deleteLevelSubmenuManager = new MenuManager(deleteLevelSubmenu);
 
             // Run the submenu
-            deleteLevelMenuManager.Run();
+            deleteLevelSubmenuManager.Run();
+        }
+
+        /// <summary>
+        /// Usef or opening submenu, that allows the user to export a level
+        /// </summary>
+        private void InitializeExportLevelSubmenuAndManagerAndRun()
+        {
+            Menu exportLevelSubmenu = new Menu();
+
+            Label emptyLabel1 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 0, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Label mainLabel = new Label(MAIN_LABEL_TEXT_EXPORT_LEVEL_SUBMENU, HorizontalAlignment.Center, 1, MAIN_LABEL_FOREGROUND_COLOR, MAIN_LABEL_BACKGROUND_COLOR);
+
+            Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Label levelsLabel = new Label(LEVELS_LABEL_TEXT_EXPORT_LEVEL_SUBMENU, HorizontalAlignment.Center, 3, SECONDARY_LABEL_FOREGROUND_COLOR, SECONDARY_LABEL_BACKGROUND_COLOR);
+
+            exportLevelSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, levelsLabel });
+
+            // Add buttons according to the number of levels
+            // Get potential levels
+            string[] potentialLevels = Directory.GetFiles(LevelWriter.GetPathToLevels());
+
+            // For all potential levels
+            for (int i = 0; i < potentialLevels.Length; i++)
+            {
+                // Check if the file is openable
+                if (!LevelReader.FileOpenable(potentialLevels[i]))
+                    continue;
+
+                // Check if the file stores level
+                if (LevelReader.ReadLevel(potentialLevels[i]) == null)
+                    continue;
+
+                // Else add button, that aims at this file
+                string strCopy = String.Copy(potentialLevels[i]);
+                Button btn = new Button(Path.GetFileNameWithoutExtension(potentialLevels[i]), HorizontalAlignment.Center, (4 + i), HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+                btn.OnClick += new EventHandler((object sender, EventArgs args) => { ExportLevel(strCopy); });
+                btn.OnClick += exportLevelSubmenu.DoExitMenu;
+                exportLevelSubmenu.AddUIElement(btn);
+            }
+
+            Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 7, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+
+            Button goToPreviousMenuButton = new Button(GO_TO_PREVIOUS_MENU_BUTTON_TEXT, HorizontalAlignment.Center, 8, HIGHLIGHTED_FOREGROUND_COLOR, HIGHLIGHTED_BACKGROUND_COLOR, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
+            goToPreviousMenuButton.OnClick += exportLevelSubmenu.DoExitMenu;
+
+            exportLevelSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel3, goToPreviousMenuButton });
+            MenuManager exportLevelSubmenuManager = new MenuManager(exportLevelSubmenu);
+            exportLevelSubmenuManager = new MenuManager(exportLevelSubmenu);
+
+            // Run the submenu
+            exportLevelSubmenuManager.Run();
         }
         #endregion
 
         /// <summary>
         /// Used for running level
         /// </summary>
-        /// <param name="pathToLevel"></param>
         private void PlayLevel(string pathToLevel)
         {
-            bool fileOpenable = FileOpenable(pathToLevel);
+            bool fileOpenable = LevelReader.FileOpenable(pathToLevel);
 
             // Signal the error to the user
             if (!fileOpenable)
@@ -365,7 +446,7 @@ namespace Setnicka.PacMan
         /// <param name="pathToLevel"></param>
         private void LoadLevelToEditor(string pathToLevel)
         {
-            bool fileOpenable = FileOpenable(pathToLevel);
+            bool fileOpenable = LevelReader.FileOpenable(pathToLevel);
 
             // Signal the error to the user
             if (!fileOpenable)
@@ -391,30 +472,77 @@ namespace Setnicka.PacMan
         }
 
         /// <summary>
-        /// Checks, whether a given path is openable
+        /// Allows user to import new levels from other places of the computer
         /// </summary>
-        private bool FileOpenable(string path)
+        private void ImportLevel()
         {
-            bool fileOpenable = false;
+            TextInputDialog dialog = new TextInputDialog("Enter path to the level", "Please enter full path, for example: 'C:\\Levels\\LevelToImport.txt'");
+            dialog.Run();
 
-            // Test if the file can be opened
-            try
+            string path = dialog.DialogStringResult;
+
+            // If level cannot be loaded from this file, signal the error and retrn
+            if(!LevelReader.FileOpenable(path) || LevelReader.ReadLevel(path) == null)
             {
-                File.Open(path, FileMode.Open).Dispose();
-
-                fileOpenable = true;
+                MessageDialog messageDialog = new MessageDialog("The program was unable to load the level.");
+                messageDialog.Run();
+                return;
             }
-            catch (ArgumentOutOfRangeException) { }
-            catch (FileNotFoundException) { }
-            catch (ArgumentNullException) { }
-            catch (ArgumentException) { }
-            catch (PathTooLongException) { }
-            catch (DirectoryNotFoundException) { }
-            catch (IOException) { }
-            catch (UnauthorizedAccessException) { }
-            catch (NotSupportedException) { }
 
-            return fileOpenable;
+            // Path of the imported
+            string newPath = LevelWriter.GetPathToLevels() + Path.GetFileNameWithoutExtension(path) + ".txt";
+
+            // If there is already a level at that path - ask the user
+            if (File.Exists(newPath))
+            {
+                ConfirmationDialog confirmationDialog = new ConfirmationDialog(ConfirmationOptions.YesNo, "Level with that name is already there, do you want to overwrite it?");
+                confirmationDialog.Run();
+                if (confirmationDialog.DialogResult != DialogResult.Yes)
+                    return;
+            }
+
+            // Import the level
+            LevelWriter.SaveLevel(LevelReader.ReadLevel(path), newPath);
+
+            // Signal success to the user
+            // Infrom the user about the successful save
+            MessageDialog successfulImport = new MessageDialog("The level was imported successfully.");
+            successfulImport.Run();
+        }
+
+        /// <summary>
+        /// Used for exporting chosen level
+        /// </summary>
+        private void ExportLevel(string levelPath)
+        {
+            TextInputDialog dialog = new TextInputDialog("Enter path that you want to export the level to", "Please enter full path, for example: 'C:\\Levels\\ExportedLevel.txt'");
+            dialog.Run();
+
+            string path = dialog.DialogStringResult;
+
+            // If file exist, disallow the user to continue
+            if (File.Exists(path))
+            {
+                MessageDialog messageDialogFileExists = new MessageDialog("That file already exists, delete it first.");
+                messageDialogFileExists.Run();
+                return;
+            }
+
+            // Check if the program can create such file (otherwise signal error to the user and return)
+            if (!LevelWriter.FileCreatable(path))
+            {
+                MessageDialog messageDialogFileCannotBeCreated = new MessageDialog("Program was unable to create such file.");
+                messageDialogFileCannotBeCreated.Run();
+                return;
+            }
+
+            // Otherwise export level
+            LevelWriter.SaveLevel(LevelReader.ReadLevel(levelPath), path);
+
+            // Signal success to the user
+            // Infrom the user about the successful save
+            MessageDialog successfulExport = new MessageDialog("The level was exported successfully.");
+            successfulExport.Run();
         }
         #endregion
     }

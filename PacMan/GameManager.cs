@@ -760,6 +760,9 @@ namespace Setnicka.PacMan
                 // Put the ghost on the level
                 Level[EatenGhosts[i].SpawnPoint.X, EatenGhosts[i].SpawnPoint.Y] = Ghosts[Ghosts.Count - 1];
 
+                // Set the style information to match
+                Ghosts[Ghosts.Count - 1].Style = EatenGhosts[i].Style;
+
                 // Print the new ghost
                 Level[EatenGhosts[i].SpawnPoint.X, EatenGhosts[i].SpawnPoint.Y].Print(OFFSET);
 
