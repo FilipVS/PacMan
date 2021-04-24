@@ -59,7 +59,7 @@ namespace Setnicka.PacMan
         private const string LEVELS_LABEL_TEXT_LOAD_LEVEL_TO_EDITOR_SUBMENU = "Levels";
 
         // Delete level submenu
-        private const string MAIN_LABEL_TEXT_DELETE_LEVEL_SUBMENU = "Choose level to be deleted (there is no way to revert)";
+        private const string MAIN_LABEL_TEXT_DELETE_LEVEL_SUBMENU = "Choose level to be deleted";
         private const string LEVELS_LABEL_TEXT_DELETE_LEVEL_SUBMENU = "Levels";
 
         // Export level submenu
@@ -181,7 +181,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void InitializePlayGameSubmenuAndManagerAndRun()
         {
-            Menu playGameSubmenu = InitializeLevelLoadingMenu(MAIN_LABEL_TEXT_PLAYGAME_SUBMENU, PlayLevel);
+            Menu playGameSubmenu = InitializeLevelLoadingMenu(MAIN_LABEL_TEXT_PLAYGAME_SUBMENU, LEVELS_LABEL_TEXT_PLAYGAME_SUBMENU, PlayLevel);
 
             MenuManager playGameSubmenuManager = new MenuManager(playGameSubmenu);
 
@@ -194,7 +194,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void InitializeOpenLevelToEditorSubmenuAndManagerAndRun()
         {
-            Menu openLevelToEditorSubmenu = InitializeLevelLoadingMenu(MAIN_LABEL_TEXT_LOAD_LEVEL_TO_EDITOR_SUBMENU, LoadLevelToEditor);
+            Menu openLevelToEditorSubmenu = InitializeLevelLoadingMenu(MAIN_LABEL_TEXT_LOAD_LEVEL_TO_EDITOR_SUBMENU, LEVELS_LABEL_TEXT_LOAD_LEVEL_TO_EDITOR_SUBMENU, LoadLevelToEditor);
 
             MenuManager openLevelToEditorSubmenuManager = new MenuManager(openLevelToEditorSubmenu);
 
@@ -207,7 +207,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void InitializeDeleteLevelSubmenuAndManagerAndRun()
         {
-            Menu deleteLevelSubmenu = InitializeLevelLoadingMenu(MAIN_LABEL_TEXT_DELETE_LEVEL_SUBMENU, DeleteLevel, true);
+            Menu deleteLevelSubmenu = InitializeLevelLoadingMenu(MAIN_LABEL_TEXT_DELETE_LEVEL_SUBMENU, LEVELS_LABEL_TEXT_DELETE_LEVEL_SUBMENU, DeleteLevel, true);
 
             MenuManager deleteLevelSubmenuManager = new MenuManager(deleteLevelSubmenu);
 
@@ -220,7 +220,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void InitializeExportLevelSubmenuAndManagerAndRun()
         {
-            Menu exportLevelSubmenu = InitializeLevelLoadingMenu(MAIN_LABEL_TEXT_EXPORT_LEVEL_SUBMENU, ExportLevel);
+            Menu exportLevelSubmenu = InitializeLevelLoadingMenu(MAIN_LABEL_TEXT_EXPORT_LEVEL_SUBMENU, LEVELS_LABEL_TEXT_EXPORT_LEVEL_SUBMENU, ExportLevel);
 
             MenuManager exportLevelSubmenuManager = new MenuManager(exportLevelSubmenu);
 
@@ -231,7 +231,7 @@ namespace Setnicka.PacMan
         /// <summary>
         /// Used to generaly initialize a submenu, that loads all the available levels for interaction (DeleteLevelSubmenu/LoadLevelToLevelEditoSubmenu...)
         /// </summary>
-        private Menu InitializeLevelLoadingMenu(string mainLabelText, Action<string> actionOnButtons, bool endSubmenuUponClick = false)
+        private Menu InitializeLevelLoadingMenu(string mainLabelText, string levelsLabelText, Action<string> actionOnButtons, bool endSubmenuUponClick = false)
         {
             Menu menu = new Menu();
 
@@ -241,7 +241,7 @@ namespace Setnicka.PacMan
 
             Label emptyLabel2 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 2, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 
-            Label levelsLabel = new Label(LEVELS_LABEL_TEXT_PLAYGAME_SUBMENU, HorizontalAlignment.Center, 3, SECONDARY_LABEL_FOREGROUND_COLOR, SECONDARY_LABEL_BACKGROUND_COLOR);
+            Label levelsLabel = new Label(levelsLabelText, HorizontalAlignment.Center, 3, SECONDARY_LABEL_FOREGROUND_COLOR, SECONDARY_LABEL_BACKGROUND_COLOR);
 
             menu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, levelsLabel });
 
@@ -371,9 +371,16 @@ namespace Setnicka.PacMan
         /// <summary>
         /// Used for deleting an existing level
         /// </summary>
-        /// <param name="pathToLevel"></param>
         private void DeleteLevel(string pathToLevel)
         {
+            // Ask the user to confirm
+            ConfirmationDialog dialog = new ConfirmationDialog(ConfirmationOptions.YesNo, "Are you sure, you want to delete this level? (there is no way to revert this action)");
+            dialog.Run();
+
+            // If user didn't confirm, return
+            if (dialog.DialogResult != DialogResult.Yes)
+                return;
+
             File.Delete(pathToLevel);
 
             // Singnal the success
