@@ -403,7 +403,7 @@ namespace Setnicka.PacMan
             foreach (Ghost ghost in Ghosts) 
             {
                 // Reset the drawing style
-                ghost.Style = Ghost.DrawStyle.Normal;
+                ghost.Style = Ghost.DrawingStyle.Normal;
 
                 ghost.Print(OFFSET);
             }
@@ -472,6 +472,8 @@ namespace Setnicka.PacMan
             {
                 foreach (Ghost ghost in Ghosts)
                 {
+                    ghost.Style = Ghost.DrawingStyle.Normal;
+
                     if (ghost.Move() == MoveResult.Collision)
                     {
                         CurrentRunningState = RunningState.Collision;
@@ -537,7 +539,7 @@ namespace Setnicka.PacMan
             foreach (Ghost ghost in Ghosts)
             {
                 // Reset the drawing style
-                ghost.Style = Ghost.DrawStyle.ChasingGhosts;
+                ghost.Style = Ghost.DrawingStyle.ChasingGhosts;
 
                 ghost.Print(OFFSET);
             }
@@ -613,18 +615,24 @@ namespace Setnicka.PacMan
                     else
                         ghostsGoAlternate = true;
                 }
+                // Else make ghosts use the standard color
+                else
+                    ghostsGoAlternate = false;
 
                 foreach (Ghost ghost in Ghosts)
                 {
                     // Set up the colors
                     if (ghostsGoAlternate)
-                        ghost.Style = Ghost.DrawStyle.ChasingGhostsAlternate;
+                        ghost.Style = Ghost.DrawingStyle.ChasingGhostsAlternate;
                     else
-                        ghost.Style = Ghost.DrawStyle.ChasingGhosts;
+                        ghost.Style = Ghost.DrawingStyle.ChasingGhosts;
 
                     ghost.InvertedMove = true;
                     ghost.Move();
                     ghost.InvertedMove = false;
+
+                    // Reprint the ghost to maintain alternating colors in case he didn't move
+                    ghost.Print(OFFSET);
 
                     // TODO: Delete?
                     /*if (ghost.Move() == MoveResult.Collision)
@@ -753,6 +761,9 @@ namespace Setnicka.PacMan
                 // If the ghost's spawn point is not empty, continue
                 if (!(Level[EatenGhosts[i].SpawnPoint.X, EatenGhosts[i].SpawnPoint.Y] is Empty))
                     continue;
+                // Or if player is standing right next to the tile
+                if (PlayerAround(EatenGhosts[i].SpawnPoint))
+                    continue;
 
                 // Else create the ghost and set up its information
                 Ghosts.Add(RespawnGhost(EatenGhosts[i]));
@@ -773,6 +784,14 @@ namespace Setnicka.PacMan
             // Remove the placed ghosts
             foreach (int num in removeAtIndex)
                 EatenGhosts.RemoveAt(num);
+
+            // Is player on some tile next to this position
+            bool PlayerAround(Vector2D position)
+            {
+                if ((position - Player.Position).Magnitude < 2)
+                    return true;
+                return false;
+            }
         }
 
         /// <summary>

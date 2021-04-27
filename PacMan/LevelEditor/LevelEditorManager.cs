@@ -698,7 +698,7 @@ namespace Setnicka.PacMan.LevelEditor
 
         private void SaveLevel(object sender, EventArgs args)
         {
-            TextInputDialog dialog = new TextInputDialog("Please enter the name of the file to store the level", "Do not add extensions Write only the name. For example: 'Level5'");
+            TextInputDialog dialog = new TextInputDialog("Please enter the name of the file to store the level", "Do not add extensions. Write only the name. For example: 'Level5'");
 
             dialog.Run();
 

@@ -20,7 +20,7 @@ namespace Setnicka.PacMan
         {
         }
 
-        #region Automatic propeties
+        #region Propeties
         private PlayStyle PlayStyle { get; set; }
 
         // How many updates before re-deciding which play-style to follow
@@ -83,9 +83,9 @@ namespace Setnicka.PacMan
 
         protected override void Draw()
         {
-            if (Style == DrawStyle.ChasingGhosts)
+            if (Style == DrawingStyle.ChasingGhosts)
                 Console.ForegroundColor = GameColors.ChasingGhostMainColor;
-            else if (Style == DrawStyle.ChasingGhostsAlternate)
+            else if (Style == DrawingStyle.ChasingGhostsAlternate)
                 Console.ForegroundColor = GameColors.ChasingGhostAlternateColor;
             else
                 Console.ForegroundColor = GameColors.InkyColor;

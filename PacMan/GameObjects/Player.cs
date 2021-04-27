@@ -22,22 +22,8 @@ namespace Setnicka.PacMan
             Health = health;
         }
 
-        #region Fields
-        private int health;
-        #endregion
-
         #region Properties
-        public int Health
-        {
-            get
-            {
-                return health;
-            }
-            set
-            {
-                health = value;
-            }
-        }
+        public int Health { get; set; }
 
         // Where did the player want to go previously
         public Vector2D DesiredTile { get; private set; }

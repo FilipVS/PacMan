@@ -49,7 +49,7 @@ namespace Setnicka.PacMan
         public Vector2D Beaware { get; set; }
 
         // How will be the ghost printed
-        public DrawStyle Style { get; set; }
+        public DrawingStyle Style { get; set; }
         #endregion
 
 
@@ -551,7 +551,7 @@ namespace Setnicka.PacMan
         }
         #endregion
 
-        public enum DrawStyle
+        public enum DrawingStyle
         {
             Normal,
             ChasingGhosts,
