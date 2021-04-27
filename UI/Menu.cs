@@ -99,8 +99,6 @@ namespace Setnicka.UI
         /// </summary>
         internal void KeyInteraction(object sender, KeyEventArgs keyEventArgs)
         {
-            // TODO: I deleted else if's from the other two ifs (might cause some trouble)
-
             if (keyEventArgs.keyPressed == MenuKeyBindings.CursorUp || keyEventArgs.keyPressed == MenuKeyBindings.CursorUpSecondary)
                 MoveHighlightUp();
 

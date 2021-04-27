@@ -160,9 +160,6 @@ namespace Setnicka.PacMan
             void BeforeReturn()
             {
                 SkipMove = false;
-
-                // TODO: Delete?
-                // Beware = null;
             }
         }
 
@@ -214,30 +211,6 @@ namespace Setnicka.PacMan
 
             // If movemenet was not supposed to be inverted, or the invertedMoveTile was illegal, or the desired move was illefal, move to the first legal tile
             return movableTilesAround[0].Position;
-
-            // TODO: Delte, if proves useless
-            /*Vector2D invertedMoveTile = Position - (new Vector2D(Heading));
-
-            // If the only available move is to go to go on player, do not move
-            if (movableTilesAround.Count == 1 && Level[movableTilesAround[0].Position.X, movableTilesAround[0].Position.Y] is Player)
-                return Position.Copy();
-
-            // Don't go on player
-            Avoid<Player>();
-
-            // Only way to move left --> go uninverted
-            if (movableTilesAround.Count == 1)
-                return Position + (new Vector2D(Heading));
-            // Else remove the original desiredTile
-            else
-                movableTilesAround.Remove(Level[(Position + new Vector2D(Heading)).X, (Position + new Vector2D(Heading)).Y]);
-
-            // If invertedMoveTile is a legal move, return it
-            if (!Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), invertedMoveTile) && movableTilesAround.Contains(Level[invertedMoveTile.X, invertedMoveTile.Y]))
-                return invertedMoveTile;
-            // Else return first tile that fit the previous conditions
-            else
-                return movableTilesAround[0].Position;*/
 
             // Removes certein type of object from movableTilesAround
             void Avoid<T>()
@@ -291,7 +264,6 @@ namespace Setnicka.PacMan
                     break;
 
                 // Check all the tiles around and try to find the next order tile
-                // TODO: Improve this mess (4x repeated code)
                 checkedTile = currentlyOn + Vector2D.Up;
                 if (!Vector2D.VectorOutOf2DArray(MazeMap.GetLength(0), MazeMap.GetLength(1), checkedTile))
                     if (MazeMap[checkedTile.X, checkedTile.Y] < order && MazeMap[checkedTile.X, checkedTile.Y] > 0)
@@ -335,17 +307,14 @@ namespace Setnicka.PacMan
                 if (positionDifference.Y == 0)
                     Heading = Direction.Right;
                 else
-                    //DoNotMove();
-                    // TODO: Delete throws, uncomment DoNotMove()s
-                    throw new ArgumentException("Incorrect result!");
+                    DoNotMove();
             }
             else if (positionDifference.X == -1)
             {
                 if (positionDifference.Y == 0)
                     Heading = Direction.Left;
                 else
-                   // DoNotMove();
-                    throw new ArgumentException("Incorrect result!");
+                    DoNotMove();
             }
             else if (positionDifference.X == 0)
             {
@@ -354,12 +323,10 @@ namespace Setnicka.PacMan
                 else if (positionDifference.Y == -1)
                     Heading = Direction.Up;
                 else
-                    //DoNotMove();
-                    throw new ArgumentException("Incorrect result!");
+                    DoNotMove();           
             }
             else
-                //DoNotMove();
-                throw new ArgumentException("Incorrect result!");
+                DoNotMove();
             #endregion
 
             // Sets the desired tile to be the same as current tile, so the ghost won't move

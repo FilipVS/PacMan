@@ -57,7 +57,6 @@ namespace Setnicka.UI
             DialogStringResult = Console.ReadLine();
             Console.CursorVisible = false;
 
-            // TODO: If problems occur, it is because of this
             if (String.IsNullOrEmpty(DialogStringResult))
                 DialogResult = DialogResult.No;
             else

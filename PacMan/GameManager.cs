@@ -633,23 +633,6 @@ namespace Setnicka.PacMan
 
                     // Reprint the ghost to maintain alternating colors in case he didn't move
                     ghost.Print(OFFSET);
-
-                    // TODO: Delete?
-                    /*if (ghost.Move() == MoveResult.Collision)
-                    {
-                        ghost.InvertedMove = false;
-                        CurrentRunningState = RunningState.Collision;
-                        Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY);
-                        break;
-                    }*/
-
-
-                    // TODO: Remove?
-                    /*if (AbortGameThread)
-                    {
-                        BeforeReturn();
-                        return;
-                    }*/
                 }
             }
 

@@ -10,11 +10,6 @@ namespace Setnicka.PacMan
         {
             AppManager appManager = new AppManager();
             appManager.Run();
-
-            // TODO: Delete
-            Console.Clear();
-            Console.WriteLine("I'm back at program!");
-            Console.ReadKey(true);
         }
     }
 }
