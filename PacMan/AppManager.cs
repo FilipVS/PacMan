@@ -31,6 +31,7 @@ namespace Setnicka.PacMan
         // UI constants
         private const string EMPTY_LABEL_TEXT = "";
         private const string GO_TO_PREVIOUS_MENU_BUTTON_TEXT = "Go to previous menu";
+        private const string NO_LEVELS_FOUND_TEXT = "No levels found, try to import some";
 
         // Main menu
         private const string MAIN_LABEL_TEXT_MAIN_MENU = "Pacman main menu";
@@ -70,6 +71,17 @@ namespace Setnicka.PacMan
         #endregion
 
         #region Constructors
+        /// <summary>
+        /// Create the base folder for saving levels
+        /// </summary>
+        static AppManager()
+        {
+            if (Directory.Exists(LevelWriter.GetPathToLevels()))
+                return;
+            else
+                Directory.CreateDirectory(LevelWriter.GetPathToLevels());
+        }
+
         public AppManager()
         {
             InitializeMenusAndManagers();
@@ -249,6 +261,7 @@ namespace Setnicka.PacMan
             // Get potential levels
             string[] potentialLevels = Directory.GetFiles(LevelWriter.GetPathToLevels());
 
+            int amountOfLevels = 0;
             // For all potential levels
             for (int i = 0; i < potentialLevels.Length; i++)
             {
@@ -271,8 +284,12 @@ namespace Setnicka.PacMan
                     btn.OnClick += menu.DoExitMenu;
                 }
                 menu.AddUIElement(btn);
+                amountOfLevels++;
             }
             //
+
+            if (amountOfLevels == 0)
+                menu.AddUIElement(new Label(NO_LEVELS_FOUND_TEXT, HorizontalAlignment.Center, 6, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR));
 
             Label emptyLabel3 = new Label(EMPTY_LABEL_TEXT, HorizontalAlignment.Center, 7, UNHIGHLIGHTED_FOREGROUND_COLOR, UNHIGHLIGHTED_BACKGROUND_COLOR);
 

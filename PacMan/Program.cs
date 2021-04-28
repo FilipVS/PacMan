@@ -1,8 +1,4 @@
-﻿using System;
-using Setnicka.UI;
-
-
-namespace Setnicka.PacMan
+﻿namespace Setnicka.PacMan
 {
     class Program
     {

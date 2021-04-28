@@ -264,6 +264,23 @@ namespace Setnicka.PacMan
                     break;
 
                 // Check all the tiles around and try to find the next order tile
+                Vector2D[] directions = new Vector2D[] { Vector2D.Up, Vector2D.Down, Vector2D.Right, Vector2D.Left};
+                foreach(Vector2D direction in directions)
+                {
+                    checkedTile = currentlyOn + direction;
+                    if (!Vector2D.VectorOutOf2DArray(MazeMap.GetLength(0), MazeMap.GetLength(1), checkedTile))
+                    {
+                        if(MazeMap[checkedTile.X, checkedTile.Y] < order && MazeMap[checkedTile.X, checkedTile.Y] > 0)
+                        {
+                            order--;
+                            currentlyOn = checkedTile;
+                            break;
+                        }
+                    }
+                }
+
+                // TODO: Delete if the alternate solution works
+                /*// Check all the tiles around and try to find the next order tile
                 checkedTile = currentlyOn + Vector2D.Up;
                 if (!Vector2D.VectorOutOf2DArray(MazeMap.GetLength(0), MazeMap.GetLength(1), checkedTile))
                     if (MazeMap[checkedTile.X, checkedTile.Y] < order && MazeMap[checkedTile.X, checkedTile.Y] > 0)
@@ -295,7 +312,7 @@ namespace Setnicka.PacMan
                         order--;
                         currentlyOn = checkedTile;
                         continue;
-                    }
+                    }*/
             }
             #endregion
 
