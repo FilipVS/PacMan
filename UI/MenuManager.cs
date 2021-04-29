@@ -30,7 +30,7 @@ namespace Setnicka.UI
             InputManager.KeyPressed += Menu.KeyInteraction;
             InputManager.KeyPressed += Refresh;
 
-            // Subscribe menu controlling events
+            // Subscribe menu-controlling events
             menu.PerformAction += PerformAction;
             menu.ExitMenu += ExitMenu;
         }

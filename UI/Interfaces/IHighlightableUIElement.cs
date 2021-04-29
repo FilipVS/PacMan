@@ -7,7 +7,7 @@ namespace Setnicka.UI
     /// </summary>
     public interface IHighlightableUIElement : IUIElement
     {
-        // This element can be used for validating once the user unhighlights the element...
+        // This event can be used for validating once the user unhighlights the element...
         event EventHandler ElementUnhighlighted;
         // Method that fires the event
         void OnElementUnhighlighted();

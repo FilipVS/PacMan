@@ -8,7 +8,7 @@ namespace Setnicka.UI
     /// </summary>
     public interface IUIElement
     {
-        /// Where will be the UIElement rendered on the screen
+        /// Where will be the IUIElement rendered on the screen
         HorizontalAlignment HorizontalAlignment { get; set; }
 
         // Is used when HorizontalAlignment is set to Custom
@@ -25,7 +25,7 @@ namespace Setnicka.UI
     }
 
     /// <summary>
-    /// Defines, where will be the UIElement rendered
+    /// Defines, where will be the IUIElement rendered
     /// </summary>
     public enum HorizontalAlignment
     {

@@ -10,7 +10,7 @@ namespace Setnicka.UI
     {
         #region Constructors
         /// <summary>
-        /// Initializes new instance of Label class with information about its line and colors set to current Console colors
+        /// Initializes new instance of the Label class with information about its line and colors set to current Console colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
@@ -26,17 +26,17 @@ namespace Setnicka.UI
             BackgroundColor = Console.BackgroundColor;
         }
         /// <summary>
-        /// Initializes new instance of Label class with full information about its position and colors set to current Console colors
+        /// Initializes new instance of the Label class with full information about its position and colors set to current Console colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
-        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="custom")</param>
+        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="Custom")</param>
         public Label(string text, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition) : this(text, horizontalAlignment, -1)
         {
             RenderPosition = customRenderPosition;
         }
         /// <summary>
-        /// Initializes new instance of Label class with information about its line and colors
+        /// Initializes new instance of the Label class with information about its line and colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
@@ -49,11 +49,11 @@ namespace Setnicka.UI
             BackgroundColor = backgroundColor;
         }
         /// <summary>
-        /// Initializes new instance of Label class with full information about its position and colors
+        /// Initializes new instance of the Label class with full information about its position and colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
-        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="custom")</param>
+        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="Custom")</param>
         /// <param name="textColor">Color of the text</param>
         /// <param name="backgroundColor">Color of the background</param>
         public Label(string text, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor textColor, ConsoleColor backgroundColor) : this(text, horizontalAlignment, -1)

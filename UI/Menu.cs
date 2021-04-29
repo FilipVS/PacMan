@@ -7,7 +7,7 @@ namespace Setnicka.UI
 {
     /// <summary>
     /// This is the base class for all menus
-    /// It is a collection of UI elements
+    /// It is a collection of IUIElements
     /// Items can be added, they can't be removed or shifted
     /// When drawn, each item will be printed on a separate line starting at the top of the screen   
     /// </summary>
@@ -53,7 +53,7 @@ namespace Setnicka.UI
 
         public void AddUIElement(IUIElement element)
         {
-            // Elements in menus cannot have custom allignment
+            // Elements in menus cannot have custom alignment
             if (element.HorizontalAlignment == HorizontalAlignment.Custom)
                 element.HorizontalAlignment = DEFAULT_ALLIGNMENT;
 
@@ -77,7 +77,7 @@ namespace Setnicka.UI
         }
 
         /// <summary>
-        /// Used for exiting the menu using an elemnt like a Button
+        /// Used for exiting the menu using an element (for example a Button)
         /// </summary>
         public void DoExitMenu(object sender, EventArgs eventArgs)
         {
@@ -85,7 +85,7 @@ namespace Setnicka.UI
         }
 
         /// <summary>
-        /// Used for moving to submenu/performing other actions using an elemt like a Button
+        /// Used for moving to submenu/performing other actions using an element (for example a Button)
         /// </summary>
         public void DoPerformAction(object sender, EventArgs eventArgs)
         {

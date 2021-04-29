@@ -4,7 +4,7 @@ using Setnicka.AuxiliaryClasses;
 namespace Setnicka.UI
 {
     /// <summary>
-    /// User can trigger certain events with this
+    /// User can trigger certain events with this class
     /// </summary>
     public class Button : IClickableUIElement, IActionable
     {
@@ -16,14 +16,14 @@ namespace Setnicka.UI
 
         #region Constructors
         /// <summary>
-        /// Initializes new instance of Button class with information about its line and unhighlighted colors set to current Console colors
+        /// Initializes new instance of the Button class with information about its line and unhighlighted colors set to current Console colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
         /// <param name="lineNumber">On which line should be the element rendered</param>
         /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
         /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
-        /// <param name="action">An action should be performed under ceratin circumstances</param>
+        /// <param name="action">An action that should be performed under ceratin circumstances</param>
         public Button(string text, HorizontalAlignment horizontalAlignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, Action action = null)
         {
             Text = text;
@@ -40,20 +40,20 @@ namespace Setnicka.UI
             Action = action;
         }
         /// <summary>
-        /// Initializes new instance of Button class with full information about its position and unhighlighted colors set to current Console colors
+        /// Initializes new instance of the Button class with full information about its position and unhighlighted colors set to current Console colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
-        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="custom")</param>
+        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="Custom")</param>
         /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
         /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
-        /// <param name="action">An action should be performed under ceratin circumstances</param>
+        /// <param name="action">An action that should be performed under ceratin circumstances</param>
         public Button(string text, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, Action action = null) : this(text, horizontalAlignment, -1, highlightedTextColor, highlightedBackgroundColor, action)
         {
             RenderPosition = customRenderPosition;
         }
         /// <summary>
-        /// Initializes new instance of Button class with information about its line and full information about the unhighlighted colors
+        /// Initializes new instance of the Button class with information about its line and full information about the unhighlighted colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
@@ -62,23 +62,23 @@ namespace Setnicka.UI
         /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
         /// <param name="textColor">The text color, when the element is not highlighted</param>
         /// <param name="backgroundColor">The background color, when the element is not highlighted</param>
-        /// <param name="action">An action should be performed under ceratin circumstances</param>
+        /// <param name="action">An action that should be performed under ceratin circumstances</param>
         public Button(string text, HorizontalAlignment horizontalAlignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor, Action action = null) : this(text, horizontalAlignment, lineNumber, highlightedTextColor, highlightedBackgroundColor, action)
         {
             TextColor = textColor;
             BackgroundColor = backgroundColor;
         }
         /// <summary>
-        /// Initializes new instance of Button class with full information about its position and unhighlighted colors
+        /// Initializes new instance of the Button class with full information about its position and unhighlighted colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
-        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="custom")</param>
+        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="Custom")</param>
         /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
         /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
         /// <param name="textColor">The text color, when the element is not highlighted</param>
         /// <param name="backgroundColor">The background color, when the element is not highlighted</param>
-        /// <param name="action">An action should be performed under ceratin circumstances</param>
+        /// <param name="action">An action that should be performed under ceratin circumstances</param>
         public Button(string text, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor, Action action = null) : this(text, horizontalAlignment, -1, highlightedTextColor, highlightedBackgroundColor, action)
         {
             RenderPosition = customRenderPosition;

@@ -6,7 +6,7 @@ using Setnicka.AuxiliaryClasses;
 namespace Setnicka.UI
 {
     /// <summary>
-    /// Abstract class for user dialogs (dialog for confirmationm getting string input...)
+    /// Abstract class for user dialogs (dialog for confirmationm, getting string input...)
     /// </summary>
     public abstract class UserDialog
     {

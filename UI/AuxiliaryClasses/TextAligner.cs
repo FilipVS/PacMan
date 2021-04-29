@@ -15,7 +15,7 @@ namespace Setnicka.UI
         /// <param name="textColor">The color to render the text with</param>
         /// <param name="backgroundColor">The color to render behind the text</param>
         /// <param name="textStartY">The y coordinate on screen, where to render the text</param>
-        /// <param name="textStartX">The x coordinate on screen, where to render the text, only necessary with allignment='Custom'</param>
+        /// <param name="textStartX">The x coordinate on screen, where to render the text, only necessary with alignment='Custom'</param>
         public static void RenderText(string text, HorizontalAlignment alignment, ConsoleColor textColor, ConsoleColor backgroundColor, int textStartY, int textStartX = -1)
         {
             if (textStartY < 0)
@@ -53,7 +53,7 @@ namespace Setnicka.UI
         /// <param name="highlightedTextColor">Highlighted text's color</param>
         /// <param name="highlightedBackgroundColor">Highlighted background color</param>
         /// <param name="textStartY">The y coordinate on screen, where to render the text</param>
-        /// <param name="textStartX">The x coordinate on screen, where to render the text, only necessary with allignment=custom</param>
+        /// <param name="textStartX">The x coordinate on screen, where to render the text, only necessary with alignment=custom</param>
         public static void RenderText(string unhighlightedText, string highlightedText, HorizontalAlignment alignment, ConsoleColor unhighlightedTextColor, ConsoleColor unhighlightedBackgroundColor, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, int textStartY, int textStartX = -1)
         {
             if (textStartY < 0)
@@ -99,7 +99,7 @@ namespace Setnicka.UI
             if (textLength == 0)
                 return;
 
-            // Set the cursor, so the text just fits into the windown from the right
+            // Set the cursor, so the text just about fits into the windown from the right
             Console.SetCursorPosition(Console.BufferWidth - textLength, textStartY);
 
             WriteText(text, textColor, backgroundColor);

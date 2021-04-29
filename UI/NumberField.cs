@@ -15,12 +15,13 @@ namespace Setnicka.UI
 
         #region Constructors
         /// <summary>
-        /// Initializes new instance of NumberField class with information about its line and colors set to current Console colors
+        /// Initializes new instance of the NumberField class with information about its line and colors set to current Console colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
+        /// <param name="startingDigit">Digit that the NumberField starts with</param>
+        /// <param name="numberOfDigitsToEnter">How many digits will the user be able to enter (has to be between 0 and MAXIMUM_DIGITS)</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
         /// <param name="lineNumber">On which line should be the element rendered</param>
-        /// <param name="numberOfDigitsToEnter">How many digits will the user be able to enter (has to be between 0 and MAXIMUM_DIGITS)</param>
         public NumberField(string text, int startingDigit, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor)
         {
             Text = text;
@@ -42,45 +43,48 @@ namespace Setnicka.UI
             NumberCharArray[0] = startingDigit.ToString().ToCharArray()[0];
         }
         /// <summary>
-        /// Initializes new instance of Button class with full information about its position and unhighlighted colors set to current Console colors
+        /// Initializes new instance of the NumberField class with full information about its position and unhighlighted colors set to current Console colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
+        /// <param name="startingDigit">Digit that the NumberField starts with</param>
+        /// <param name="numberOfDigitsToEnter">How many digits will the user be able to enter (has to be between 0 and MAXIMUM_DIGITS)</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
-        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="custom")</param>
+        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="Custom")</param>
         /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
-        /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
-        /// <param name="action">An action should be performed under ceratin circumstances</param>
+        /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>        
         public NumberField(string text, int startingDigit, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor) : this(text, startingDigit, numberOfDigitsToEnter, horizontalAlignment, -1, highlightedTextColor, highlightedBackgroundColor)
         {
             RenderPosition = customRenderPosition;
         }
         /// <summary>
-        /// Initializes new instance of Button class with information about its line and full information about the unhighlighted colors
+        /// Initializes new instance of the NumberField class with information about its line and full information about the unhighlighted colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
+        /// <param name="startingDigit">Digit that the NumberField starts with</param>
+        /// <param name="numberOfDigitsToEnter">How many digits will the user be able to enter (has to be between 0 and MAXIMUM_DIGITS)</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
         /// <param name="lineNumber">On which line should be the element rendered</param>
         /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
         /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
         /// <param name="textColor">The text color, when the element is not highlighted</param>
         /// <param name="backgroundColor">The background color, when the element is not highlighted</param>
-        /// <param name="action">An action should be performed under ceratin circumstances</param>
         public NumberField(string text, int startingDigit, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, int lineNumber, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor) : this(text, startingDigit, numberOfDigitsToEnter, horizontalAlignment, lineNumber, highlightedTextColor, highlightedBackgroundColor)
         {
             TextColor = textColor;
             BackgroundColor = backgroundColor;
         }
         /// <summary>
-        /// Initializes new instance of Button class with full information about its position and unhighlighted colors
+        /// Initializes new instance of the NumberField class with full information about its position and unhighlighted colors
         /// </summary>
         /// <param name="text">What is written on the element</param>
+        /// <param name="startingDigit">Digit that the NumberField starts with</param>
+        /// <param name="numberOfDigitsToEnter">How many digits will the user be able to enter (has to be between 0 and MAXIMUM_DIGITS)</param>
         /// <param name="horizontalAlignment">Where will the element be rendered</param>
-        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="custom")</param>
+        /// <param name="customRenderPosition">Specific position on the screen, where the element should be rendered (only works with alignment="Custom")</param>
         /// <param name="highlightedTextColor">The text color, when the element is highlighted</param>
         /// <param name="highlightedBackgroundColor">The background color, when the element is highlighted</param>
         /// <param name="textColor">The text color, when the element is not highlighted</param>
         /// <param name="backgroundColor">The background color, when the element is not highlighted</param>
-        /// <param name="action">An action should be performed under ceratin circumstances</param>
         public NumberField(string text, int startingDigit, int numberOfDigitsToEnter, HorizontalAlignment horizontalAlignment, Vector2D customRenderPosition, ConsoleColor highlightedTextColor, ConsoleColor highlightedBackgroundColor, ConsoleColor textColor, ConsoleColor backgroundColor) : this(text, startingDigit, numberOfDigitsToEnter, horizontalAlignment, -1, highlightedTextColor, highlightedBackgroundColor)
         {
             RenderPosition = customRenderPosition;
