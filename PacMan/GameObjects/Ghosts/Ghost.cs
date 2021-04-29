@@ -6,7 +6,7 @@ namespace Setnicka.PacMan
 {
     /// <summary>
     /// Base class for all ghosts
-    /// Contains maze-solving logic (it is the same for all ghosts)
+    /// Contains maze-solving and navigational logic (it is the same for all ghosts)
     /// </summary>
     internal abstract class Ghost : MovableObject
     {
@@ -45,9 +45,6 @@ namespace Setnicka.PacMan
         // Used for telling the ghost to skip the next move cycle
         public bool SkipMove { get; set; } = false;
 
-        // Used ofr telling the ghosts about tiles he is not supposed to use
-        public Vector2D Beaware { get; set; }
-
         // How will be the ghost printed
         public DrawingStyle Style { get; set; }
         #endregion
@@ -71,17 +68,17 @@ namespace Setnicka.PacMan
             // If movement is not inverted, add heading to our current position
             if (!InvertedMove)
             {
-                // If there are two many ghosts around, avoid ghosts (to avoid blocking up)
+                // If there are too many ghosts around, avoid ghosts (to avoid blocking up)
                 if (CountGhostsAround() > MAXIMUM_GHOSTS_AROUND)
                     moveToTile = AlterMove(false, false, true);
-                // Move normaly
+                // Move normally
                 else
                     moveToTile = Position + (new Vector2D(Heading));
             }
             // Else invert the ghost's movement
             else
             {
-                // If there are two many ghosts around, avoid ghosts (to avoid blocking up)
+                // If there are too many ghosts around, avoid ghosts (to avoid blocking up)
                 if (CountGhostsAround() > MAXIMUM_GHOSTS_AROUND)
                     moveToTile = AlterMove(true, true, true);
                 // Just move inverted
@@ -90,7 +87,7 @@ namespace Setnicka.PacMan
             }
             #endregion
 
-            // Turn off move inverment for the next turn
+            // Turn off move invertment for the next turn
             InvertedMove = false;
 
             // If the ghost is supposed to skip move, skip it...
@@ -166,7 +163,7 @@ namespace Setnicka.PacMan
         /// <summary>
         /// Alters the movement of the ghost (makes it go inverted, or avoid certein GameObjects)
         /// </summary>
-        /// <returns>The altered position, whcih the ghost now wants to achieve</returns>
+        /// <returns>The altered position, which the ghost now wants to achieve</returns>
         private Vector2D AlterMove(bool invertMove = false, bool avoidPlayer = false, bool avoidGhosts = false)
         {
             // Get all the movableTilesAround from our position
@@ -209,7 +206,7 @@ namespace Setnicka.PacMan
                     return desiredMove;
             }
 
-            // If movemenet was not supposed to be inverted, or the invertedMoveTile was illegal, or the desired move was illefal, move to the first legal tile
+            // If movemenet was not supposed to be inverted, or the invertedMoveTile was illegal, or the desired move was illegal, move to the first legal tile
             return movableTilesAround[0].Position;
 
             // Removes certein type of object from movableTilesAround
@@ -388,7 +385,7 @@ namespace Setnicka.PacMan
         {
             Vector2D playerHeading = PlayerPositionThisTurn - PlayerPositionLastTurn;
 
-            // If player moved multiple tiles (unusual) or if he is nexto to the ghost, follow him directly
+            // If player moved multiple tiles (unusual) or if he is next to the ghost, follow him directly
             if(playerHeading.Magnitude > 1 || Position.DistanceTo(PlayerPositionThisTurn) < 2)
             {
                 DesiredTile = PlayerPositionThisTurn;
@@ -397,7 +394,7 @@ namespace Setnicka.PacMan
 
             Vector2D desiredTile = PlayerPositionThisTurn + playerHeading;
 
-            // Tries to aim to position that the player is heading towards
+            // Tries to aim at the position that the player is heading towards
             if (!Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), desiredTile))
             {
                 if (!(Level[desiredTile.X, desiredTile.Y] is Wall))
@@ -426,7 +423,7 @@ namespace Setnicka.PacMan
 
         /// <summary>
         /// Maze solving algorithm - the way ghosts navigate (finds the shortest way to the desired tile)
-        /// The algorhytm is rating tiles in circles (circle of tiles 1 move away, 2 moves away..) until it finds the desired tile
+        /// The algorithm is rating tiles in "circles" ("circle" of tiles 1 move away, 2 moves away..) until it finds the desired tile
         /// </summary>
         private void SolveMaze()
         {
@@ -459,11 +456,10 @@ namespace Setnicka.PacMan
                     if (tile.Position.X == DesiredTile.X && tile.Position.Y == DesiredTile.Y)
                         return;
                 
-
-                    // We find any movable tiles around (which would be 'order++' moves away) and add them to nextOrderTiles
+                    // We find any movable tiles around (which would be 'order++' moves away), we add them to nextOrderTiles
                     foreach (GameObject tile2 in GetMovableTilesAround(tile.Position))
                     {
-                        // If we haven't put order on the tile yet and the tile isn't the ghost's position or a tile we should not go on...
+                        // If we haven't put order on the tile yet and the tile isn't the ghost's position
                         if (MazeMap[tile2.Position.X, tile2.Position.Y] == 0 && !tile2.Position.Equals(Position))
                             nextOrderTiles.Add(tile2);
                     }
@@ -516,9 +512,7 @@ namespace Setnicka.PacMan
 
         /// <summary>
         /// Counts how many ghosts are around this one
-        /// If the number is higher than one, the ghost will not move - to prevent blocking
         /// </summary>
-        /// <returns></returns>
         private int CountGhostsAround()
         {
             List<GameObject> movableTilesAround = GetMovableTilesAround(Position);

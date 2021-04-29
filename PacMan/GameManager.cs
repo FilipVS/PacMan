@@ -24,9 +24,9 @@ namespace Setnicka.PacMan
         private const int CHASING_GHOSTS_FOR = 10000;
         // How long before the chasing ghosts period ends do the ghosts blink (expressed as a part of the whole time)
         private const double CHASING_GHOSTS_BLINKING = 0.25;
-        // How often the game thread each cycle checks for abort
+        // How often the game thread checks for abort each cycle
         private const int CHECK_FOR_ABORT_TIMES = 3;
-        // How many numbers does the game countdown and what is the time between individual counts
+        // How many numbers does the game countdown contain and what is the time between individual counts
         private const int COUNTDOWN_START = 3;
         private const int COUNTDOWN_FREQUENCY = 750;
         // Scoring
@@ -58,7 +58,7 @@ namespace Setnicka.PacMan
 
 
         #region Constructors
-        /// <param name="level">Lever that is the player wants to play, cannot be null</param>
+        /// <param name="level">Lever that the user wants to play, cannot be null</param>
         public GameManager(GameObject[,] level)
         {
             // level assignment
@@ -85,7 +85,7 @@ namespace Setnicka.PacMan
 
 
 
-            // Initializing the inputManager and subscribing individual event handlers
+            // Initializing the InputManager and subscribing individual event handlers
             List<ConsoleKey> keysOfInterest = new List<ConsoleKey>() { GameKeyBinding.MoveUp, GameKeyBinding.MoveUpSecondary, GameKeyBinding.MoveDown, GameKeyBinding.MoveDownSecondary, GameKeyBinding.MoveLeft, GameKeyBinding.MoveLeftSecondary, GameKeyBinding.MoveRight, GameKeyBinding.MoveRightSecondary, GameKeyBinding.GoToMenu, GameKeyBinding.Refresh };
             InputManager = new InputManager(keysOfInterest);
             InputManager.KeyPressed += Player.ChangeHeading;
@@ -377,7 +377,7 @@ namespace Setnicka.PacMan
         }
 
         /// <summary>
-        /// This method is running inside the GameRunningThread and is responsible for the gameplay
+        /// This method is running inside the GameRunningThread and is responsible for the gameplay in normal mode
         /// </summary>
         private void Update()
         {
@@ -426,7 +426,7 @@ namespace Setnicka.PacMan
                 // Try to return eaten ghosts
                 ReturnGhosts();
 
-                // Thread sleeps and pereodicaly checks if it is supposed to abort
+                // Thread sleeps and pereodically checks if it is supposed to abort
                 for (int i = 0; i < CHECK_FOR_ABORT_TIMES; i++)
                 {
                     Thread.Sleep(GAME_UPDATE_FREQUENCY / CHECK_FOR_ABORT_TIMES);
@@ -454,14 +454,14 @@ namespace Setnicka.PacMan
                 {
                     CurrentRunningState = RunningState.ChasingGhosts;
                     RunningStateOverwritable = false;
-                    // Make sure, that it waits for the Run method to evaluate
+                    // Make sure that it waits for the Run method to evaluate
                     Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY * 2);
                 }
                 else if (playerMove == MoveResult.Collision)
                 {
                     CurrentRunningState = RunningState.Collision;
                     RunningStateOverwritable = false;
-                    // Make sure, that it waits for the Run method to evaluate
+                    // Make sure that it waits for the Run method to evaluate
                     Thread.Sleep(MAIN_THREAD_UPDATE_FREQUENCY * 2);
                 }
                 else if (playerMove == MoveResult.Coin)
@@ -477,7 +477,7 @@ namespace Setnicka.PacMan
                     if (ghost.Move() == MoveResult.Collision)
                     {
                         CurrentRunningState = RunningState.Collision;
-                        // Make sure, that it waits for the Run method to evaluate
+                        // Make sure that it waits for the Run method to evaluate
                         Thread.Sleep(GAME_UPDATE_FREQUENCY * 2);
                         break;
                     }
@@ -496,7 +496,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void UpdateChasingGhosts()
         {
-            // Shoudl ghosts go alternate color
+            // Should ghosts go alternate color
             bool ghostsGoAlternate = false;
 
             #region Setup
@@ -515,7 +515,7 @@ namespace Setnicka.PacMan
                 // Thread sleep is skipped when eating a boost, this ensures smoother transition between Update and UpdateChasingGhosts
                 Thread.Sleep(GAME_UPDATE_FREQUENCY);
             }
-            // If the ShowCountdown is se t to prevent the countdown
+            // If the ShowCountdown is set to prevent the countdown
             else if (!ShowCountdown)
             {
                 timeLeft = BoostTimeLeft;
@@ -563,7 +563,7 @@ namespace Setnicka.PacMan
 
                 timeLeft -= GAME_UPDATE_FREQUENCY;
 
-                // Thread sleeps and pereodicaly checks if it is supposed to abort
+                // Thread sleeps and pereodically checks if it is supposed to abort
                 for (int i = 0; i < CHECK_FOR_ABORT_TIMES; i++)
                 {
                     Thread.Sleep(GAME_UPDATE_FREQUENCY / CHECK_FOR_ABORT_TIMES);
@@ -609,7 +609,7 @@ namespace Setnicka.PacMan
                 // Check if they are supposed to blink
                 if (timeLeft < (CHASING_GHOSTS_FOR * CHASING_GHOSTS_BLINKING))
                 {
-                    // If they are currently in theair main version, go alternate, else go main
+                    // If they are currently in their main version, go alternate, else go main
                     if (ghostsGoAlternate)
                         ghostsGoAlternate = false;
                     else
@@ -658,7 +658,7 @@ namespace Setnicka.PacMan
                 return;
             }
 
-            // Reset the tiles taht player and ghosts are standing on
+            // Reset the tiles that player and ghosts are standing on
             Level[Player.Position.X, Player.Position.Y] = new Empty(Level, Player.Position.Copy());
             foreach (Ghost ghost in Ghosts)
             {
@@ -732,7 +732,7 @@ namespace Setnicka.PacMan
         /// </summary>
         private void ReturnGhosts()
         {
-            // Will be indexes of ghsots that were return
+            // Will be indexes of ghsots that were returned
             List<int> removeAtIndex = new List<int>();
 
             // No ghosts to return
@@ -768,7 +768,7 @@ namespace Setnicka.PacMan
             foreach (int num in removeAtIndex)
                 EatenGhosts.RemoveAt(num);
 
-            // Is player on some tile next to this position
+            // Is player on some tile next to this position?
             bool PlayerAround(Vector2D position)
             {
                 if ((position - Player.Position).Magnitude < 2)

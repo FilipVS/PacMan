@@ -23,7 +23,7 @@ namespace Setnicka.PacMan
         {
             base.ChooseDesiredTile();
 
-            // If inverted move, ghosts allways aim at player
+            // If inverted move, ghosts always aim at player
             if (InvertedMove)
             {
                 AimAtPlayer();

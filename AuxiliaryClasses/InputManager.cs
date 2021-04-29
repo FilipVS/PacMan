@@ -4,13 +4,13 @@ using System.Collections.Generic;
 namespace Setnicka.AuxiliaryClasses
 {
     /// <summary>
-    /// Allows to run a method that will be listening for input and will trigger ann event when certain keys are pressed
+    /// Allows to run a method that will be listening for input and will trigger an event when certain keys are pressed
     /// </summary>
     public class InputManager
     {
         #region Constructors
         /// <summary>
-        /// Initializes enw instance of InputManager that will listen for all input
+        /// Initializes new instance of InputManager that will listen for all input
         /// </summary>
         public InputManager()
         {
@@ -18,7 +18,7 @@ namespace Setnicka.AuxiliaryClasses
         }
 
         /// <summary>
-        /// Initializes enw instance of InputManager that will listen for specified input
+        /// Initializes new instance of InputManager that will listen for specific input
         /// </summary>
         /// <param name="keysOfInterest">Keys that the InputManager should react to</param>
         public InputManager(IEnumerable<ConsoleKey> keysOfInterest)

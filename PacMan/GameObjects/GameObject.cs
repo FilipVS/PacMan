@@ -4,7 +4,7 @@ using Setnicka.AuxiliaryClasses;
 namespace Setnicka.PacMan
 {
     /// <summary>
-    /// Base class for all uncollectable objects in the game (walls, ghosts, player...)
+    /// Base class for all objects in the game (walls, ghosts, player...)
     /// </summary>
     internal abstract class GameObject
     {

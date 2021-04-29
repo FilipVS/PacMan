@@ -101,7 +101,6 @@ namespace Setnicka.PacMan.LevelEditor
         /// <summary>
         /// Returns the directory, where the levels are located
         /// </summary>
-        /// <returns></returns>
         public static string GetPathToLevels()
         {
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;

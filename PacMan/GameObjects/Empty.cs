@@ -4,8 +4,8 @@ using Setnicka.AuxiliaryClasses;
 namespace Setnicka.PacMan
 {
     /// <summary>
-    /// Type of GameObject that player and ghosts can move across (it can as well store collectible objetcs - coins and boosts)
-    /// Each Empty GameObject can store only one collectible object (a coin or a boost)
+    /// Type of GameObject that player and ghosts can move across (it can as well store collectable objetcs - coins and boosts)
+    /// Each Empty GameObject can store only one collectable object (a coin or a boost)
     /// </summary>
     internal class Empty : GameObject
     {

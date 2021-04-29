@@ -8,7 +8,7 @@ using Setnicka.AuxiliaryClasses;
 namespace Setnicka.PacMan
 {
     /// <summary>
-    /// This class brings all the individual elements (GameManager, LevelEditorManager and UI together)
+    /// This class brings all the individual elements (GameManager, LevelEditorManager and UI) together
     /// </summary>
     class AppManager
     {
@@ -181,7 +181,7 @@ namespace Setnicka.PacMan
 
                 OpenLevelEditorSubmenu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, loadExistingLevelButton, emptyLabel3, deleteExistingLevelButton, emptyLabel4, createNewLevelLabel, EnterLevelWidthNumberField, EnterLevelHeightNumberField, createNewLevelButton, emptyLabel5, importExportLabel, importLevelButton, exportLevelButton, emptyLabel6, goToPreviousMenuButton });
 
-                // The MenuManager needs to get a list of keys, that he needs to additionaly listen to
+                // The MenuManager needs to get a list of keys, that he needs to additionaly listen to (because NumberField needs number input)
                 List<ConsoleKey> numbers = new List<ConsoleKey>() { ConsoleKey.D0, ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6, ConsoleKey.D7, ConsoleKey.D8, ConsoleKey.D9, ConsoleKey.NumPad0, ConsoleKey.NumPad1, ConsoleKey.NumPad2, ConsoleKey.NumPad3, ConsoleKey.NumPad4, ConsoleKey.NumPad5, ConsoleKey.NumPad6, ConsoleKey.NumPad7, ConsoleKey.NumPad8, ConsoleKey.NumPad9 };
 
                 OpenLevelEditorSubmenuManager = new MenuManager(OpenLevelEditorSubmenu, numbers);
@@ -189,7 +189,7 @@ namespace Setnicka.PacMan
         }
 
         /// <summary>
-        /// Used for opening the PLayGame submenu (it needs to be initialized right before it opens)
+        /// Used for opening the PlayGame submenu (it needs to be initialized right before it opens)
         /// </summary>
         private void InitializePlayGameSubmenuAndManagerAndRun()
         {
@@ -202,7 +202,7 @@ namespace Setnicka.PacMan
         }
 
         /// <summary>
-        /// Used for opening submenu that allows the user to choose the level he wants to edit
+        /// Used for opening submenu that allows the user to choose the level he wants to edit (it needs to be initialized right before it opens)
         /// </summary>
         private void InitializeOpenLevelToEditorSubmenuAndManagerAndRun()
         {
@@ -215,7 +215,7 @@ namespace Setnicka.PacMan
         }
 
         /// <summary>
-        /// Used for opening submenu that allows the user to delete a level
+        /// Used for opening submenu that allows the user to delete a level (it needs to be initialized right before it opens)
         /// </summary>
         private void InitializeDeleteLevelSubmenuAndManagerAndRun()
         {
@@ -228,7 +228,7 @@ namespace Setnicka.PacMan
         }
 
         /// <summary>
-        /// Usef or opening submenu, that allows the user to export a level
+        /// Used for opening submenu that allows the user to export a level (it needs to be initialized right before it opens)
         /// </summary>
         private void InitializeExportLevelSubmenuAndManagerAndRun()
         {
@@ -241,7 +241,7 @@ namespace Setnicka.PacMan
         }
 
         /// <summary>
-        /// Used to generaly initialize a submenu, that loads all the available levels for interaction (DeleteLevelSubmenu/LoadLevelToLevelEditoSubmenu...)
+        /// Used to generaly initialize a submenu that loads all the available levels as buttons for interaction (DeleteLevelSubmenu/LoadLevelToLevelEditoSubmenu...)
         /// </summary>
         private Menu InitializeLevelLoadingMenu(string mainLabelText, string levelsLabelText, Action<string> actionOnButtons, bool endSubmenuUponClick = false)
         {
@@ -258,6 +258,7 @@ namespace Setnicka.PacMan
             menu.AddUIElementRange(new List<IUIElement>() { emptyLabel1, mainLabel, emptyLabel2, levelsLabel });
 
             // Add buttons according to the number of levels
+
             // Get potential levels
             string[] potentialLevels = Directory.GetFiles(LevelWriter.GetPathToLevels());
 
@@ -423,10 +424,10 @@ namespace Setnicka.PacMan
                 return;
             }
 
-            // Path of the imported
+            // Path of the imported level
             string newPath = LevelWriter.GetPathToLevels() + Path.GetFileNameWithoutExtension(path) + ".txt";
 
-            // If there is already a level at that path - ask the user
+            // If there is already a level at that path - ask the user for confirmation
             if (File.Exists(newPath))
             {
                 ConfirmationDialog confirmationDialog = new ConfirmationDialog(ConfirmationOptions.YesNo, "Level with that name is already there, do you want to overwrite it?");

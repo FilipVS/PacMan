@@ -8,7 +8,7 @@ using System.IO;
 namespace Setnicka.PacMan.LevelEditor
 {
     /// <summary>
-    /// This class contains functionality to allow player to create levels (everything connected to it - checking for input through InputManager, validating input...)
+    /// This class contains functionality to allow user to create levels (everything connected to it - checking for input through InputManager, validating input...)
     /// </summary>
     internal class LevelEditorManager
     {
@@ -312,6 +312,7 @@ namespace Setnicka.PacMan.LevelEditor
             foreach (GameObject gameObject1 in ObjectsOfChoice)
                 gameObject1.Print(OFFSET_OBJECTS_FOR_CHOICE);
 
+            // Print informative labels
             HowToGetToMenuLabel.Print();
 
             HowToChooseTileLabel.Print();
@@ -431,7 +432,7 @@ namespace Setnicka.PacMan.LevelEditor
         }
 
         /// <summary>
-        /// Allows player to switch between objects he wants to place
+        /// Allows the player to switch between objects he wants to place
         /// </summary>
         private void ChangeHighlightedObjectOfChoice(object sender, KeyEventArgs keyArgs)
         {
@@ -744,7 +745,7 @@ namespace Setnicka.PacMan.LevelEditor
 
 
         /// <summary>
-        /// The message gets deleted every time, the user presses some button (that the input handler is listening to)
+        /// The message gets deleted every time the user presses some button (that the input handler is listening to)
         /// </summary>
         private void DeleteMessage(object sender, KeyEventArgs keyEventArgs)
         {

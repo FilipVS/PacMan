@@ -13,7 +13,7 @@ namespace Setnicka.PacMan.LevelEditor
         /// Reads the level and returns it in an GameObject array
         /// </summary>
         /// <param name="path">Path to the level</param>
-        /// <returns>The level as GameObject array, in case of problem, it returns null</returns>
+        /// <returns>The level as GameObject array, in case of problem it returns null</returns>
         public static GameObject[,] ReadLevel(string path)
         {
             if (String.IsNullOrEmpty(path))

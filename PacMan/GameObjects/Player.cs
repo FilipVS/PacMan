@@ -41,7 +41,6 @@ namespace Setnicka.PacMan
         /// <summary>
         /// Used for moving the player in the level
         /// </summary>
-        /// <returns></returns>
         public override MoveResult Move()
         {
             // If the destination tile is outside of the level
@@ -76,7 +75,7 @@ namespace Setnicka.PacMan
         }
 
         /// <summary>
-        /// This method can be subscribed to InputManager event and handles Heading changes by the player
+        /// This method can be subscribed to InputManager event and handles Heading changes by the user
         /// </summary>
         public void ChangeHeading(object sender, KeyEventArgs keyEventArgs)
         {

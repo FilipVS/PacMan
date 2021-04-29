@@ -3,8 +3,8 @@
 namespace Setnicka.AuxiliaryClasses
 {
     /// <summary>
-    /// Auxiliary class for dealing with position of GameObjects (their X and Y coordinates)
-    /// Basic operatios are also defined on Vector2Ds (addition, subtraction)
+    /// Auxiliary class for dealing with position of objects in 2D (their X and Y coordinates)
+    /// Basic operatios are also defined on Vector2Ds (addition, subtraction...)
     /// </summary>
     public class Vector2D
     {
@@ -83,7 +83,7 @@ namespace Setnicka.AuxiliaryClasses
 
         #region Methods
         /// <summary>
-        /// Checks whether a vector coordinates are out of bounds of a two-dimensional array
+        /// Checks whether a vector coordinates are out of a two-dimensional array
         /// </summary>
         /// <param name="arrayWidth">GetLength(0) of the 2D array</param>
         /// <param name="arrayHeight">GetLength(1) of the 2D array</param>
@@ -121,9 +121,9 @@ namespace Setnicka.AuxiliaryClasses
         }
 
         /// <summary>
-        /// Returns new Vector2D with the same x and y values as this one
+        /// Returns new Vector2D with the same X and Y values as this one
         /// </summary>
-        /// <returns>New Vector2D with the same x and y values as this one</returns>
+        /// <returns>New Vector2D with the same X and Y values as this one</returns>
         public Vector2D Copy()
         {
             return new Vector2D(X, Y);
@@ -133,7 +133,7 @@ namespace Setnicka.AuxiliaryClasses
         /// Calculates distance from coordinates of this Vector2D to coordinates of another Vector2D
         /// </summary>
         /// <param name="distanceTo">Calculate distance to this point</param>
-        /// <returns>Distance from coordinates of this Vector2D to coordinates of another Vector2D</returns>
+        /// <returns>Distance from coordinates of this Vector2D to the coordinates of another Vector2D</returns>
         public double DistanceTo(Vector2D distanceTo)
         {
             double x = (X - distanceTo.X);
@@ -170,7 +170,7 @@ namespace Setnicka.AuxiliaryClasses
 
 
     /// <summary>
-    /// MovableObjects use this enum to specify which way the intend to move
+    /// Enum to define direction
     /// </summary>
     public enum Direction
     {

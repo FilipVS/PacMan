@@ -8,7 +8,7 @@ namespace Setnicka.PacMan
         private const char APPEARANCE = ' ';
 
         /// <param name="level">The level that the GameObject is associated with</param>
-        /// <param name="position">Positiong of the GameObject in the level</param>
+        /// <param name="position">Positioning of the GameObject in the level</param>
         public Wall(GameObject[,] level, Vector2D position) : base(level, position)
         {
 

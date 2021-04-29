@@ -26,7 +26,7 @@ namespace Setnicka.PacMan
     }
 
     /// <summary>
-    /// The enum that is returned by the Move method, signalize the result of the move
+    /// The enum that is returned by the Move method, signalizes the result of the movement
     /// </summary>
     public enum MoveResult
     {
