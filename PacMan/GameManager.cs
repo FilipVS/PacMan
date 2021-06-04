@@ -22,6 +22,8 @@ namespace Setnicka.PacMan
         private const int MAIN_THREAD_UPDATE_FREQUENCY = 10;
         // How long (milliseconds) is the chasing ghosts mode active
         private const int CHASING_GHOSTS_FOR = 10000;
+        // By which factor do the ghosts move slower in chasing ghosts mode
+        private const int GHOSTS_CHASING_SLOWDOWN = 1;
         // How long before the chasing ghosts period ends do the ghosts blink (expressed as a part of the whole time)
         private const double CHASING_GHOSTS_BLINKING = 0.25;
         // How often the game thread checks for abort each cycle
@@ -556,7 +558,9 @@ namespace Setnicka.PacMan
                     return;
                 }
 
-                MoveGhosts();
+                int timeLeftDivisible = timeLeft - (timeLeft % GAME_UPDATE_FREQUENCY);
+                if(timeLeftDivisible % (GAME_UPDATE_FREQUENCY * GHOSTS_CHASING_SLOWDOWN) == 0)
+                    MoveGhosts();
 
                 // Try to return eaten ghosts
                 ReturnGhosts();
@@ -574,7 +578,6 @@ namespace Setnicka.PacMan
                     }
                 }
             } while (timeLeft >= 0);
-
             #endregion
 
             BeforeReturn();

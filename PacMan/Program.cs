@@ -1,4 +1,6 @@
-﻿namespace Setnicka.PacMan
+﻿using System;
+
+namespace Setnicka.PacMan
 {
     class Program
     {

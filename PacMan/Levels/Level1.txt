@@ -54,6 +54,7 @@ Setnicka.PacMan.WallNEXT5NEXT4
 Setnicka.PacMan.WallNEXT5NEXT5
 Setnicka.PacMan.WallNEXT5NEXT6
 Setnicka.PacMan.WallNEXT5NEXT7
+Setnicka.PacMan.EmptyNEXT5NEXT8NEXTFalseNEXTTrue
 Setnicka.PacMan.WallNEXT5NEXT9
 Setnicka.PacMan.WallNEXT6NEXT0
 Setnicka.PacMan.PlayerNEXT6NEXT2

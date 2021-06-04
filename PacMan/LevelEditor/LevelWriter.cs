@@ -48,7 +48,25 @@ namespace Setnicka.PacMan.LevelEditor
 
             void SaveGameObject(GameObject gameObject, StreamWriter writer)
             {
-                switch (gameObject.GetType())
+                switch (gameObject)
+                {
+                    case Player _:
+                        SavePlayerV1(gameObject as Player, writer);
+                        break;
+                    case Wall _:
+                        SaveWallV1(gameObject as Wall, writer);
+                        break;
+                    // Don't save completely empty tiles
+                    case Empty empty when (empty.ContainsBoost || empty.ContainsCoin):
+                        SaveEmtpyV1(gameObject as Empty, writer);
+                        break;
+                    case Ghost _:
+                        SaveGhostV1(gameObject as Ghost, gameObject.GetType(), writer);
+                        break;
+                }
+
+                // TODO: Delete
+                /*switch (gameObject.GetType())
                 {
                     case Type playerType when playerType == typeof(Player):
                         SavePlayerV1(gameObject as Player, writer);
@@ -67,8 +85,8 @@ namespace Setnicka.PacMan.LevelEditor
                         SaveGhostV1(gameObject as Ghost, gameObject.GetType(), writer);
                         break;
                     default:
-                        throw new ArgumentException("Unknown GameObject tyoe!");
-                }
+                        throw new ArgumentException("Unknown GameObject type!");
+                }*/
             }
         }
 
@@ -84,10 +102,6 @@ namespace Setnicka.PacMan.LevelEditor
 
         private static void SaveEmtpyV1(Empty empty, StreamWriter writer)
         {
-            // Don't save completely empty tiles
-            if (!empty.ContainsBoost && !empty.ContainsCoin)
-                return;
-
             writer.WriteLine($"{empty.GetType().ToString()}{DIFFERENTIATOR}{empty.Position.X}{DIFFERENTIATOR}{empty.Position.Y}{DIFFERENTIATOR}{empty.ContainsCoin}{DIFFERENTIATOR}{empty.ContainsBoost}");
         }
 

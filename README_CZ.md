@@ -15,7 +15,7 @@ Ovládání
 		Pomocí WSAD lze ovládat kurzor na editované hrací ploše
 		Pomocí šipek nahoru a dolů lze vybírat mezi umísťovanými objekty
 		Objekty lze umísťovat pomocí klávesy Enter a odstraňovat pomocí klávesy Delete
-		Pomocí klávesy escape lze vyvolat menu
+		Pomocí klávesy Escape lze vyvolat menu
 	Zobrazení Menu, Hry i LevelEditoru lze znovu vykreslit (například po změnení velikosti okna konzole) pomocí klávesy R.
 		
 Popis herních objektů

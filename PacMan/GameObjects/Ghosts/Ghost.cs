@@ -438,11 +438,13 @@ namespace Setnicka.PacMan
             HashSet<GameObject> nextOrderTiles = new HashSet<GameObject>(new List<GameObject>() { Level[Position.X, Position.Y] });
             // Tiles, that are exactly 'order' moves away form the ghost
             HashSet<GameObject> thisOrderTiles;
-            int order = 0;
+            int order = -1;
 
             // If we didn't find any new tiles, the ghost is blocked in and cannot reach desired tile
             while (nextOrderTiles.Count > 0)
             {
+                order++;
+
                 // Set the order sets for each cycle
                 thisOrderTiles = nextOrderTiles;
                 nextOrderTiles = new HashSet<GameObject>();
@@ -465,7 +467,6 @@ namespace Setnicka.PacMan
                     }
                 }
 
-                order++;
             }
 
             // If the method reached this point, it didn't find any valid way to the desired point, so the ghost just stays at the same spot

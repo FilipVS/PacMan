@@ -25,6 +25,9 @@ namespace Setnicka.PacMan
         #region Properties
         public int Health { get; set; }
 
+        // Which way does the user want to go
+        private Direction UsersHeading { get; set; }
+
         // Where did the player want to go previously
         public Vector2D DesiredTile { get; private set; }
         #endregion
@@ -43,6 +46,12 @@ namespace Setnicka.PacMan
         /// </summary>
         public override MoveResult Move()
         {
+            Vector2D usersTile = Position + new Vector2D(UsersHeading);
+
+            // If user chose legal heading (not heading outside the level or into a wall, change the Heading)
+            if (!Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), usersTile) && !(Level[usersTile.X, usersTile.Y] is Wall))
+                Heading = UsersHeading;
+
             // If the destination tile is outside of the level
             if (Vector2D.VectorOutOf2DArray(Level.GetLength(0), Level.GetLength(1), (Position + new Vector2D(Heading))))
                 return MoveResult.None;
@@ -79,40 +88,26 @@ namespace Setnicka.PacMan
         /// </summary>
         public void ChangeHeading(object sender, KeyEventArgs keyEventArgs)
         {
-            Direction originalHeading = Heading;
-
             switch (keyEventArgs.keyPressed)
             {
                 case GameKeyBinding.MoveUp:
                 case GameKeyBinding.MoveUpSecondary:
-                    Heading = Direction.Up;
+                    UsersHeading = Direction.Up;
                     break;
                 case GameKeyBinding.MoveDown:
                 case GameKeyBinding.MoveDownSecondary:
-                    Heading = Direction.Down;
+                    UsersHeading = Direction.Down;
                     break;
                 case GameKeyBinding.MoveLeft:
                 case GameKeyBinding.MoveLeftSecondary:
-                    Heading = Direction.Left;
+                    UsersHeading = Direction.Left;
                     break;
                 case GameKeyBinding.MoveRight:
                 case GameKeyBinding.MoveRightSecondary:
-                    Heading = Direction.Right;
+                    UsersHeading = Direction.Right;
                     break;
                 default:
                     break;
-            }
-
-            // Player can't stop by turning into a wall
-            try
-            {
-                Vector2D headingPosition = Position + (new Vector2D(Heading));
-                if (Level[headingPosition.X, headingPosition.Y] is Wall)
-                    Heading = originalHeading;
-            }
-            catch (IndexOutOfRangeException)
-            {
-                Heading = originalHeading;
             }
         }
         #endregion
