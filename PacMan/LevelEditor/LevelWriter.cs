@@ -64,29 +64,6 @@ namespace Setnicka.PacMan.LevelEditor
                         SaveGhostV1(gameObject as Ghost, gameObject.GetType(), writer);
                         break;
                 }
-
-                // TODO: Delete
-                /*switch (gameObject.GetType())
-                {
-                    case Type playerType when playerType == typeof(Player):
-                        SavePlayerV1(gameObject as Player, writer);
-                        break;
-                    case Type wallType when wallType == typeof(Wall):
-                        SaveWallV1(gameObject as Wall, writer);
-                        break;
-                    case Type emptyType when emptyType == typeof(Empty):
-                        SaveEmtpyV1(gameObject as Empty, writer);
-                        break;
-                    case Type blinkyType when blinkyType == typeof(Blinky):
-                    case Type pinkyType when pinkyType == typeof(Pinky):
-                    case Type inkyType when inkyType == typeof(Inky):
-                    case Type clydeType when clydeType == typeof(Clyde):
-                        // All ghosts need to save the same information, so they can be saved the same way
-                        SaveGhostV1(gameObject as Ghost, gameObject.GetType(), writer);
-                        break;
-                    default:
-                        throw new ArgumentException("Unknown GameObject type!");
-                }*/
             }
         }
 

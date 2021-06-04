@@ -275,41 +275,6 @@ namespace Setnicka.PacMan
                         }
                     }
                 }
-
-                // TODO: Delete if the alternate solution works
-                /*// Check all the tiles around and try to find the next order tile
-                checkedTile = currentlyOn + Vector2D.Up;
-                if (!Vector2D.VectorOutOf2DArray(MazeMap.GetLength(0), MazeMap.GetLength(1), checkedTile))
-                    if (MazeMap[checkedTile.X, checkedTile.Y] < order && MazeMap[checkedTile.X, checkedTile.Y] > 0)
-                    {
-                        order--;
-                        currentlyOn = checkedTile;
-                        continue;
-                    }
-                checkedTile = currentlyOn + Vector2D.Down;
-                if (!Vector2D.VectorOutOf2DArray(MazeMap.GetLength(0), MazeMap.GetLength(1), checkedTile))
-                    if (MazeMap[checkedTile.X, checkedTile.Y] < order && MazeMap[checkedTile.X, checkedTile.Y] > 0)
-                    {
-                        order--;
-                        currentlyOn = checkedTile;
-                        continue;
-                    }
-                checkedTile = currentlyOn + Vector2D.Right;
-                if (!Vector2D.VectorOutOf2DArray(MazeMap.GetLength(0), MazeMap.GetLength(1), checkedTile))
-                    if (MazeMap[checkedTile.X, checkedTile.Y] < order && MazeMap[checkedTile.X, checkedTile.Y] > 0)
-                    {
-                        order--;
-                        currentlyOn = checkedTile;
-                        continue;
-                    }
-                checkedTile = currentlyOn + Vector2D.Left;
-                if (!Vector2D.VectorOutOf2DArray(MazeMap.GetLength(0), MazeMap.GetLength(1), checkedTile))
-                    if (MazeMap[checkedTile.X, checkedTile.Y] < order && MazeMap[checkedTile.X, checkedTile.Y] > 0)
-                    {
-                        order--;
-                        currentlyOn = checkedTile;
-                        continue;
-                    }*/
             }
             #endregion
 
